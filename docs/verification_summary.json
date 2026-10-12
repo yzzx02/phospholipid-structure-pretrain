@@ -1,0 +1,180 @@
+{
+  "verified_on": "2026-10-12",
+  "host": "Windows CPU",
+  "pytest": {
+    "passed": 30,
+    "duration_seconds": 2.8,
+    "third_party_warnings": 122
+  },
+  "lint": "passed",
+  "format": "passed",
+  "compileall": "passed",
+  "gpu_verified": false,
+  "runs": {
+    "graph": {
+      "schema": "structure-only-v0.1",
+      "encoder": "graph",
+      "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
+      "global_step": 2,
+      "parameters": 16124236,
+      "structure_encoder_parameters": 652035,
+      "shapes": {
+        "architecture_logits": [
+          2,
+          2
+        ],
+        "chain_logits": [
+          2,
+          4,
+          6
+        ],
+        "headgroup_logits": [
+          2,
+          10,
+          47
+        ],
+        "template_tokens": [
+          2,
+          10,
+          512
+        ],
+        "template_memory": [
+          2,
+          11,
+          512
+        ],
+        "template_global": [
+          2,
+          512
+        ]
+      },
+      "validation": {
+        "val/loss": 5.405755996704102,
+        "val/architecture_loss": 1.4037034511566162,
+        "val/chain_loss": 1.6349232196807861,
+        "val/headgroup_loss": 2.36712908744812,
+        "val/architecture_accuracy": 0.0,
+        "val/chain_slot_accuracy": 0.25,
+        "val/chain_exact_accuracy": 0.0,
+        "val/headgroup_token_accuracy": 0.5625
+      },
+      "torch": "2.9.1+cpu",
+      "hip": null,
+      "device": "cpu",
+      "precision": "32-true",
+      "train_targets": 6,
+      "validation_targets": 2,
+      "skipped_target_ids": []
+    },
+    "fingerprint": {
+      "schema": "structure-only-v0.1",
+      "encoder": "fingerprint",
+      "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
+      "global_step": 2,
+      "parameters": 16654153,
+      "structure_encoder_parameters": 1181952,
+      "shapes": {
+        "architecture_logits": [
+          2,
+          2
+        ],
+        "chain_logits": [
+          2,
+          4,
+          6
+        ],
+        "headgroup_logits": [
+          2,
+          10,
+          47
+        ],
+        "template_tokens": [
+          2,
+          10,
+          512
+        ],
+        "template_memory": [
+          2,
+          11,
+          512
+        ],
+        "template_global": [
+          2,
+          512
+        ]
+      },
+      "validation": {
+        "val/loss": 5.469444274902344,
+        "val/architecture_loss": 1.282677412033081,
+        "val/chain_loss": 1.7959163188934326,
+        "val/headgroup_loss": 2.390850305557251,
+        "val/architecture_accuracy": 0.0,
+        "val/chain_slot_accuracy": 0.125,
+        "val/chain_exact_accuracy": 0.0,
+        "val/headgroup_token_accuracy": 0.4375
+      },
+      "torch": "2.9.1+cpu",
+      "hip": null,
+      "device": "cpu",
+      "precision": "32-true",
+      "train_targets": 6,
+      "validation_targets": 2,
+      "skipped_target_ids": []
+    },
+    "resume": {
+      "schema": "structure-only-v0.1",
+      "encoder": "graph",
+      "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
+      "global_step": 3,
+      "parameters": 16124236,
+      "structure_encoder_parameters": 652035,
+      "shapes": {
+        "architecture_logits": [
+          2,
+          2
+        ],
+        "chain_logits": [
+          2,
+          4,
+          6
+        ],
+        "headgroup_logits": [
+          2,
+          10,
+          47
+        ],
+        "template_tokens": [
+          2,
+          10,
+          512
+        ],
+        "template_memory": [
+          2,
+          11,
+          512
+        ],
+        "template_global": [
+          2,
+          512
+        ]
+      },
+      "validation": {
+        "val/loss": 4.933470726013184,
+        "val/architecture_loss": 1.3643845319747925,
+        "val/chain_loss": 1.6233422756195068,
+        "val/headgroup_loss": 1.945744276046753,
+        "val/architecture_accuracy": 0.0,
+        "val/chain_slot_accuracy": 0.125,
+        "val/chain_exact_accuracy": 0.0,
+        "val/headgroup_token_accuracy": 0.5625
+      },
+      "torch": "2.9.1+cpu",
+      "hip": null,
+      "device": "cpu",
+      "precision": "32-true",
+      "train_targets": 6,
+      "validation_targets": 2,
+      "skipped_target_ids": []
+    }
+  }
+}

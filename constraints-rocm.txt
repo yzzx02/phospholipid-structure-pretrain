@@ -1,0 +1,3 @@
+-c constraints-tested.txt
+# Conservative NumPy ABI choice for AMD release wheels; CPU verification used 2.2.3.
+numpy==1.26.4

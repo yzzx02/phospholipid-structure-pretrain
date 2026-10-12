@@ -1,0 +1,30 @@
+# Same shared model defaults; only the structure encoder changes.
+model:
+  encoder: fingerprint
+  structure_dim: 256
+  d_model: 512
+  dropout: 0.1
+  template_dropout: 0.2
+  set_layers: 2
+  set_heads: 8
+  set_ffn_dim: 2048
+  decoder_layers: 2
+  decoder_heads: 8
+  decoder_ffn_dim: 2048
+  max_headgroup_length: 64
+retrieval:
+  radius: 2
+  fp_size: 2048
+  max_top_k: 10
+  minimum_similarity: 0.4
+train:
+  seed: 42
+  batch_size: 2
+  num_workers: 0
+  cpu_threads: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  gradient_clip: 1.0
+  lambda_arch: 1.0
+  lambda_chain: 1.0
+  lambda_head: 1.0

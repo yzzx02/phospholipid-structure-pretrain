@@ -1,0 +1,9 @@
+# Versions verified locally on CPU; same core versions for the ROCm bootstrap.
+# Local build suffixes such as +cpu / +rocm7.2.1.lw.git... satisfy torch==2.9.1.
+torch==2.9.1
+torch-geometric==2.8.0.post1
+rdkit==2026.03.3
+lightning==2.6.6
+omegaconf==2.4.0
+pytest==9.0.3
+ruff==0.15.17
