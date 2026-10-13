@@ -1,0 +1,201 @@
+{
+  "graph": {
+    "encoder": "graph",
+    "B": 2,
+    "K": 10,
+    "M": 5,
+    "shapes": {
+      "x": [
+        46,
+        7
+      ],
+      "edge_index": [
+        2,
+        82
+      ],
+      "edge_attr": [
+        82,
+        3
+      ],
+      "batch": [
+        46
+      ],
+      "node_h": [
+        46,
+        128
+      ],
+      "edge_h": [
+        82,
+        128
+      ],
+      "gine_1": [
+        46,
+        128
+      ],
+      "gine_2": [
+        46,
+        128
+      ],
+      "gine_3": [
+        46,
+        128
+      ],
+      "pooled": [
+        5,
+        128
+      ],
+      "structure_embedding": [
+        5,
+        256
+      ],
+      "padded_structure_embedding": [
+        2,
+        10,
+        256
+      ],
+      "template_tokens": [
+        2,
+        10,
+        512
+      ],
+      "template_memory": [
+        2,
+        11,
+        512
+      ],
+      "architecture_logits": [
+        2,
+        2
+      ],
+      "chain_logits": [
+        2,
+        4,
+        6
+      ],
+      "headgroup_logits": [
+        2,
+        6,
+        47
+      ]
+    },
+    "template_mask": [
+      [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "padding_order": "passed",
+    "losses": {
+      "loss": 6.651118278503418,
+      "architecture_loss": 0.6858599185943604,
+      "chain_loss": 1.8064708709716797,
+      "headgroup_loss": 4.158787727355957
+    },
+    "unused_parameters": [],
+    "nonfinite_gradients": [],
+    "nonfinite_outputs": false,
+    "forward_loss_backward": "passed"
+  },
+  "fingerprint": {
+    "encoder": "fingerprint",
+    "B": 2,
+    "K": 10,
+    "M": 5,
+    "shapes": {
+      "fingerprints": [
+        5,
+        2048
+      ],
+      "structure_embedding": [
+        5,
+        256
+      ],
+      "padded_structure_embedding": [
+        2,
+        10,
+        256
+      ],
+      "template_tokens": [
+        2,
+        10,
+        512
+      ],
+      "template_memory": [
+        2,
+        11,
+        512
+      ],
+      "architecture_logits": [
+        2,
+        2
+      ],
+      "chain_logits": [
+        2,
+        4,
+        6
+      ],
+      "headgroup_logits": [
+        2,
+        6,
+        47
+      ]
+    },
+    "template_mask": [
+      [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "padding_order": "passed",
+    "losses": {
+      "loss": 6.413305282592773,
+      "architecture_loss": 0.6010205745697021,
+      "chain_loss": 1.6744370460510254,
+      "headgroup_loss": 4.137847900390625
+    },
+    "unused_parameters": [],
+    "nonfinite_gradients": [],
+    "nonfinite_outputs": false,
+    "forward_loss_backward": "passed"
+  }
+}

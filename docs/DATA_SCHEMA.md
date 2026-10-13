@@ -61,13 +61,13 @@ from structure_pretrain.utils.formula import FormulaStandardizer
 # library/targets/chains/tokenizer 全部由你提供的规则构建。
 retriever = MorganStructuralRetriever(library, RetrievalConfig())
 train_dataset = StructurePretrainingDataset(
-    targets, retriever, chains, tokenizer, encoder="graph", rwse_steps=8
+    targets, retriever, chains, tokenizer, encoder="graph"
 )
 statistics = FormulaStandardizer.fit(train_dataset.examples)
 # 将同一 statistics 传给模型；val/test 不能重新 fit。
 ```
 
-第一版 adapter 预处理并缓存所有检索结果和 graph/RWSE，适用于 dummy 和小型接口验证。真实库规模确定后，决定磁盘缓存、批量检索和 streaming dataset 的方案，避免在大库上反复线性扫描或缓存整个数据集。
+第一版 adapter 预处理并缓存所有检索结果和 molecular graphs，适用于 dummy 和小型接口验证。图只包含原子类别、键类别、连接索引，不计算额外位置特征。真实库规模确定后，决定磁盘缓存、批量检索和 streaming dataset 的方案，避免在大库上反复线性扫描或缓存整个数据集。
 
 ## 仍待提供的规则
 

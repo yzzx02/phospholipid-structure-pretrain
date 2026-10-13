@@ -1,4 +1,4 @@
-"""Seven atom fields, three bond fields, eight random-walk return probabilities."""
+"""Seven categorical atom fields and three categorical bond fields; no positional features."""
 
 import numpy as np
 import torch
@@ -42,10 +42,10 @@ def fingerprint_tensor(smiles: str) -> torch.Tensor:
     return torch.from_numpy(array)
 
 
-def smiles_to_graph(smiles: str, rwse_steps: int = 8) -> Data:
+def smiles_to_graph(smiles: str) -> Data:
     molecule = full_molecule(smiles)
-    if not 1 <= rwse_steps or molecule.GetNumAtoms() > 512:
-        raise ValueError("This small implementation requires rwse_steps>=1 and <=512 atoms")
+    if molecule.GetNumAtoms() > 512:
+        raise ValueError("This small implementation supports <=512 atoms")
     atoms = []
     for atom in molecule.GetAtoms():
         if not -4 <= atom.GetFormalCharge() <= 4:
@@ -68,7 +68,6 @@ def smiles_to_graph(smiles: str, rwse_steps: int = 8) -> Data:
         Chem.BondType.AROMATIC: 3,
     }
     edges, features = [], []
-    adjacency = np.zeros((len(atoms), len(atoms)), dtype=np.float32)
     for bond in molecule.GetBonds():
         if bond.GetBondType() not in types:
             raise ValueError("Only single/double/triple/aromatic bonds are supported")
@@ -77,17 +76,9 @@ def smiles_to_graph(smiles: str, rwse_steps: int = 8) -> Data:
         for source, destination in ((left, right), (right, left)):
             edges.append((source, destination))
             features.append(row)
-            adjacency[source, destination] = 1
-    transition = adjacency / np.maximum(adjacency.sum(1, keepdims=True), 1)
-    power = np.eye(len(atoms), dtype=np.float32)
-    returns = []
-    for _ in range(rwse_steps):
-        power = power @ transition
-        returns.append(power.diagonal().copy())
     return Data(
         x=torch.tensor(atoms, dtype=torch.long),
         edge_index=torch.tensor(edges, dtype=torch.long).reshape(-1, 2).t().contiguous(),
         edge_attr=torch.tensor(features, dtype=torch.long).reshape(-1, 3),
-        rwse=torch.from_numpy(np.stack(returns, axis=-1)),
         num_nodes=len(atoms),
     )

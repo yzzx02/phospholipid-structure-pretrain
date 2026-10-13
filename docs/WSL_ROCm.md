@@ -51,7 +51,7 @@ python scripts/check_rocm.py
 
 项目安装约束会固定已测试的核心包版本；`torch==2.9.1` 接受 AMD wheel 的本地版本后缀，不会要求替换成 CPU wheel。ROCm 约束保守使用 NumPy 1.26.4，CPU 已测试 NumPy 2.2.3。这里不是整个系统和 Python 依赖的完整 lockfile。
 
-PyG 从 2.3 起基础使用不需要额外扩展，见 [PyG 官方安装说明](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html)。本模型只用 GPSConv、GINE、dense attention 和 sum pooling，因此先安装 `torch-geometric` 即可，不额外装 NVIDIA CUDA wheels、`torch-scatter`、`torch-sparse` 或 `pyg-lib`。
+PyG 从 2.3 起基础使用不需要额外扩展，见 [PyG 官方安装说明](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html)。图编码器只用 GINE 和 sum pooling，下游 Transformer 使用 PyTorch dense attention；先安装 `torch-geometric` 即可，不额外装 NVIDIA CUDA wheels、`torch-scatter`、`torch-sparse` 或 `pyg-lib`。
 
 ## 验证与训练
 
@@ -71,7 +71,7 @@ ROCm 仍使用 PyTorch 的 `torch.cuda` API，Lightning 的 accelerator 仍为 `
 python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device rocm --precision 16-mixed --steps 2 --output outputs/rocm_mixed
 ```
 
-当前默认 batch size=2 用于验证。真实训练接入后再按最大原子数、Top-K、headgroup 长度和 GPU 实测显存调 batch；单凭约 16M 参数不能承诺最大 batch size，GPS 的分子内部 attention 还取决于原子数。
+当前默认 batch size=2 用于验证。真实训练接入后再按最大原子数、Top-K、headgroup 长度和 GPU 实测显存调 batch；单凭约 16M 参数不能承诺最大 batch size。图编码器不再计算分子内部 global attention，模板 Transformer 和头基 Decoder 保留原实现。
 
 ## 报错定位
 

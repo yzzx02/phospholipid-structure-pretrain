@@ -1,23 +1,25 @@
 {
-  "verified_on": "2026-10-12",
+  "verified_on": "2026-10-13",
   "host": "Windows CPU",
+  "graph_encoder": "GINE, 3 layers, hidden 128, sum pooling, output 256",
   "pytest": {
-    "passed": 30,
+    "passed": 31,
     "duration_seconds": 2.8,
-    "third_party_warnings": 122
+    "third_party_warnings": 152
   },
   "lint": "passed",
   "format": "passed",
   "compileall": "passed",
   "gpu_verified": false,
+  "small_batch_audit": "encoder_batch_shapes.json",
   "runs": {
     "graph": {
       "schema": "structure-only-v0.1",
       "encoder": "graph",
       "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
       "global_step": 2,
-      "parameters": 16124236,
-      "structure_encoder_parameters": 652035,
+      "parameters": 15626956,
+      "structure_encoder_parameters": 154755,
       "shapes": {
         "architecture_logits": [
           2,
@@ -49,14 +51,14 @@
         ]
       },
       "validation": {
-        "val/loss": 5.405755996704102,
-        "val/architecture_loss": 1.4037034511566162,
-        "val/chain_loss": 1.6349232196807861,
-        "val/headgroup_loss": 2.36712908744812,
+        "val/loss": 5.4620513916015625,
+        "val/architecture_loss": 1.2734895944595337,
+        "val/chain_loss": 1.729290246963501,
+        "val/headgroup_loss": 2.4592716693878174,
         "val/architecture_accuracy": 0.0,
         "val/chain_slot_accuracy": 0.25,
         "val/chain_exact_accuracy": 0.0,
-        "val/headgroup_token_accuracy": 0.5625
+        "val/headgroup_token_accuracy": 0.4375
       },
       "torch": "2.9.1+cpu",
       "hip": null,
@@ -126,8 +128,8 @@
       "encoder": "graph",
       "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
       "global_step": 3,
-      "parameters": 16124236,
-      "structure_encoder_parameters": 652035,
+      "parameters": 15626956,
+      "structure_encoder_parameters": 154755,
       "shapes": {
         "architecture_logits": [
           2,
@@ -159,12 +161,12 @@
         ]
       },
       "validation": {
-        "val/loss": 4.933470726013184,
-        "val/architecture_loss": 1.3643845319747925,
-        "val/chain_loss": 1.6233422756195068,
-        "val/headgroup_loss": 1.945744276046753,
+        "val/loss": 4.9018874168396,
+        "val/architecture_loss": 1.263265609741211,
+        "val/chain_loss": 1.6832036972045898,
+        "val/headgroup_loss": 1.9554181098937988,
         "val/architecture_accuracy": 0.0,
-        "val/chain_slot_accuracy": 0.125,
+        "val/chain_slot_accuracy": 0.375,
         "val/chain_exact_accuracy": 0.0,
         "val/headgroup_token_accuracy": 0.5625
       },

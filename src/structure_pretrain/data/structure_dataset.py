@@ -18,7 +18,6 @@ class StructurePretrainingDataset(Dataset):
         chain_vocab: ChainVocabulary,
         tokenizer: SmilesTokenizer,
         encoder: str = "graph",
-        rwse_steps: int = 8,
     ):
         if encoder not in {"graph", "fingerprint"}:
             raise ValueError("Unknown structure encoder")
@@ -43,9 +42,7 @@ class StructurePretrainingDataset(Dataset):
             for text in smiles:
                 if text not in cache:
                     cache[text] = (
-                        smiles_to_graph(text, rwse_steps)
-                        if encoder == "graph"
-                        else fingerprint_tensor(text)
+                        smiles_to_graph(text) if encoder == "graph" else fingerprint_tensor(text)
                     )
             self.examples.append(
                 {

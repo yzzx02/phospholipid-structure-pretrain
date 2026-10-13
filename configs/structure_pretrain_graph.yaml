@@ -5,11 +5,11 @@ model:
   dropout: 0.1
   template_dropout: 0.2
   graph:
+    gnn_type: GINE
     hidden_dim: 128
     layers: 3
-    attention_heads: 4
-    rwse_steps: 8
     pooling: sum
+    output_dim: 256
   set_layers: 2
   set_heads: 8
   set_ffn_dim: 2048

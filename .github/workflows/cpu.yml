@@ -29,7 +29,10 @@ jobs:
         run: |
           python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --steps 2 --output outputs/graph
           python train_structure_dummy.py --config configs/structure_pretrain_fp.yaml --steps 2 --output outputs/fingerprint
+          python scripts/check_encoder_batch.py > outputs/encoder_batch.json
       - uses: actions/upload-artifact@v4
         with:
           name: cpu-run-summaries
-          path: outputs/*/run_summary.json
+          path: |
+            outputs/*/run_summary.json
+            outputs/encoder_batch.json

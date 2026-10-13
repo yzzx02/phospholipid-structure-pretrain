@@ -5,11 +5,11 @@ from omegaconf import OmegaConf
 
 @dataclass
 class GraphConfig:
+    gnn_type: str = "GINE"
     hidden_dim: int = 128
     layers: int = 3
-    attention_heads: int = 4
-    rwse_steps: int = 8
     pooling: str = "sum"
+    output_dim: int = 256
 
 
 @dataclass
@@ -66,8 +66,10 @@ def load_config(path: str) -> ExperimentConfig:
         raise ValueError("encoder must be graph or fingerprint")
     if config.model.structure_dim != 256 or config.model.d_model != 512:
         raise ValueError("v0.1 fixes structure_dim=256 and d_model=512")
-    if config.model.graph.pooling != "sum":
-        raise ValueError("v0.1 uses sum pooling")
+    if config.model.graph != GraphConfig():
+        raise ValueError(
+            "Graph encoder is fixed to GINE / 3 layers / hidden 128 / sum / output 256"
+        )
     if config.retrieval.fp_size != 2048 or config.retrieval.radius != 2:
         raise ValueError("v0.1 uses Morgan radius=2, fp_size=2048")
     if not 1 <= config.retrieval.max_top_k <= 10:

@@ -13,6 +13,10 @@ def test_backward_and_optimizer_updates_each_module(model_inputs):
     output = model(batch)
     loss = pretraining_loss(output, batch, 0, config.train)["loss"]
     loss.backward()
+    for name, parameter in model.named_parameters():
+        if parameter.requires_grad:
+            assert parameter.grad is not None, f"Unused parameter: {name}"
+            assert torch.isfinite(parameter.grad).all(), f"Nonfinite gradient: {name}"
     for module in model.children():
         grads = [parameter.grad for parameter in module.parameters() if parameter.grad is not None]
         assert grads and all(torch.isfinite(gradient).all() for gradient in grads)

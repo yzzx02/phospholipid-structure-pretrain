@@ -23,13 +23,12 @@ def test_atom_ring_feature_and_bond_types():
     assert graph.edge_attr.shape[1] == 3
     assert set(graph.edge_attr[:, 0].tolist()) == {0, 1, 2, 3}
     assert graph.x[:, 5].sum() == 6
-    assert graph.rwse.shape == (graph.num_nodes, 8)
-    assert graph.rwse.min() >= 0 and graph.rwse.max() <= 1
+    assert set(graph.keys()) == {"x", "edge_index", "edge_attr", "num_nodes"}
 
 
 def test_stereochemistry_not_encoded():
     left, right = smiles_to_graph("C/C=C/C"), smiles_to_graph("C/C=C\\C")
-    for field in ("x", "edge_index", "edge_attr", "rwse"):
+    for field in ("x", "edge_index", "edge_attr"):
         torch.testing.assert_close(left[field], right[field])
 
 

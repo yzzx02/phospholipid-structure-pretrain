@@ -1,6 +1,6 @@
 # STRUCTURE-ONLY PRETRAINING v0.1
 
-当前仅实现**基于结构检索模板的磷脂结构预训练框架**。包含 Morgan fingerprint 基线和 GPSConv 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
+当前仅实现**基于结构检索模板的磷脂结构预训练框架**。只保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
 
 本仓库的示例使用小型 alkyl phosphate toy structures 和**人为输出标签**，不是化学上配套的真实磷脂训练集。它们只核验接口、张量、梯度、训练和 checkpoint。当前不提供预测准确率结论。
 
@@ -17,8 +17,8 @@ K template full structures
 ┌──────────────────────────────────────────┐
 │ Structure Encoder                        │
 │ Baseline: Morgan FP → MLP (2048→512→256) │
-│ Graph: GPSConv(GINE+MHSA)                 │
-│ hidden=128 / layers=3 / heads=4 / RWSE=8 │
+│ Graph: 3-layer GINE                       │
+│ hidden=128 / layers=3                     │
 │ sum pooling → MLP → 256D                │
 └──────────────────────────────────────────┘
         ↓
@@ -58,6 +58,7 @@ python -m pytest -q
 python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device cpu --steps 2 --output outputs/graph
 python train_structure_dummy.py --config configs/structure_pretrain_fp.yaml --device cpu --steps 2 --output outputs/fingerprint
 python scripts/count_parameters.py
+python scripts/check_encoder_batch.py
 ```
 
 Windows venv 激活命令为 `.venv\Scripts\Activate.ps1`。训练入口默认 CPU、batch size=2、32-bit、AdamW lr=1e-4、weight decay=0.01、clip=1。两种 YAML 都使用完整默认模型，没有偷偷缩小测试模型。CLI 只接受 structure pretraining。
@@ -68,7 +69,7 @@ Windows venv 激活命令为 `.venv\Scripts\Activate.ps1`。训练入口默认 C
 python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --steps 3 --resume outputs/graph/last.ckpt --output outputs/resume
 ```
 
-`--steps` 指累计 optimizer steps。恢复 model、optimizer 和 Trainer；dummy DataLoader 不保存 epoch 中途游标，因此不承诺完全相同的 batch replay。旧完整流程 checkpoint 不兼容。
+`--steps` 指累计 optimizer steps。恢复 model、optimizer 和 Trainer；dummy DataLoader 不保存 epoch 中途游标，因此不承诺完全相同的 batch replay。此次改造前的图模型 checkpoint 不兼容，应重新训练；新的 GINE checkpoint 可正常续训。
 
 ## RX 9070 XT：WSL Ubuntu + ROCm
 
@@ -103,9 +104,12 @@ phospholipid-structure-pretrain/
 │   ├── DATA_SCHEMA.md                   # 后续数据输入契约、TODO
 │   ├── WSL_ROCm.md                      # 9070 XT 安装与运行说明
 │   ├── VERIFICATION.md                  # 已执行验证与边界
+│   ├── ENCODER_SIMPLIFICATION.md        # GINE 改造、特征编码和小 batch 报告
+│   ├── encoder_batch_shapes.json        # B=2、M=5 的实际 shape / backward 记录
 │   └── verification_summary.json        # 精简的实际运行记录
 ├── scripts/
 │   ├── check_rocm.py                    # HIP attention/scatter 梯度核验
+│   ├── check_encoder_batch.py           # 3+2 模板 batching/padding/梯度检查
 │   └── count_parameters.py              # 实例化模型，去重统计参数
 ├── src/structure_pretrain/
 │   ├── __init__.py
@@ -118,13 +122,13 @@ phospholipid-structure-pretrain/
 │   │   ├── batching.py                 # K≤10 padding，真实模板展平
 │   │   ├── chain_vocab.py              # 外部词表、canonical sort、NULL
 │   │   ├── smiles_tokenizer.py         # BOS/EOS/PAD，attachment 原子词元
-│   │   └── molecular_graph.py          # 7 原子特征、3 键特征、RWSE、FP
+│   │   └── molecular_graph.py          # 7 原子特征、3 键特征、FP
 │   ├── retrieval/
 │   │   ├── __init__.py
 │   │   └── structural_retrieval.py     # 可替换的 Protocol、Morgan/Tanimoto
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── graph_encoder.py            # GPSConv(GINE+MHSA)，sum pooling
+│   │   ├── graph_encoder.py            # 三层 GINE、sum pooling
 │   │   ├── fingerprint_encoder.py      # 2048→512→256 baseline
 │   │   ├── template_token_projector.py # 278→512→512，两条路径共享
 │   │   ├── template_set_transformer.py # TCLS、mask、template dropout
@@ -144,6 +148,7 @@ phospholipid-structure-pretrain/
 └── tests/
     ├── conftest.py
     ├── test_graph_encoder.py
+    ├── test_graph_batch_padding.py
     ├── test_fingerprint_encoder.py
     ├── test_template_projector.py
     ├── test_template_transformer.py
@@ -161,7 +166,8 @@ phospholipid-structure-pretrain/
 | 张量 | Shape |
 |---|---|
 | FP / 图节点 x / 图键 edge_attr | `[M,2048]` / `[N_atoms,7]` / `[N_edges,3]` |
-| 图 RWSE | `[N_atoms,8]` |
+| 原子 / 键 embedding | `[N_atoms,128]` / `[N_edges,128]` |
+| 图 sum pooling | `[M,128]` |
 | 真实结构 embedding | `[M,256]` |
 | 补齐结构 embedding | `[B,K,256]` |
 | template formula / signed delta | `[B,K,10]` / `[B,K,10]` |
@@ -181,17 +187,19 @@ phospholipid-structure-pretrain/
 
 | 模块 | Graph | Fingerprint |
 |---|---:|---:|
-| Structure encoder | 652,035 | 1,181,952 |
+| Structure encoder | 154,755 | 1,181,952 |
 | TemplateTokenProjector | 406,528 | 406,528 |
 | Template Set Transformer | 6,306,304 | 6,306,304 |
 | Architecture head | 131,842 | 131,842 |
 | Chain head | 137,496 | 137,496 |
 | Headgroup decoder | 8,490,031 | 8,490,031 |
-| **总参数** | **16,124,236** | **16,654,153** |
+| **总参数** | **15,626,956** | **16,654,153** |
 
 损失 `L = CE_arch + CE_chain + CE_headgroup`，三项权重均为 1。NULL 是有监督的合法 chain 类；headgroup CE 忽略 PAD、保留 EOS。没有额外辅助损失、Hungarian matching 或 formula hard constraint。
 
 验证记录见 [VERIFICATION.md](docs/VERIFICATION.md)。
+
+图编码器改造报告见 [ENCODER_SIMPLIFICATION.md](docs/ENCODER_SIMPLIFICATION.md)。实验只比较 Morgan 和 GINE；数据划分、随机种子、下游网络、优化器、学习率、loss 和训练步设置保持一致。
 
 ## 后续数据 TODO
 
