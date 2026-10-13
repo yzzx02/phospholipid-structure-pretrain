@@ -1,0 +1,5 @@
+# Builder-only installation; no torch or model training dependency is imported.
+rdkit==2026.03.3
+pyarrow>=20,<25
+PyYAML>=6,<7
+msgpack>=1.1,<2

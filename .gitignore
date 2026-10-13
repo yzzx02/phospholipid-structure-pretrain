@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 outputs/
 data/private/
+data/structure_library*/
 *.ckpt
 .env
 .env.*

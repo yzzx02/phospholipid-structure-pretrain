@@ -1,5 +1,7 @@
 # STRUCTURE-ONLY PRETRAINING v0.1
 
+**当前阶段：独立结构库构建，不训练模型。** 已新增预算控制的 library builder 和本地 MS-DIAL 元数据核验入口，详见 [建库执行与验证说明](docs/LIBRARY_BUILDER.md)及 [找到的 MS-DIAL 原始库](docs/MSDIAL_LOCAL_SOURCES.md)。现有预训练网络、retrieval、loss 和训练脚本保持原实现。
+
 当前仅实现**基于结构检索模板的磷脂结构预训练框架**。只保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
 
 本仓库的示例使用小型 alkyl phosphate toy structures 和**人为输出标签**，不是化学上配套的真实磷脂训练集。它们只核验接口、张量、梯度、训练和 checkpoint。当前不提供预测准确率结论。

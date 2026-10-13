@@ -1,0 +1,5 @@
+polar_id	source	source_id	original_smiles	polar_fragment_smiles	attachment_atom_map	polar_family	allow_aa	allow_oa	allow_pa
+demo_PC	demo_fixture_not_real_database	PC_fixture	OP(=O)([O-])OCC[N+](C)(C)C	[*:1]P(=O)([O-])OCC[N+](C)(C)C	1	known_other	true	true	false
+demo_PE	demo_fixture_not_real_database	PE_fixture	OP(=O)(O)OCCN	[*:1]P(=O)(O)OCCN	1	PE	true	true	true
+demo_phosphonate	demo_fixture_not_real_database	phosphonate_fixture	CP(=O)(O)O	[*:1]P(=O)(O)C	1	phosphonate	true	true	false
+demo_expanded	demo_fixture_not_real_database	synthetic_expanded_fixture	OP(=O)(O)OCCS	[*:1]P(=O)(O)OCCS	1	pubchem_expanded	true	true	false

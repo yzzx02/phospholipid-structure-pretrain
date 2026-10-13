@@ -1,0 +1,26 @@
+schema_version: structure-library-v0.1
+max_structures: 1500000
+max_extra_per_head: 100
+max_chain_combinations: 2000000
+seed: 42
+lyso_fraction_target: 0.10
+enable_pe_p: true
+include_p_lyso: false
+include_bis_phosphatidyl: false
+bis_phosphatidyl_budget: 0
+parquet_batch_size: 2000
+anchor_combinations:
+  - A-16:0_A-18:1
+  - A-16:0_A-20:4
+  - A-18:0_A-18:1
+  - A-18:0_A-20:4
+  - A-18:0_A-22:6
+  - A-18:1_A-20:4
+  - A-18:1_A-18:1
+anchor_single_chains: [A-16:0, A-18:0, A-18:1, A-20:4, A-22:6]
+chain_sampling:
+  short_max_total_c: 32
+  medium_max_total_c: 40
+  long_min_total_c: 41
+  low_max_total_db: 2
+  medium_max_total_db: 4

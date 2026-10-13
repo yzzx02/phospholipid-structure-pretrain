@@ -1,0 +1,47 @@
+{
+  "phase": "library_builder_only",
+  "verified_date": "2026-10-13",
+  "pytest": {
+    "passed": 46,
+    "duration_seconds": 3.95,
+    "scope": "tests/library_builder; isolated from model conftest"
+  },
+  "ruff": "passed",
+  "format": "passed",
+  "compileall": "passed",
+  "training_performed": false,
+  "model_code_modified": false,
+  "demo_report": "../examples/library_builder/library_report.example.json",
+  "demo_structure_count": 60,
+  "demo_counts": {
+    "AA_count": 41,
+    "OA_count": 11,
+    "PE_PA_count": 2,
+    "lyso_count": 6
+  },
+  "runtime_versions": {
+    "pyarrow": "24.0.0",
+    "python": "3.13.2",
+    "rdkit": "2026.03.3"
+  },
+  "local_msdial_sources": [
+    {
+      "path": "D:\\MSDIAL\\Msp20250409095351_NCDK_conventional_converted_dev.lbm2",
+      "bytes": 792033100,
+      "records_from_headers": 5263863,
+      "lz4_blocks": 4,
+      "metadata_samples": 128,
+      "exhaustive": false
+    },
+    {
+      "path": "D:\\浏览器下载文件\\MSDIAL4.9.221218\\MSDIAL ver.4.9.221218 Windowsx64\\Msp20221205132019_conventional_converted.lbm2",
+      "bytes": 372248075,
+      "records_from_headers": 3879270,
+      "lz4_blocks": 2,
+      "metadata_samples": 0,
+      "exhaustive": false
+    }
+  ],
+  "real_training_library_created": false,
+  "demo_output_local": "data/structure_library_v0.1_demo_final"
+}

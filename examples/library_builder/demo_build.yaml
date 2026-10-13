@@ -1,0 +1,5 @@
+# Synthetic fixture build, never an MS-DIAL-derived real training library.
+max_structures: 100
+max_extra_per_head: 8
+seed: 42
+lyso_fraction_target: 0.10

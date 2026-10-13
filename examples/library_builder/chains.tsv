@@ -1,0 +1,12 @@
+chain_token	linkage_type	carbon_count	double_bond_count	representative_fragment_smiles	representative_double_bond_positions	p_db_count_includes_vinyl	source
+A-14:0	A	14	0	CCCCCCCCCCCCCC(=O)[*:1]	[]		demo_fixture_not_msdial_rule
+A-16:0	A	16	0	CCCCCCCCCCCCCCCC(=O)[*:1]	[]		demo_fixture_not_msdial_rule
+A-18:0	A	18	0	CCCCCCCCCCCCCCCCCC(=O)[*:1]	[]		demo_fixture_not_msdial_rule
+A-18:1	A	18	1	CCCCCCCCC=CCCCCCCCC(=O)[*:1]	[9]		demo_fixture_not_msdial_rule
+A-20:4	A	20	4	CCCCCC=CCC=CCC=CCC=CCCCC(=O)[*:1]	[5, 8, 11, 14]		demo_fixture_not_msdial_rule
+A-22:6	A	22	6	CCC=CCC=CCC=CCC=CCC=CCC=CCCC(=O)[*:1]	[4, 7, 10, 13, 16, 19]		demo_fixture_not_msdial_rule
+A-24:1	A	24	1	CCCCCCCCC=CCCCCCCCCCCCCCC(=O)[*:1]	[15]		demo_fixture_not_msdial_rule
+O-16:0	O	16	0	CCCCCCCCCCCCCCCC[*:1]	[]		demo_fixture_not_msdial_rule
+O-16:1	O	16	1	CCCCCCC=CCCCCCCCC[*:1]	[9]		demo_fixture_not_msdial_rule
+O-18:0	O	18	0	CCCCCCCCCCCCCCCCCC[*:1]	[]		demo_fixture_not_msdial_rule
+P-16:0	P	16	0	CCCCCCCCCCCCCCC=C[*:1]	[1]	false	demo_fixture_not_msdial_rule

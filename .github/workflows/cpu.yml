@@ -1,7 +1,25 @@
 name: CPU structure pretraining
 on:
   push:
+    paths: &model_paths
+      - 'src/structure_pretrain/models/**'
+      - 'src/structure_pretrain/training/**'
+      - 'src/structure_pretrain/data/**'
+      - 'src/structure_pretrain/retrieval/**'
+      - 'src/structure_pretrain/utils/**'
+      - 'src/structure_pretrain/config.py'
+      - 'configs/structure_pretrain_*.yaml'
+      - 'train_structure_dummy.py'
+      - 'scripts/check_encoder_batch.py'
+      - 'scripts/count_parameters.py'
+      - 'tests/test_graph*.py'
+      - 'tests/test_fingerprint*.py'
+      - 'tests/test_structure_pretrain*.py'
+      - 'tests/test_template*.py'
+      - 'tests/test_retrieval_and_schema.py'
+      - 'tests/conftest.py'
   pull_request:
+    paths: *model_paths
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,7 +37,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install -c constraints-tested.txt -e '.[dev]'
+          python -m pip install -c constraints-tested.txt -e '.[dev,library]'
       - name: Lint and tests
         run: |
           python -m ruff check .

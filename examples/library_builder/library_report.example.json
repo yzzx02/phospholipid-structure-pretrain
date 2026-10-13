@@ -1,0 +1,196 @@
+{
+  "AA_count": 41,
+  "OA_count": 11,
+  "PE_PA_count": 2,
+  "anchor_combo_counts": {
+    "A-16:0_A-18:1": 4,
+    "A-16:0_A-20:4": 4,
+    "A-18:0_A-18:1": 4,
+    "A-18:0_A-20:4": 4,
+    "A-18:0_A-22:6": 4,
+    "A-18:1_A-18:1": 4,
+    "A-18:1_A-20:4": 4
+  },
+  "bis_phosphatidyl_count": 0,
+  "data_kind": "demo_fixture_not_real_training_library",
+  "distribution_definition": "Sum of imported chain annotations; excludes polar/scaffold carbons; P DB convention is external",
+  "duplicates_removed": 0,
+  "extra_counts_actual": {
+    "demo_PC": 8,
+    "demo_PE": 8,
+    "demo_expanded": 8,
+    "demo_phosphonate": 8
+  },
+  "extra_quotas_initial": {
+    "demo_PC": 8,
+    "demo_PE": 8,
+    "demo_expanded": 8,
+    "demo_phosphonate": 8
+  },
+  "invalid_valence_count": 0,
+  "lyso_count": 6,
+  "lyso_fraction_actual": 0.1,
+  "lyso_fraction_target": 0.1,
+  "mandatory_anchor_count": 28,
+  "mandatory_unique_structures": 28,
+  "max_structures": 100,
+  "neutral_formula_missing_count": 0,
+  "number_of_chain_combinations": 66,
+  "number_of_chains": 11,
+  "number_of_polar_moieties": 4,
+  "p_to_o_mapping_provided": true,
+  "polar_duplicate_sources_merged": 0,
+  "rejected_count": 0,
+  "rejection_reasons": {},
+  "remaining_structure_budget": 40,
+  "representative_sn_assignment": "Computational representative placement, not biological sn annotation",
+  "runtime_versions": {
+    "pyarrow": "24.0.0",
+    "python": "3.13.2",
+    "rdkit": "2026.03.3"
+  },
+  "sampling_method": "SHA256-ranked strata with head-specific rotations",
+  "schema_version": "structure-library-v0.1",
+  "seed": 42,
+  "status": "complete",
+  "structures_per_polar": {
+    "demo_PC": 15,
+    "demo_PE": 15,
+    "demo_expanded": 15,
+    "demo_phosphonate": 15
+  },
+  "structures_per_polar_max": 15,
+  "structures_per_polar_median": 15.0,
+  "structures_per_polar_min": 15,
+  "top_20_least_represented_polar_moieties": [
+    {
+      "count": 15,
+      "polar_id": "demo_PC"
+    },
+    {
+      "count": 15,
+      "polar_id": "demo_PE"
+    },
+    {
+      "count": 15,
+      "polar_id": "demo_expanded"
+    },
+    {
+      "count": 15,
+      "polar_id": "demo_phosphonate"
+    }
+  ],
+  "top_20_most_frequent_chain_combinations": [
+    {
+      "combination_id": "A-16:0",
+      "count": 4
+    },
+    {
+      "combination_id": "A-16:0_A-18:1",
+      "count": 4
+    },
+    {
+      "combination_id": "A-16:0_A-20:4",
+      "count": 4
+    },
+    {
+      "combination_id": "A-18:0_A-18:1",
+      "count": 4
+    },
+    {
+      "combination_id": "A-18:0_A-20:4",
+      "count": 4
+    },
+    {
+      "combination_id": "A-18:0_A-22:6",
+      "count": 4
+    },
+    {
+      "combination_id": "A-18:1_A-18:1",
+      "count": 4
+    },
+    {
+      "combination_id": "A-18:1_A-20:4",
+      "count": 4
+    },
+    {
+      "combination_id": "O-18:0_A-24:1",
+      "count": 4
+    },
+    {
+      "combination_id": "O-18:0_A-20:4",
+      "count": 3
+    },
+    {
+      "combination_id": "A-18:0",
+      "count": 2
+    },
+    {
+      "combination_id": "A-18:1_A-24:1",
+      "count": 2
+    },
+    {
+      "combination_id": "A-20:4_A-22:6",
+      "count": 2
+    },
+    {
+      "combination_id": "A-14:0_A-22:6",
+      "count": 1
+    },
+    {
+      "combination_id": "A-16:0_A-18:0",
+      "count": 1
+    },
+    {
+      "combination_id": "A-16:0_A-22:6",
+      "count": 1
+    },
+    {
+      "combination_id": "A-16:0_A-24:1",
+      "count": 1
+    },
+    {
+      "combination_id": "A-18:0_A-24:1",
+      "count": 1
+    },
+    {
+      "combination_id": "A-20:4_A-20:4",
+      "count": 1
+    },
+    {
+      "combination_id": "A-20:4_A-24:1",
+      "count": 1
+    }
+  ],
+  "total_carbon_distribution": {
+    "16": 4,
+    "18": 2,
+    "30": 2,
+    "32": 2,
+    "34": 7,
+    "36": 13,
+    "38": 12,
+    "40": 6,
+    "42": 9,
+    "44": 2,
+    "48": 1
+  },
+  "total_double_bond_distribution": {
+    "0": 12,
+    "1": 14,
+    "2": 8,
+    "4": 11,
+    "5": 5,
+    "6": 6,
+    "8": 1,
+    "10": 2,
+    "12": 1
+  },
+  "total_structures": 60,
+  "training_performed": false,
+  "unique_canonical_smiles": 60,
+  "unsupported_element_count": 0,
+  "validated_p_to_o_mapping": {
+    "P-16:0": "O-16:1"
+  }
+}
