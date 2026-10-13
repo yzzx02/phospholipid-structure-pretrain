@@ -6,9 +6,16 @@ from .schemas import ELEMENTS, LibraryValidationError
 
 def parse_molecule(smiles: str):
     with rdBase.BlockLogs():
-        molecule = Chem.MolFromSmiles(smiles)
+        molecule = Chem.MolFromSmiles(smiles, sanitize=False)
     if molecule is None or not molecule.GetNumAtoms():
-        raise LibraryValidationError("invalid_valence", "Invalid or unsanitizable SMILES")
+        raise LibraryValidationError("invalid_smiles", "SMILES could not be parsed")
+    with rdBase.BlockLogs():
+        try:
+            Chem.SanitizeMol(molecule)
+        except Chem.AtomValenceException as exc:
+            raise LibraryValidationError("invalid_valence", str(exc)) from exc
+        except Exception as exc:
+            raise LibraryValidationError("sanitize_failed", str(exc)) from exc
     if len(Chem.GetMolFrags(molecule)) != 1:
         raise LibraryValidationError("disconnected_structure", "Require one connected structure")
     return molecule

@@ -2,8 +2,8 @@
   "phase": "library_builder_only",
   "verified_date": "2026-10-13",
   "pytest": {
-    "passed": 46,
-    "duration_seconds": 3.95,
+    "passed": 48,
+    "duration_seconds": 5.24,
     "scope": "tests/library_builder; isolated from model conftest"
   },
   "ruff": "passed",
@@ -43,5 +43,5 @@
     }
   ],
   "real_training_library_created": false,
-  "demo_output_local": "data/structure_library_v0.1_demo_final"
+  "demo_output_local": "data/structure_library_v0.1_demo_release"
 }

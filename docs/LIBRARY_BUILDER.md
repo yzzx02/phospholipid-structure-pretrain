@@ -30,7 +30,7 @@ python scripts/build_structure_library.py \
   --output data/structure_library_v0.1_demo
 ```
 
-本地最终复核产物位于 `data/structure_library_v0.1_demo_final/`。输入和完整报告样例已提交在 `examples/library_builder/`，生成的 Parquet、SQLite 和本地库元数据不上传仓库。输出目录非空时 CLI 拒绝覆盖；重复构建请指定新的目录。
+本地最终复核产物位于 `data/structure_library_v0.1_demo_release/`。输入和完整报告样例已提交在 `examples/library_builder/`，生成的 Parquet、SQLite 和本地库元数据不上传仓库。输出目录非空时 CLI 拒绝覆盖；重复构建请指定新的目录。
 
 真实输入接入命令：
 
@@ -196,7 +196,7 @@ structures 包含计划要求的全部字段：stable SHA256 `structure_id`、ar
 
 ## 验证及真实输入 TODO
 
-建库 pytest 共 **46 项通过**，涵盖 AA 顺序去重、OA 位点、PE-P 权限、外部 P→O、缺失映射日志、P 注释口径冲突、anchor 完整性、超限失败报告、多种预算边界、lyso、phosphate/phosphonate 组装、正确完整中性公式、价态/电荷/元素拒绝、立体信息去除与位置连接保留、provenance 合并、同 seed 完全一致的结构 rows、分层覆盖、有界 LBM2 元数据读取。
+建库 pytest 共 **48 项通过**，涵盖 AA 顺序去重、OA 位点、PE-P 权限、外部 P→O、缺失映射日志、P 注释口径冲突、anchor 完整性、超限失败报告、多种预算边界、lyso、phosphate/phosphonate 组装、正确完整中性公式、价态/电荷/元素拒绝、立体信息去除与位置连接保留、provenance 合并、同 seed 完全一致的结构 rows、分层覆盖、有界 LBM2 元数据读取。
 
 ```bash
 python -m pip install pytest ruff

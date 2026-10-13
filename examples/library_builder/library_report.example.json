@@ -27,6 +27,7 @@
     "demo_expanded": 8,
     "demo_phosphonate": 8
   },
+  "invalid_smiles_count": 0,
   "invalid_valence_count": 0,
   "lyso_count": 6,
   "lyso_fraction_actual": 0.1,

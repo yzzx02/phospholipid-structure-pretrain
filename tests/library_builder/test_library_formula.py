@@ -58,3 +58,16 @@ def test_report_counts_rejected_unsupported_polar(inputs, tmp_path):
     )
     assert report["unsupported_element_count"] == 1
     assert report["number_of_polar_moieties"] == 4 and report["total_structures"] == 60
+
+
+@pytest.mark.parametrize(
+    "smiles,reason",
+    [
+        ("invalid_smiles", "invalid_smiles"),
+        ("[*:1]P(=O)(O)(O)(O)O", "invalid_valence"),
+    ],
+)
+def test_parse_failure_distinct_from_actual_valence_error(smiles, reason):
+    with pytest.raises(LibraryValidationError) as error:
+        validate_polar_fragment(smiles, 1)
+    assert error.value.reason == reason

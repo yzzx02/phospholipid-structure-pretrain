@@ -64,6 +64,7 @@ class ReportAccumulator:
             ),
             "neutral_formula_missing_count": self.formula_missing,
             "invalid_valence_count": reasons["invalid_valence"],
+            "invalid_smiles_count": reasons["invalid_smiles"],
             "unsupported_element_count": reasons["unsupported_element"],
             "rejection_reasons": dict(sorted(reasons.items())),
             "top_20_most_frequent_chain_combinations": [
