@@ -6,6 +6,7 @@ import pyarrow.parquet as pq
 import pytest
 import yaml
 
+from structure_pretrain.pubchem_polar.cache import ChemistryCache, seed_from_review
 from structure_pretrain.pubchem_polar.chemistry import read_controls, validate_controls
 from structure_pretrain.pubchem_polar.pipeline import process_records
 
@@ -69,6 +70,23 @@ def test_parquet_review_provenance_and_rejections(tmp_path):
     (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
     audit = runpy.run_path(str(ROOT / "scripts/audit_pubchem_polar.py"))["audit"]
     assert audit(tmp_path)["passed"]
+    report["pubchem_query_controls"] = {"phosphate_acid": {"expected_cids": [999]}}
+    (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
+    with pytest.raises(ValueError, match="Designated server-side positive CID"):
+        audit(tmp_path)
+    report["pubchem_query_controls"] = {"phosphate_acid": {"expected_cids": [1]}}
+    (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
+    assert audit(tmp_path)["designated_server_control_pairs_verified"] == 1
+    state = tmp_path / "state"
+    state.mkdir()
+    cache = ChemistryCache(state, config["limits"])
+    report["chemistry_policy_sha256"] = cache.policy_hash
+    (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
+    assert seed_from_review(cache, tmp_path) == 3
+    assert len(cache.get(1, inputs[1])["candidates"]) == 2
+    assert cache.get(3, inputs[3])["rejection"]["reason"] == "no_acidic_attachment"
+    assert "matched_query_ids" not in cache.get(1, inputs[1])["candidates"][0]
+    cache.close()
     # A provenance error in persisted data must be found independently of pipeline counters.
     raw_path = tmp_path / "pubchem_polar_raw.parquet"
     raw = pq.read_table(raw_path)

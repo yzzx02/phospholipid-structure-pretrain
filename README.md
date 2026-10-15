@@ -218,9 +218,11 @@ phospholipid-structure-pretrain/
 检索 phosphate / phosphonate / polyphosphate，保留真实 PubChem CID 和所有酸性连接位点，
 输出标准化去重后的人工审核表；本阶段不生成批准版头基表、不训练、不生成完整脂质库。
 审核包在 `data/private/pubchem_polar_review/`；原始大表与 SSD 缓存不上传 GitHub。
+分阶段实测数量、完整性核验和 20 个真实来源片段见
+[PUBCHEM_POLAR_RESULTS.md](docs/PUBCHEM_POLAR_RESULTS.md)。
 
 ## 后续数据 TODO
 
-需要你提供：真实结构库构建规则和版本、中性分子式来源与结构 ID 对齐、architecture 标注、真实 chain vocabulary、真实 headgroup 切割及 attachment 规则、训练/验证/测试划分与检索库使用规则。当前只有记录接口、外部 labels adapter 和 dummy 数据，详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。真实数据阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
+链 vocabulary 已冻结，真实 polar 候选按 P attachment 边界生成审核包；后续先确认头基审核与 approved 导出规则，再讨论完整结构组装、标签对齐、训练/验证/测试划分与检索库使用规则。当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
 
 MS/MS、谱图检索、Spectrum Transformer、微调和完整候选组装全部留待后续讨论，本仓库当前入口不包含这些流程。

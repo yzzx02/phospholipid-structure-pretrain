@@ -1,0 +1,2 @@
+-r requirements-extraction.txt
+requests>=2.32,<3

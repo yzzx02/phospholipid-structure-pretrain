@@ -6,7 +6,7 @@
 ## 运行
 
 ```bash
-python -m pip install -r requirements-extraction.txt
+python -m pip install -r requirements-pubchem.txt
 python -m pip install --no-deps -e .
 python scripts/harvest_pubchem_polar.py --cache-dir /path/on/ssd/pubchem-polar-v01
 ```
@@ -14,6 +14,8 @@ python scripts/harvest_pubchem_polar.py --cache-dir /path/on/ssd/pubchem-polar-v
 Windows 默认缓存位于 `%LOCALAPPDATA%/pubchem-polar-v01`（SSD），输出仍在项目的
 `data/private/pubchem_polar_review/`。在 WSL 中可显式指定 Linux SSD 路径。
 本流程只需 CPU/RDKit，无 ROCm、显卡或 MS-DIAL 2022 依赖。
+默认链冻结需要现有两份 2025 证据小表。跨机器只运行 PubChem 时可加
+`--skip-chain-freeze`，并单独复制已经验证的 322 条冻结链表；GitHub 不包含本地证据大表。
 
 默认顺序运行 `stage1`（每查询 1,000）、`stage2`（每查询 10,000）、`full`。
 可用 `--stages stage1` 单独检查第一阶段，再用 `--stages stage2 full` 继续。
@@ -21,8 +23,11 @@ Windows 默认缓存位于 `%LOCALAPPDATA%/pubchem-polar-v01`（SSD），输出�
 缓存混合的是逐请求获取时间，并非 PubChem 数据库的同一时刻冻结快照。
 
 重复命令可恢复：CID 查询和 HTTP 响应按完整 URL 哈希缓存，属性按 CID 存入 SQLite/WAL，
-已下载的 CID 不因查询重叠而重复下载。化学审核输出从缓存重新计算，避免从不完整 Parquet
-续写。`checkpoint.json` 记录进度；网络错误 CID 单独列在报告中，不冒充化学拒绝。
+已下载的 CID 不因查询重叠而重复下载。化学判定按 CID、原始 SMILES 哈希、化学代码/阈值/RDKit
+指纹存入第二个 SQLite；只重算缺失项。输出从检查点重建，避免续写不完整 Parquet。
+`checkpoint.json` 记录进度；网络错误 CID 单独列在报告中，不冒充化学拒绝。
+经过全量 audit 且指纹完全匹配的旧审核包可用 `--seed-review <directory>` 初始化化学检查点；
+查询命中标签始终按当前查询重新生成。修改化学规则或阈值会自动使旧判定失效。
 
 ## 链表冻结
 
@@ -47,11 +52,18 @@ phosphate acid、一 P-C 键 phosphonate acid、带 P-O-P 的 polyphosphate acid
 PS/PG/PI、aminoethylphosphonate、phosphonoacetate 和 pyrophosphate。
 负对照包括 TPPO、triphenyl phosphate、trimethyl phosphate、P=S；金属负对照是本地构造的
 含铜多组分记录，不虚构其 PubChem CID。任一对照失败则不启动大查询。
+随后还必须在 PubChem 服务端查询结果中直接找回指定正对照 CID：1004/1015/1014/68841/
+439162/107737/339/546/1023，不能仅靠本地 SMARTS 匹配或盐形式找回相同 fragment。
+实测 PubChem 的显式氢搜索会让酸性氧的 `D1;H1` 组合漏掉中性酸；请求使用 `H1,-1`，
+degree-one 约束留在本地找 attachment 时执行。旧 D1 查询结果已归档停用。
 
-默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性每批 500 CID；少于 151 个未缓存 CID
+默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性每批 1,000 CID；少于 151 个未缓存 CID
 用短 GET，更大批次使用标准 PUG REST POST 表单，避免过长 URL 被服务端拒绝。429/503 等暂时错误
 指数退避，重试同样限速；遵守数字 `Retry-After`，记录请求/重试数。
 只有一个网络工作线程，预取下一批属性，与主线程的 RDKit 计算重叠；不并发发送 HTTP。
+HTTP 复用一个 requests Session，库内部重试和自动跳转关闭，重试统一受限速器控制。
+化学判定默认最多 4 个 CPU 工作进程（不超过本机逻辑核数），显式使用 spawn，兼容 WSL/Windows；
+`chemistry_workers: 1` 可切回串行。进程间只传 SMILES/限值和普通结果，不传数据库连接。
 
 首两阶段明确标记 `SAMPLED_PARTIAL`，不是随机样本，不能用其保留率推断全库保留率。
 full 的 `MaxRecords` 为 1,000,000：只有响应少于上限才按该 API 查询认定完整。
@@ -73,6 +85,8 @@ full 的 `MaxRecords` 为 1,000,000：只有响应少于上限才按该 API 查�
 杂环和芳环可保留。只将 terminal P-OH / P-O− 的 O 原位替换成 degree-one `[*:1]`。
 这个 dummy 单键直接接 P，表示未来 glycerol-O 的连接位置；不切 P-O-C 或 P-C。
 遍历所有酸性氧，记录 atom index、所有候选和去重前数量，不靠已知头基白名单筛选。
+`source_attachment_atom_index` 指从原始 SMILES 选中组件时的 RDKit 索引；canonical SMILES
+重解析会重排索引，重放应从 raw 的 `original_smiles` 重新执行组件选择。
 
 MW≤600、C≤30、heavy atoms≤60、P≤3、最长非环非芳香连续碳路径≤10。
 这些是**选中酸前体组分**（去简单离子并做可逆电荷标准化）的软阈值，超限保留为
@@ -112,6 +126,9 @@ MW≤600、C≤30、heavy atoms≤60、P≤3、最长非环非芳香连续碳路
 审核目录包含 query summary、raw、P components、attachment candidates、fragments、rejections、
 review.tsv 和 report.json；前两阶段在 `stage1/`、`stage2/`，full 在目录根部。
 报告列出 20 个有真实 PubChem 来源、在已知对照之外的代表片段；“扩展”不声称文献新颖性。
+展示时按 family 轮转，优先含碳且无 O-O/O-杂原子单键、三四元环的片段；仅排序样例，
+不影响审核全集。宽松规则可能保留反应性结构，正式导出前仍须明确相关人工审核规则。
+PubChem 来源证明前体记录存在；这些候选尚未被验证为实验脂质头基。
 原始库、缓存及本地大表不上传 GitHub；代码、测试、方法说明与汇总结果可复现。
 
 ```bash

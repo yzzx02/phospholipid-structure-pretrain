@@ -24,10 +24,24 @@ def audit(directory):
     directory = Path(directory)
     report = json.loads((directory / "pubchem_polar_report.json").read_text(encoding="utf-8"))
     raw_ids, query_counts = set(), Counter()
+    expected_controls = {
+        (cid, query_id)
+        for query_id, check in report.get("pubchem_query_controls", {}).items()
+        for cid in check["expected_cids"]
+    }
+    seen_controls = set()
     for row in rows(directory / "pubchem_polar_raw.parquet"):
         require(row["cid"] not in raw_ids, "Duplicate raw CID")
         raw_ids.add(row["cid"])
         query_counts.update(row["matched_query_ids"])
+        seen_controls.update(
+            (row["cid"], query_id)
+            for query_id in row["matched_query_ids"]
+            if (row["cid"], query_id) in expected_controls
+        )
+    require(
+        seen_controls == expected_controls, "Designated server-side positive CID missing from raw"
+    )
     require(len(raw_ids) == report["properties_downloaded"], "Raw row count differs from report")
     require(
         len(raw_ids) + len(report["missing_property_cids"]) == report["unique_cids"],
@@ -127,6 +141,7 @@ def audit(directory):
         "source_cid_fragment_pairs": sum(observed_sources.values()),
         "fragment_graphs_checked": fragment_count,
         "query_provenance_checked": True,
+        "designated_server_control_pairs_verified": len(seen_controls),
         "approved_table_absent": True,
     }
     (directory / "verification_audit.json").write_text(

@@ -1,4 +1,5 @@
 import hashlib
+import io
 import json
 import socket
 import sqlite3
@@ -10,6 +11,42 @@ from pathlib import Path
 
 BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 PROPERTIES = "ConnectivitySMILES,SMILES,MolecularFormula,MolecularWeight,Charge,InChIKey,Title"
+
+
+class PersistentOpener:
+    """One reusable HTTP connection; retries remain under the client's global limiter."""
+
+    def __init__(self):
+        import requests
+
+        self.requests = requests
+        self.session = requests.Session()
+        self.session.mount("https://", requests.adapters.HTTPAdapter(max_retries=0, pool_maxsize=1))
+
+    def __call__(self, request, timeout):
+        try:
+            response = self.session.request(
+                request.get_method(),
+                request.full_url,
+                data=request.data,
+                headers=dict(request.header_items()),
+                timeout=timeout,
+                allow_redirects=False,
+            )
+        except self.requests.RequestException as exc:
+            raise urllib.error.URLError(str(exc)) from exc
+        data, headers, status = response.content, response.headers, response.status_code
+        response.close()
+        if status >= 300:
+            raise urllib.error.HTTPError(
+                request.full_url, status, "PubChem HTTP error", headers, io.BytesIO(data)
+            )
+        result = io.BytesIO(data)
+        result.headers = headers
+        return result
+
+    def close(self):
+        self.session.close()
 
 
 class PubChemError(RuntimeError):
@@ -50,7 +87,8 @@ class PubChemClient:
         )
         self.interval = 1 / requests_per_second
         self.max_retries = max_retries
-        self.opener = opener or urllib.request.urlopen
+        self.transport = None if opener else PersistentOpener()
+        self.opener = opener or self.transport
         self.sleep, self.clock = sleeper, clock
         self.last_request = -float("inf")
         self.stats = {"network_requests": 0, "response_cache_hits": 0, "retries": 0}
@@ -181,6 +219,8 @@ class PubChemClient:
 
     def close(self):
         self.db.close()
+        if self.transport:
+            self.transport.close()
 
 
 def run_query(client, query, cap, full=False):

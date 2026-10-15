@@ -1,4 +1,5 @@
-version: pubchem-polar-v0.1
+version: pubchem-polar-v0.1-neutral-coverage
+chemistry_workers: 4
 limits:
   max_molecular_weight: 600
   max_carbon_count: 30
@@ -7,36 +8,36 @@ limits:
   max_long_aliphatic_carbon_run: 10
 api:
   requests_per_second: 3
-  property_batch_size: 500
+  property_batch_size: 1000
   full_max_records: 1000000
   max_retries: 6
 queries:
   - query_id: phosphate_acid
     family: phosphate
-    smarts: '[P;X4](=[O])([O;D1;H1,-1])([O])[O]'
+    smarts: '[P;X4](=[O])([O;H1,-1])([O])[O]'
     description: Tetraoxygen phosphorus with at least one acidic terminal oxygen.
     positive_controls: [PA, PE, PC, PS, PG, PI]
     negative_controls: [TPPO, TPP, TMP, PS_THIO, METAL]
     # Disjoint at the matched P, exhaustive for the parent query's O ligands.
     split_smarts:
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;D1])[O;D1]'
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;D1])[O;!D1]'
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;!D1])[O;!D1]'
+      - '[P;X4](=[O])([O;H1,-1])([O;D1])[O;D1]'
+      - '[P;X4](=[O])([O;H1,-1])([O;D1])[O;!D1]'
+      - '[P;X4](=[O])([O;H1,-1])([O;!D1])[O;!D1]'
   - query_id: phosphonate_acid
     family: phosphonate
-    smarts: '[P;X4](=[O])([O;D1;H1,-1])([O])[#6]'
+    smarts: '[P;X4](=[O])([O;H1,-1])([O])[#6]'
     description: One P-C bond, P=O, and a replaceable acidic oxygen; excludes phosphinates.
     positive_controls: [AEP, PHOSPHONOACETATE]
     negative_controls: [TPPO, TPP, TMP, PS_THIO, METAL]
     split_smarts:
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;D1])[#6]'
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;!D1])[#6]'
+      - '[P;X4](=[O])([O;H1,-1])([O;D1])[#6]'
+      - '[P;X4](=[O])([O;H1,-1])([O;!D1])[#6]'
   - query_id: polyphosphate_acid
     family: polyphosphate
-    smarts: '[P;X4](=[O])([O;D1;H1,-1])([O])[O][P]'
+    smarts: '[P;X4](=[O])([O;H1,-1])([O])[O][P]'
     description: Acidic phosphate P directly connected through O to another P.
     positive_controls: [PYROPHOSPHATE]
     negative_controls: [TPPO, TPP, TMP, PS_THIO, METAL]
     split_smarts:
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;D1])[O][P]'
-      - '[P;X4](=[O])([O;D1;H1,-1])([O;!D1])[O][P]'
+      - '[P;X4](=[O])([O;H1,-1])([O;D1])[O][P]'
+      - '[P;X4](=[O])([O;H1,-1])([O;!D1])[O][P]'

@@ -161,3 +161,45 @@ def test_failed_query_splits_and_keeps_incomplete_flag():
     report, cids = run_query(Client(), query, 10, full=True)
     assert cids == [1] and not report["complete"]
     assert report["splits"][1]["status"] == "QUERY_FAILED"
+
+
+def test_persistent_transport_keeps_retries_under_client_control(tmp_path, monkeypatch):
+    import requests
+
+    created, calls, closed = [], [], []
+
+    class Reply:
+        headers = {}
+
+        def __init__(self, status, data):
+            self.status_code, self.content = status, json.dumps(data).encode()
+
+        def close(self):
+            pass
+
+    class Session:
+        def __init__(self):
+            created.append(self)
+
+        def mount(self, *args, **kwargs):
+            pass
+
+        def request(self, *args, **kwargs):
+            calls.append(kwargs)
+            return (
+                Reply(503, {})
+                if len(calls) == 1
+                else Reply(200, {"IdentifierList": {"CID": [1004]}})
+            )
+
+        def close(self):
+            closed.append(True)
+
+    monkeypatch.setattr(requests, "Session", Session)
+    client = PubChemClient(tmp_path, sleeper=lambda _: None)
+    assert client.query("P", 10) == [1004]
+    assert len(created) == 1 and len(calls) == 2
+    assert all(call["allow_redirects"] is False for call in calls)
+    assert client.stats["retries"] == 1
+    client.close()
+    assert closed == [True]

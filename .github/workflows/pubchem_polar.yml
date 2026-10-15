@@ -8,6 +8,7 @@ on:
       - 'configs/pubchem_polar_queries.yaml'
       - 'configs/known_head_controls.tsv'
       - 'tests/pubchem_polar/**'
+      - 'requirements-pubchem.txt'
       - '.github/workflows/pubchem_polar.yml'
   pull_request:
     paths: *polar_paths
@@ -26,7 +27,7 @@ jobs:
           cache: pip
       - name: Install chemistry dependencies without torch
         run: |
-          python -m pip install -r requirements-extraction.txt pytest==9.0.3 ruff==0.15.17
+          python -m pip install -r requirements-pubchem.txt pytest==9.0.3 ruff==0.15.17
           python -m pip install --no-deps -e .
       - name: Offline validation only
         run: |

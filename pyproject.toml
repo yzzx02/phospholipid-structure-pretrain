@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.15,<1"]
 library = ["pyarrow>=20,<25", "PyYAML>=6,<7", "msgpack>=1.1,<2"]
+pubchem = ["pyarrow>=20,<25", "PyYAML>=6,<7", "requests>=2.32,<3"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

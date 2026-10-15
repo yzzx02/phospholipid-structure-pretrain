@@ -1,15 +1,19 @@
 import csv
 import hashlib
+import itertools
 import json
+import multiprocessing
+import os
 import time
 from collections import Counter, defaultdict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 from rdkit import Chem, rdBase
 
+from .cache import ChemistryCache
 from .chemistry import (
     Reject,
     acidic_sites,
@@ -168,6 +172,31 @@ def live_controls(client, config, controls, known_keys):
     return result
 
 
+def validate_remote_queries(client, config, live_checks):
+    """RDKit SMARTS matches do not prove PubChem's explicit-H search semantics."""
+    results = {}
+    for query in config["queries"]:
+        cids = set(client.query(query["smarts"], 1000))
+        expected = {
+            row["cid"]
+            for name in query["positive_controls"]
+            for row in live_checks[name]["records"]
+        }
+        missing = sorted(expected - cids)
+        results[query["query_id"]] = {
+            "expected_cids": sorted(expected),
+            "missing_cids": missing,
+            "passed": not missing,
+        }
+        if missing:
+            raise RuntimeError(
+                f"Server-side positive CID controls not demonstrated for "
+                f"{query['query_id']}: {missing}; stop before large queries"
+            )
+        log(f"server-side CID controls {query['query_id']}: passed")
+    return results
+
+
 def normalize_raw(row, query_ids, query_families):
     return {
         "cid": row["CID"],
@@ -252,6 +281,63 @@ def distribution(values):
     }
 
 
+def representative_sort_key(row):
+    """Prioritize interpretable display examples; never filter the actual review table."""
+    mol = Chem.MolFromSmiles(row["polar_fragment_smiles"])
+    unusual_oxygen_bond = any(
+        bond.GetBondType() == Chem.BondType.SINGLE
+        and any(
+            atom.GetAtomicNum() == 8 and bond.GetOtherAtom(atom).GetAtomicNum() not in (1, 6, 15)
+            for atom in (bond.GetBeginAtom(), bond.GetEndAtom())
+        )
+        for bond in mol.GetBonds()
+    )
+    small_ring = any(len(ring) < 5 for ring in mol.GetRingInfo().AtomRings())
+    penalty = int(row["carbon_count"] == 0) + int(unusual_oxygen_bond) + int(small_ring)
+    return penalty, row["heavy_atoms"], row["polar_id"]
+
+
+def analyze_bundle(smiles, limits):
+    bundle = {"component": None, "candidates": [], "rejection": None}
+    try:
+        selected, removed = select_component(smiles)
+        bundle["component"] = {
+            "selected_p_component": Chem.MolToSmiles(selected),
+            "removed_counterions": removed,
+            "source_component_charge": Chem.GetFormalCharge(selected),
+            "attachment_site_count": len(acidic_sites(selected)),
+            "distinct_attachment_fragments": None,
+        }
+        processed = process_smiles(smiles, limits, selected=(selected, removed))
+        bundle["component"]["distinct_attachment_fragments"] = processed[
+            "distinct_attachment_fragments"
+        ]
+        bundle["candidates"] = processed["candidates"]
+    except Reject as exc:
+        bundle["rejection"] = {"reason": exc.reason, "detail": str(exc)}
+    return bundle
+
+
+def batch_bundles(rows, limits, cache=None, executor=None):
+    prepared = [
+        [row, cache.get(row["cid"], row["original_smiles"]) if cache else None, True]
+        for row in rows
+    ]
+    missing = [i for i, item in enumerate(prepared) if item[1] is None]
+    smiles = [prepared[i][0]["original_smiles"] for i in missing]
+    results = (
+        executor.map(analyze_bundle, smiles, itertools.repeat(limits), chunksize=16)
+        if executor
+        else (analyze_bundle(smi, limits) for smi in smiles)
+    )
+    for i, bundle in zip(missing, results):
+        row = prepared[i][0]
+        prepared[i][1], prepared[i][2] = bundle, False
+        if cache:
+            cache.put(row["cid"], row["original_smiles"], bundle)
+    return prepared
+
+
 def process_records(client, matches, queries, output, config, known_keys):
     sinks = {
         name: ParquetSink(output / f"pubchem_{name}.parquet", spec)
@@ -281,59 +367,64 @@ def process_records(client, matches, queries, output, config, known_keys):
     cids = sorted(matches)
     batch_size = config.get("api", {}).get("property_batch_size", 100)
     missing_cids = []
+    chemistry_cache = (
+        ChemistryCache(client.cache_dir, config.get("limits", {}))
+        if hasattr(client, "cache_dir")
+        else None
+    )
+    workers = min(max(1, int(config.get("chemistry_workers", 1))), os.cpu_count() or 1)
+    executor = (
+        ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn"))
+        if workers > 1 and cids
+        else None
+    )
     for start, batch, properties, error in property_batches(client, cids, batch_size):
         if error is not None:
             # Preserve all unprocessed CIDs; do not misclassify network failures as chemistry.
             missing_cids.extend(batch)
             log(f"properties batch failed ({len(batch)} CIDs): {error}")
             continue
-        for prop in properties:
-            cid = prop["CID"]
-            row = normalize_raw(prop, matches[cid], {families[q] for q in matches[cid]})
+        raw_rows = [
+            normalize_raw(prop, matches[prop["CID"]], {families[q] for q in matches[prop["CID"]]})
+            for prop in properties
+        ]
+        for row, bundle, from_cache in batch_bundles(
+            raw_rows, config.get("limits"), chemistry_cache, executor
+        ):
+            cid = row["cid"]
             sinks["polar_raw"].add(row)
             stats["properties_downloaded"] += 1
-            component_row = None
-            try:
-                selected, removed = select_component(row["original_smiles"])
-                component_row = {
-                    "cid": cid,
-                    "original_smiles": row["original_smiles"],
-                    "selected_p_component": Chem.MolToSmiles(selected),
-                    "removed_counterions": removed,
-                    "source_component_charge": Chem.GetFormalCharge(selected),
-                    "attachment_site_count": len(acidic_sites(selected)),
-                }
-                stats["single_p_component_records"] += 1
-                stats["counterion_records"] += bool(removed)
-                stats["counterions_removed"] += len(removed)
-                processed = process_smiles(
-                    row["original_smiles"], config.get("limits"), selected=(selected, removed)
+            stats["chemistry_cache_hits" if from_cache else "chemistry_computed"] += 1
+            component = bundle["component"]
+            if component is not None:
+                sinks["p_components"].add(
+                    {"cid": cid, "original_smiles": row["original_smiles"], **component}
                 )
-                component_row["distinct_attachment_fragments"] = processed[
-                    "distinct_attachment_fragments"
-                ]
+                stats["single_p_component_records"] += 1
+                stats["counterion_records"] += bool(component["removed_counterions"])
+                stats["counterions_removed"] += len(component["removed_counterions"])
+            if bundle["rejection"] is None:
                 stats["attachment_eligible_cids"] += 1
-                stats["attachment_candidates"] += len(processed["candidates"])
-                stats["unique_cid_fragment_pairs"] += processed["distinct_attachment_fragments"]
-                for candidate in processed["candidates"]:
+                stats["attachment_candidates"] += len(bundle["candidates"])
+                stats["unique_cid_fragment_pairs"] += component["distinct_attachment_fragments"]
+                for candidate in bundle["candidates"]:
                     sinks["attachment_candidates"].add(
                         {"cid": cid, **candidate, "matched_query_ids": sorted(matches[cid])}
                     )
                     merge_candidate(fragments, candidate, cid, matches[cid], known_keys)
-            except Reject as exc:
-                reasons[exc.reason] += 1
+            else:
+                rejection = bundle["rejection"]
+                reasons[rejection["reason"]] += 1
                 sinks["polar_rejections"].add(
                     {
                         "cid": cid,
                         "original_smiles": row["original_smiles"],
-                        "reason": exc.reason,
-                        "detail": str(exc),
+                        **rejection,
                         "matched_query_ids": sorted(matches[cid]),
                     }
                 )
-            finally:
-                if component_row is not None:
-                    sinks["p_components"].add(component_row)
+        if chemistry_cache:
+            chemistry_cache.flush()
         if start % 1000 == 0:
             log(
                 f"processed {min(start + batch_size, len(cids))}/{len(cids)} CIDs; "
@@ -348,6 +439,11 @@ def process_records(client, matches, queries, output, config, known_keys):
                     "resume": "Rerun same command; cached API/properties are reused.",
                 },
             )
+    chemistry_policy_hash = chemistry_cache.policy_hash if chemistry_cache else None
+    if executor:
+        executor.shutdown()
+    if chemistry_cache:
+        chemistry_cache.close()
     for sink in sinks.values():
         sink.close()
     fragment_rows = []
@@ -384,7 +480,7 @@ def process_records(client, matches, queries, output, config, known_keys):
                 and not r["known_control_ids"]
                 and r["status"] == "APPROVABLE"
             ],
-            key=lambda r: (r["heavy_atoms"], r["polar_id"]),
+            key=representative_sort_key,
         )
         for f in family_counts
     }
@@ -395,9 +491,27 @@ def process_records(client, matches, queries, output, config, known_keys):
     pairs = stats["unique_cid_fragment_pairs"]
     report = {
         **dict(stats),
+        "chemistry_policy_sha256": chemistry_policy_hash,
+        "chemistry_workers": workers,
         "unique_fragments": len(fragment_rows),
         "family_counts": dict(family_counts),
         "status_counts": dict(status_counts),
+        "charge_review_breakdown": {
+            "nonzero_formal_charge": sum(
+                r["status"] == "CHARGE_AMBIGUOUS" and r["formal_charge"] != 0 for r in fragment_rows
+            ),
+            "neutral_multiple_charge_assignments": sum(
+                r["status"] == "CHARGE_AMBIGUOUS" and r["formal_charge"] == 0 for r in fragment_rows
+            ),
+            "also_soft_limit_review": sum(
+                r["status"] == "CHARGE_AMBIGUOUS" and bool(r["filter_flags"]) for r in fragment_rows
+            ),
+            "also_long_chain_review": sum(
+                r["status"] == "CHARGE_AMBIGUOUS"
+                and "long_aliphatic_carbon_run" in r["filter_flags"]
+                for r in fragment_rows
+            ),
+        },
         "rejections": dict(reasons),
         "missing_property_cids": missing_cids,
         "cid_fragment_pair_dedup_rate": 1 - len(fragment_rows) / pairs if pairs else 0,
@@ -436,7 +550,11 @@ def harvest(config, config_path, output, cache_dir, stages):
     )
     try:
         real_checks = live_controls(client, config, controls, known_keys)
-        atomic_json(output / "controls.json", {"local": local_checks, "pubchem": real_checks})
+        remote_checks = validate_remote_queries(client, config, real_checks)
+        atomic_json(
+            output / "controls.json",
+            {"local": local_checks, "pubchem": real_checks, "server_side_queries": remote_checks},
+        )
         for stage in stages:
             destination = output if stage == "full" else output / stage
             destination.mkdir(parents=True, exist_ok=True)
@@ -476,6 +594,7 @@ def harvest(config, config_path, output, cache_dir, stages):
                     "completed_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                     "local_controls": local_checks,
                     "pubchem_controls": real_checks,
+                    "pubchem_query_controls": remote_checks,
                     "approved_table_generated": False,
                     "training_run": False,
                     "complete_lipid_library_generated": False,
