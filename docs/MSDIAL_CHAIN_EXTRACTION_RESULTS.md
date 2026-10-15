@@ -111,10 +111,12 @@ O/P 等质量只在实际观察到的 token 并集中比较附着链残基组成
   - source_p_includes_vinyl:False: 4,760
   - naming:P:SOURCE_LABEL_LINKAGE_CONFLICT: 4,704
   - source_p_includes_vinyl:True: 4,704
+  - naming:O:SOURCE_LABEL_LINKAGE_CONFLICT: 588
 - 实际观察到的 O/P 等组成候选对：56
 
 源标签与图分类不符的 observation：{"2025": 0, "2022": 5292}
-2022 的 4,704 条记录用 O- 名称对应 vinyl ether，图分类为 P；另有 P- 名称不计 vinyl 双键。不能把两类名称混成一个统一的源 P 计数口径。
+2022 共 5,292 条源标签与图分类不符：4,704 条用 O- 名称对应图 P，588 条用 P- 名称对应图 O。相关 63 个 token 均强制复核。
+2022 另有 P- 名称不计 vinyl 双键的记录；不能把这些记录与 O- 名称的图 P 混成一个统一的源 P 计数口径。
 source_naming_conventions.tsv 保留实际原名称和计数；版本表新增 source_label_conflicts 字段并强制相关 token 人工复核。
 LINKAGE_CONFLICT 的 0 指图结构比较；不表示源名称的 O/P 定义完全一致。
 PE-P 专表严格排除 LPE / EtherLPE；它们仍保留在完整链证据中。

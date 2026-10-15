@@ -364,6 +364,7 @@ def test_pe_report_excludes_lyso_pe(tmp_path):
         [
             row(lipid(chain(18, [1], "P"), chain(16)), "PE P-18:0/16:0", "EtherPE"),
             row(lipid(chain(18, [1], "P"), chain(16)), "PE O-18:1/16:0", "EtherPE"),
+            row(lipid(chain(18, [9], "O"), chain(16)), "PE P-18:0/16:0", "EtherPE"),
             row(lipid(chain(18, [1], "P")), "LPE P-18:0", "EtherLPE"),
             row(lipid(chain(16, [1], "P")), "LPE P-16:0", "EtherLPE"),
         ],
@@ -378,5 +379,5 @@ def test_pe_report_excludes_lyso_pe(tmp_path):
     assert data["pe_p"][0]["chain_token"] == "P-18:1"
     assert data["pe_p"][0]["unique_parent_structure_count"] == 1
     assert data["pe_p"][0]["scope"] == "PE_ONLY_EXCLUDES_LPE"
-    assert data["source_label_conflict_observations"]["2025"] == 1
-    assert data["source_label_review_required_tokens"] == 1
+    assert data["source_label_conflict_observations"]["2025"] == 2
+    assert data["source_label_review_required_tokens"] == 2
