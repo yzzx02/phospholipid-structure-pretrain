@@ -1,0 +1,36 @@
+name: MS-DIAL chain extraction only
+on:
+  push:
+    paths: &extraction_paths
+      - 'src/structure_pretrain/chain_extraction/**'
+      - 'scripts/extract_msdial_chain_evidence.py'
+      - 'configs/chain_extraction.yaml'
+      - 'tests/chain_extraction/**'
+      - 'requirements-extraction.txt'
+      - '.github/workflows/chain_extraction.yml'
+  pull_request:
+    paths: *extraction_paths
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  extraction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install extraction dependencies without torch
+        run: |
+          python -m pip install -r requirements-extraction.txt pytest==9.0.3 ruff==0.15.17
+          python -m pip install --no-deps -e .
+      - name: Validate isolated extraction code
+        run: |
+          python -c "import sys; import structure_pretrain.chain_extraction.pipeline; assert 'torch' not in sys.modules"
+          python -m ruff check .
+          python -m ruff format --check .
+          python -m pytest -q --confcutdir=tests/chain_extraction tests/chain_extraction
+          python -m pytest -q --confcutdir=tests/library_builder tests/library_builder

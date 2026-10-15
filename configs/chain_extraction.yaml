@@ -1,0 +1,5 @@
+dominant_fraction: 0.80
+low_evidence_min_unique_parents: 5
+chunk_records: 10000
+graph_db_count_includes_vinyl: true
+# Tokens always count all graph C=C bonds; source-name convention is reported separately.

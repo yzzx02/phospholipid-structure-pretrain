@@ -203,6 +203,12 @@ phospholipid-structure-pretrain/
 
 图编码器改造报告见 [ENCODER_SIMPLIFICATION.md](docs/ENCODER_SIMPLIFICATION.md)。实验只比较 Morgan 和 GINE；数据划分、随机种子、下游网络、优化器、学习率、loss 和训练步设置保持一致。
 
+## MS-DIAL 真实链证据提取
+
+独立提取模块和运行说明见 [MSDIAL_CHAIN_EXTRACTION.md](docs/MSDIAL_CHAIN_EXTRACTION.md)。
+从本地 2025/2022 LBM2 读取元数据、以分子图提取 A/O/P 链、统计双键位置版本并输出人工审核候选。
+此阶段不训练、不生成批准版链表或最终结构库；本地大表在 `data/private/msdial_chain_review/`，不上传源库。
+
 ## 后续数据 TODO
 
 需要你提供：真实结构库构建规则和版本、中性分子式来源与结构 ID 对齐、architecture 标注、真实 chain vocabulary、真实 headgroup 切割及 attachment 规则、训练/验证/测试划分与检索库使用规则。当前只有记录接口、外部 labels adapter 和 dummy 数据，详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。真实数据阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。

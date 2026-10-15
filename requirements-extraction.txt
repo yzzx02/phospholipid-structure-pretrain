@@ -1,0 +1,7 @@
+# Independent extraction runtime; no torch.
+rdkit==2026.03.3
+pyarrow>=20,<25
+PyYAML>=6,<7
+msgpack>=1.1,<2
+cramjam>=2.14,<3
+psutil>=7,<8
