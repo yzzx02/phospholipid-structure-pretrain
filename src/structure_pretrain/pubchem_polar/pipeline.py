@@ -3,6 +3,7 @@ import hashlib
 import json
 import time
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pyarrow as pa
@@ -191,6 +192,26 @@ STATUS_PRIORITY = {
 }
 
 
+def property_batches(client, cids, batch_size):
+    """Overlap one network worker with CPU chemistry; never parallelize HTTP requests."""
+    if not cids:
+        return
+    with ThreadPoolExecutor(max_workers=1, thread_name_prefix="pubchem-properties") as pool:
+        future = pool.submit(client.get_properties, cids[:batch_size])
+        for start in range(0, len(cids), batch_size):
+            batch = cids[start : start + batch_size]
+            try:
+                properties, error = future.result(), None
+            except Exception as exc:
+                properties, error = [], exc
+            next_start = start + batch_size
+            if next_start < len(cids):
+                future = pool.submit(
+                    client.get_properties, cids[next_start : next_start + batch_size]
+                )
+            yield start, batch, properties, error
+
+
 def merge_candidate(fragments, candidate, cid, query_ids, known_keys):
     key = candidate["polar_fragment_smiles"]
     if key not in fragments:
@@ -242,18 +263,29 @@ def process_records(client, matches, queries, output, config, known_keys):
         )
     }
     fragments, reasons, stats = {}, Counter(), Counter()
+    stats.update(
+        {
+            name: 0
+            for name in (
+                "properties_downloaded",
+                "single_p_component_records",
+                "counterion_records",
+                "counterions_removed",
+                "attachment_eligible_cids",
+                "attachment_candidates",
+                "unique_cid_fragment_pairs",
+            )
+        }
+    )
     families = {q["query_id"]: q["family"] for q in queries}
     cids = sorted(matches)
     batch_size = config.get("api", {}).get("property_batch_size", 100)
     missing_cids = []
-    for start in range(0, len(cids), batch_size):
-        batch = cids[start : start + batch_size]
-        try:
-            properties = client.get_properties(batch)
-        except Exception as exc:
+    for start, batch, properties, error in property_batches(client, cids, batch_size):
+        if error is not None:
             # Preserve all unprocessed CIDs; do not misclassify network failures as chemistry.
             missing_cids.extend(batch)
-            log(f"properties batch failed ({len(batch)} CIDs): {exc}")
+            log(f"properties batch failed ({len(batch)} CIDs): {error}")
             continue
         for prop in properties:
             cid = prop["CID"]

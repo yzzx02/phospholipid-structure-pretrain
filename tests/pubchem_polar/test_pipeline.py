@@ -12,6 +12,20 @@ from structure_pretrain.pubchem_polar.pipeline import process_records
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_empty_or_failed_query_has_valid_empty_review_outputs(tmp_path):
+    result = process_records(None, {}, [], tmp_path, {}, {})
+    assert result["properties_downloaded"] == result["unique_fragments"] == 0
+    assert result["missing_property_cids"] == []
+    for name in (
+        "polar_raw",
+        "p_components",
+        "attachment_candidates",
+        "polar_fragments",
+        "polar_rejections",
+    ):
+        assert pq.read_table(tmp_path / f"pubchem_{name}.parquet").num_rows == 0
+
+
 def test_parquet_review_provenance_and_rejections(tmp_path):
     config = yaml.safe_load((ROOT / "configs/pubchem_polar_queries.yaml").read_text())
     _, known = validate_controls(config, read_controls(ROOT / "configs/known_head_controls.tsv"))

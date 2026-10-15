@@ -6,6 +6,7 @@ import urllib.parse
 import pytest
 
 from structure_pretrain.pubchem_polar.client import PubChemClient, PubChemError, run_query
+from structure_pretrain.pubchem_polar.pipeline import property_batches
 
 
 class Response:
@@ -71,6 +72,20 @@ def test_large_logical_batch_uses_post_and_reuses_cache(tmp_path):
     assert len(calls) == 1
     assert len(client.get_properties(list(range(1, 501)))) == 500
     assert len(calls) == 1
+    client.close()
+
+
+def test_single_prefetch_worker_uses_real_sqlite_cache(tmp_path):
+    def opener(request, timeout):
+        cid = int(request.full_url.split("/cid/")[1].split("/")[0])
+        return Response({"PropertyTable": {"Properties": [{"CID": cid}]}})
+
+    client = PubChemClient(tmp_path, opener=opener, sleeper=lambda _: None)
+    batches = list(property_batches(client, [1, 2], 1))
+    assert all(error is None for _, _, _, error in batches)
+    assert [rows[0]["CID"] for _, _, rows, _ in batches] == [1, 2]
+    assert client.get_properties([1, 2]) == [{"CID": 1}, {"CID": 2}]
+    assert client.stats["network_requests"] == 2
     client.close()
 
 

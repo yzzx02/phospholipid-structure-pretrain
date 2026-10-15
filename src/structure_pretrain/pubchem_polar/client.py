@@ -40,7 +40,10 @@ class PubChemClient:
             raise ValueError("requests_per_second must be >0 and <=4")
         self.cache_dir = Path(cache_dir)
         (self.cache_dir / "responses").mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(self.cache_dir / "properties.sqlite", timeout=30)
+        # Controls/queries run first; one property-prefetch thread then owns DB access.
+        self.db = sqlite3.connect(
+            self.cache_dir / "properties.sqlite", timeout=30, check_same_thread=False
+        )
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute(
             "CREATE TABLE IF NOT EXISTS properties (cid INTEGER PRIMARY KEY, data TEXT)"

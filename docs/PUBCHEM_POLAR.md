@@ -51,6 +51,7 @@ PS/PG/PI、aminoethylphosphonate、phosphonoacetate 和 pyrophosphate。
 默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性每批 500 CID；少于 151 个未缓存 CID
 用短 GET，更大批次使用标准 PUG REST POST 表单，避免过长 URL 被服务端拒绝。429/503 等暂时错误
 指数退避，重试同样限速；遵守数字 `Retry-After`，记录请求/重试数。
+只有一个网络工作线程，预取下一批属性，与主线程的 RDKit 计算重叠；不并发发送 HTTP。
 
 首两阶段明确标记 `SAMPLED_PARTIAL`，不是随机样本，不能用其保留率推断全库保留率。
 full 的 `MaxRecords` 为 1,000,000：只有响应少于上限才按该 API 查询认定完整。
