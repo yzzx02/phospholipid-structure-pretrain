@@ -4,6 +4,7 @@ on:
     paths: &polar_paths
       - 'src/structure_pretrain/pubchem_polar/**'
       - 'scripts/harvest_pubchem_polar.py'
+      - 'scripts/audit_pubchem_polar.py'
       - 'configs/pubchem_polar_queries.yaml'
       - 'configs/known_head_controls.tsv'
       - 'tests/pubchem_polar/**'

@@ -122,4 +122,8 @@ python -m ruff format --check .
 
 独立 CI 只运行离线化学/缓存/限速/退避/截断/Parquet 测试和 builder 回归，不执行网络抓取和训练。
 
+实际输出完成后可用 `python scripts/audit_pubchem_polar.py` 离线核验。它逐条检查 fragment
+的 P/dummy 边界、source CID 外键、候选/拒绝对 raw 的完整划分、跨表聚合数和查询来源，
+输出 `verification_audit.json`；阶段 1/2 可将对应目录作为参数。
+
 API 参考：<https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest>。

@@ -1,6 +1,9 @@
+import json
+import runpy
 from pathlib import Path
 
 import pyarrow.parquet as pq
+import pytest
 import yaml
 
 from structure_pretrain.pubchem_polar.chemistry import read_controls, validate_controls
@@ -43,3 +46,18 @@ def test_parquet_review_provenance_and_rejections(tmp_path):
     assert pq.read_table(tmp_path / "pubchem_polar_rejections.parquet").num_rows == 1
     assert (tmp_path / "pubchem_polar_review.tsv").exists()
     assert not (tmp_path / "polar_moieties_pubchem_v0.1.tsv").exists()
+    report = {
+        **result,
+        "unique_cids": 3,
+        "properties_complete": True,
+        "query_results": [{"query_id": "phosphate_acid", "cid_count": 3}],
+    }
+    (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
+    audit = runpy.run_path(str(ROOT / "scripts/audit_pubchem_polar.py"))["audit"]
+    assert audit(tmp_path)["passed"]
+    # A provenance error in persisted data must be found independently of pipeline counters.
+    raw_path = tmp_path / "pubchem_polar_raw.parquet"
+    raw = pq.read_table(raw_path)
+    pq.write_table(raw.slice(1), raw_path)
+    with pytest.raises(ValueError, match="Raw row count"):
+        audit(tmp_path)
