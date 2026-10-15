@@ -9,6 +9,7 @@ limits:
 api:
   requests_per_second: 3
   property_batch_size: 1000
+  property_workers: 2
   full_max_records: 1000000
   max_retries: 6
 queries:

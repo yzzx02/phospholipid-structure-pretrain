@@ -203,3 +203,101 @@ def test_persistent_transport_keeps_retries_under_client_control(tmp_path, monke
     assert client.stats["retries"] == 1
     client.close()
     assert closed == [True]
+
+
+def test_two_senders_share_rate_limiter_and_safe_property_cache(tmp_path, monkeypatch):
+    import threading
+    import time
+
+    import requests
+
+    barrier, lock = threading.Barrier(2), threading.Lock()
+    starts, sessions = [], []
+
+    class Reply:
+        status_code, headers = 200, {}
+
+        def __init__(self, cid):
+            self.content = json.dumps({"PropertyTable": {"Properties": [{"CID": cid}]}}).encode()
+
+        def close(self):
+            pass
+
+    class Session:
+        def __init__(self):
+            sessions.append(self)
+
+        def mount(self, *args, **kwargs):
+            pass
+
+        def request(self, method, url, **kwargs):
+            with lock:
+                starts.append(time.monotonic())
+                ordinal = len(starts)
+            if ordinal <= 2:
+                barrier.wait(timeout=5)
+            return Reply(int(url.split("/cid/")[1].split("/")[0]))
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(requests, "Session", Session)
+    client = PubChemClient(tmp_path, requests_per_second=4)
+    batches = list(property_batches(client, [1, 2, 3, 4], 1, workers=2))
+    assert all(error is None for _, _, _, error in batches)
+    assert [rows[0]["CID"] for _, _, rows, _ in batches] == [1, 2, 3, 4]
+    assert len(sessions) == 2
+    assert all(b - a >= 0.24 for a, b in zip(sorted(starts), sorted(starts)[1:]))
+    assert client.get_properties([1, 2, 3, 4]) == [{"CID": c} for c in (1, 2, 3, 4)]
+    assert client.stats["network_requests"] == 4
+    client.close()
+
+
+def test_ncbi_html_gateway_803_is_retried_not_cached_as_empty_query(tmp_path):
+    calls = []
+
+    def opener(request, timeout):
+        calls.append(True)
+        if len(calls) == 1:
+            raise urllib.error.HTTPError(
+                request.full_url,
+                404,
+                "gateway",
+                {},
+                io.BytesIO(b"<html><title>NCBI - WWW Error 803 Diagnostic</title></html>"),
+            )
+        return Response({"IdentifierList": {"CID": [1004]}})
+
+    client = PubChemClient(tmp_path, opener=opener, sleeper=lambda _: None)
+    assert client.query("P", 100) == [1004]
+    assert client.stats["retries"] == 1 and len(calls) == 2
+    client.close()
+
+
+def test_cached_only_returns_partial_properties_without_network(tmp_path):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Offline mode sent a network request")
+
+    client = PubChemClient(tmp_path, opener=forbidden, cached_only=True)
+    with client.db:
+        client.db.execute("INSERT INTO properties VALUES (?,?)", (1, json.dumps({"CID": 1})))
+    assert client.get_properties([1, 2]) == [{"CID": 1}]
+    with pytest.raises(PubChemError, match="offline_cache_miss"):
+        client.query("P", 10)
+    assert client.stats["network_requests"] == 0
+    client.close()
+
+
+def test_exhausted_429_suspends_all_new_requests(tmp_path):
+    calls = []
+
+    def opener(request, timeout):
+        calls.append(True)
+        raise urllib.error.HTTPError(request.full_url, 429, "quota", {}, io.BytesIO(b"quota"))
+
+    client = PubChemClient(tmp_path, opener=opener, max_retries=0, sleeper=lambda _: None)
+    assert client.get_properties([1]) == []
+    assert client.network_suspension["status"] == 429
+    assert client.get_properties([2, 3]) == []
+    assert len(calls) == client.stats["network_requests"] == 1
+    client.close()

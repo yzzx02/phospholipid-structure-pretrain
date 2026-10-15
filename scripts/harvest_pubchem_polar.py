@@ -36,6 +36,11 @@ def main():
     )
     parser.add_argument("--skip-chain-freeze", action="store_true")
     parser.add_argument(
+        "--cached-only",
+        action="store_true",
+        help="Build explicitly partial review outputs without any network requests",
+    )
+    parser.add_argument(
         "--seed-review",
         type=Path,
         help="Reuse audited outputs with exactly matching chemistry fingerprint",
@@ -57,7 +62,9 @@ def main():
             )
         finally:
             cache.close()
-    harvest(config, args.config, args.output, args.cache_dir, args.stages)
+    harvest(
+        config, args.config, args.output, args.cache_dir, args.stages, cached_only=args.cached_only
+    )
 
 
 if __name__ == "__main__":

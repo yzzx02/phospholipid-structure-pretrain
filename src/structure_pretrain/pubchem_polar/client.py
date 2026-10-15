@@ -1,8 +1,11 @@
 import hashlib
+import html
 import io
 import json
+import re
 import socket
 import sqlite3
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -20,12 +23,22 @@ class PersistentOpener:
         import requests
 
         self.requests = requests
-        self.session = requests.Session()
-        self.session.mount("https://", requests.adapters.HTTPAdapter(max_retries=0, pool_maxsize=1))
+        self.local, self.sessions, self.lock = threading.local(), [], threading.Lock()
+
+    def session(self):
+        if not hasattr(self.local, "session"):
+            session = self.requests.Session()
+            session.mount(
+                "https://", self.requests.adapters.HTTPAdapter(max_retries=0, pool_maxsize=1)
+            )
+            self.local.session = session
+            with self.lock:
+                self.sessions.append(session)
+        return self.local.session
 
     def __call__(self, request, timeout):
         try:
-            response = self.session.request(
+            response = self.session().request(
                 request.get_method(),
                 request.full_url,
                 data=request.data,
@@ -46,7 +59,8 @@ class PersistentOpener:
         return result
 
     def close(self):
-        self.session.close()
+        for session in self.sessions:
+            session.close()
 
 
 class PubChemError(RuntimeError):
@@ -72,12 +86,14 @@ class PubChemClient:
         opener=None,
         sleeper=time.sleep,
         clock=time.monotonic,
+        cached_only=False,
     ):
         if not 0 < requests_per_second <= 4:
             raise ValueError("requests_per_second must be >0 and <=4")
         self.cache_dir = Path(cache_dir)
         (self.cache_dir / "responses").mkdir(parents=True, exist_ok=True)
-        # Controls/queries run first; one property-prefetch thread then owns DB access.
+        self.db_lock, self.request_lock = threading.RLock(), threading.RLock()
+        # Shared property cache access is serialized; network IO stays outside its lock.
         self.db = sqlite3.connect(
             self.cache_dir / "properties.sqlite", timeout=30, check_same_thread=False
         )
@@ -91,7 +107,9 @@ class PubChemClient:
         self.opener = opener or self.transport
         self.sleep, self.clock = sleeper, clock
         self.last_request = -float("inf")
+        self.cooldown_until = -float("inf")
         self.stats = {"network_requests": 0, "response_cache_hits": 0, "retries": 0}
+        self.cached_only, self.network_suspension = cached_only, None
 
     def get(self, path, params=None, form=None):
         url = BASE + path + ("?" + urllib.parse.urlencode(params) if params else "")
@@ -100,12 +118,24 @@ class PubChemClient:
         key = hashlib.sha256(identity).hexdigest()
         cached = self.cache_dir / "responses" / f"{key}.json"
         if cached.exists():
-            self.stats["response_cache_hits"] += 1
+            with self.request_lock:
+                self.stats["response_cache_hits"] += 1
             return json.loads(cached.read_text(encoding="utf-8"))["data"]
+        if self.cached_only:
+            raise PubChemError("offline_cache_miss", "Requested response is not cached")
         for attempt in range(self.max_retries + 1):
-            self.sleep(max(0, self.interval - (self.clock() - self.last_request)))
-            self.last_request = self.clock()
-            self.stats["network_requests"] += 1
+            with self.request_lock:
+                if self.network_suspension:
+                    raise PubChemError("network_suspended", self.network_suspension)
+                self.sleep(
+                    max(
+                        0,
+                        self.interval - (self.clock() - self.last_request),
+                        self.cooldown_until - self.clock(),
+                    )
+                )
+                self.last_request = self.clock()
+                self.stats["network_requests"] += 1
             request = urllib.request.Request(
                 url,
                 data=body,
@@ -134,13 +164,25 @@ class PubChemClient:
                     self.sleep(10)
                 return data
             except urllib.error.HTTPError as exc:
-                message = exc.read().decode(errors="replace")[:1500]
+                raw_message = exc.read().decode(errors="replace")
+                gateway_803 = exc.code in {403, 404} and "Error 803" in raw_message
+                if "<html" in raw_message.lower():
+                    stripped = re.sub(
+                        r"<(style|script)\b[^>]*>.*?</\1>",
+                        "",
+                        raw_message,
+                        flags=re.DOTALL | re.IGNORECASE,
+                    )
+                    message = re.sub(r"\s+", " ", html.unescape(re.sub("<[^>]+>", " ", stripped)))
+                else:
+                    message = raw_message
+                message = message[:1800]
                 if exc.code == 404 and '"PUGREST.NotFound"' in message:
                     # Negative search result is cacheable, distinct from network failure.
                     data = {"IdentifierList": {"CID": []}}
                     atomic_json(cached, {"url": url, "data": data})
                     return data
-                if exc.code not in {429, 500, 502, 503, 504}:
+                if exc.code not in {429, 500, 502, 503, 504} and not gateway_803:
                     raise PubChemError(exc.code, message) from exc
                 retry_after = exc.headers.get("Retry-After", "0") if exc.headers else "0"
                 delay = max(2**attempt, float(retry_after) if retry_after.isdigit() else 0)
@@ -154,8 +196,23 @@ class PubChemClient:
             ) as exc:
                 delay, error = 2**attempt, PubChemError("network", str(exc))
             if attempt == self.max_retries:
+                if error.status == 429:
+                    with self.request_lock:
+                        if self.network_suspension is None:
+                            self.network_suspension = {
+                                "status": 429,
+                                "reason": str(error),
+                                "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                            }
+                            print(
+                                "PubChem 429 persisted: suspending new network requests; "
+                                "retaining cached records and explicit missing-CID list.",
+                                flush=True,
+                            )
                 raise error
-            self.stats["retries"] += 1
+            with self.request_lock:
+                self.stats["retries"] += 1
+                self.cooldown_until = max(self.cooldown_until, self.clock() + delay)
             self.sleep(min(delay, 60))
         raise AssertionError("unreachable")
 
@@ -174,26 +231,32 @@ class PubChemClient:
         if not cids:
             return []
         placeholders = ",".join("?" for _ in cids)
-        existing = {
-            r[0]: json.loads(r[1])
-            for r in self.db.execute(
+        with self.db_lock:
+            cached_rows = self.db.execute(
                 f"SELECT cid,data FROM properties WHERE cid IN ({placeholders})", cids
-            )
-        }
+            ).fetchall()
+        existing = {r[0]: json.loads(r[1]) for r in cached_rows}
         missing = sorted(set(cids) - existing.keys())
+        if self.cached_only or self.network_suspension:
+            return [existing[cid] for cid in cids if cid in existing]
         # PubChem supports POSTed CID lists; avoid long URLs rejected by the front-end.
-        if len(missing) > 150:
-            data = self.get(
-                f"/compound/cid/property/{PROPERTIES}/JSON",
-                form={"cid": ",".join(map(str, missing))},
-            )
-        elif missing:
-            data = self.get(
-                f"/compound/cid/{','.join(map(str, missing))}/property/{PROPERTIES}/JSON"
-            )
+        try:
+            if len(missing) > 150:
+                data = self.get(
+                    f"/compound/cid/property/{PROPERTIES}/JSON",
+                    form={"cid": ",".join(map(str, missing))},
+                )
+            elif missing:
+                data = self.get(
+                    f"/compound/cid/{','.join(map(str, missing))}/property/{PROPERTIES}/JSON"
+                )
+        except PubChemError:
+            if self.network_suspension:
+                return [existing[cid] for cid in cids if cid in existing]
+            raise
         if missing:
             rows = data.get("PropertyTable", {}).get("Properties", [])
-            with self.db:
+            with self.db_lock, self.db:
                 for row in rows:
                     cid = row["CID"]
                     self.db.execute(
@@ -210,7 +273,7 @@ class PubChemClient:
             f"/compound/name/{urllib.parse.quote(name, safe='')}/property/{PROPERTIES}/JSON"
         )
         rows = data.get("PropertyTable", {}).get("Properties", [])
-        with self.db:
+        with self.db_lock, self.db:
             for row in rows:
                 self.db.execute(
                     "INSERT OR REPLACE INTO properties VALUES (?,?)", (row["CID"], json.dumps(row))

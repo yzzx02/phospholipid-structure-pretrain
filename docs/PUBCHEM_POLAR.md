@@ -57,13 +57,21 @@ PS/PG/PI、aminoethylphosphonate、phosphonoacetate 和 pyrophosphate。
 实测 PubChem 的显式氢搜索会让酸性氧的 `D1;H1` 组合漏掉中性酸；请求使用 `H1,-1`，
 degree-one 约束留在本地找 attachment 时执行。旧 D1 查询结果已归档停用。
 
-默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性每批 1,000 CID；少于 151 个未缓存 CID
+默认全局 3 requests/s（可配置，但拒绝 >4）；属性每批 1,000 CID；少于 151 个未缓存 CID
 用短 GET，更大批次使用标准 PUG REST POST 表单，避免过长 URL 被服务端拒绝。429/503 等暂时错误
 指数退避，重试同样限速；遵守数字 `Retry-After`，记录请求/重试数。
-只有一个网络工作线程，预取下一批属性，与主线程的 RDKit 计算重叠；不并发发送 HTTP。
-HTTP 复用一个 requests Session，库内部重试和自动跳转关闭，重试统一受限速器控制。
+最多两个网络预取线程，共用一个加锁的全局限速器（含重试），SQLite 访问另行加锁。
+每个线程独立复用 requests Session，库内部重试和自动跳转关闭；429/503 等触发全局退避。
+`api.property_workers: 1` 可改回单发送线程；请求数量上限不会因线程数增加。
 化学判定默认最多 4 个 CPU 工作进程（不超过本机逻辑核数），显式使用 spawn，兼容 WSL/Windows；
 `chemistry_workers: 1` 可切回串行。进程间只传 SMILES/限值和普通结果，不传数据库连接。
+fragment/CID 聚合使用 SSD 临时 SQLite（64 MiB 页缓存），Parquet/TSV 分批写出；
+仅保留描述符分布数组和每类前 20 个展示候选，避免百万级字典常驻内存。
+中断后从持久 CID 化学检查点重建聚合；临时文件结束后仅按已核验的缓存内绝对路径删除。
+NCBI HTML Error 803 按网关故障退避重试，区别于 JSON PUGREST.NotFound。
+429 耗尽重试后暂停全部新增网络请求，继续整理缓存，并列出缺失 CID，避免反复请求限流服务。
+`--cached-only` 可完全离线生成当前属性缓存的审核快照；缺失属性始终标为 PARTIAL，
+不能将“CID 全量检索完成”解释为“全量属性与建库完成”。服务恢复后不加此选项即可续传。
 
 首两阶段明确标记 `SAMPLED_PARTIAL`，不是随机样本，不能用其保留率推断全库保留率。
 full 的 `MaxRecords` 为 1,000,000：只有响应少于上限才按该 API 查询认定完整。

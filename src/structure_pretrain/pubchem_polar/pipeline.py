@@ -5,7 +5,7 @@ import json
 import multiprocessing
 import os
 import time
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from pathlib import Path
 
@@ -23,6 +23,7 @@ from .chemistry import (
     validate_controls,
 )
 from .client import PubChemClient, atomic_json, run_query
+from .fragment_store import FragmentStore
 
 
 def log(message):
@@ -221,27 +222,37 @@ STATUS_PRIORITY = {
 }
 
 
-def property_batches(client, cids, batch_size):
-    """Overlap one network worker with CPU chemistry; never parallelize HTTP requests."""
+def property_batches(client, cids, batch_size, workers=1):
+    """Small ordered prefetch queue; all senders share one client rate limiter."""
     if not cids:
         return
-    with ThreadPoolExecutor(max_workers=1, thread_name_prefix="pubchem-properties") as pool:
-        future = pool.submit(client.get_properties, cids[:batch_size])
-        for start in range(0, len(cids), batch_size):
-            batch = cids[start : start + batch_size]
+    if not 1 <= workers <= 2:
+        raise ValueError("Property workers must be 1 or 2")
+    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="pubchem-properties") as pool:
+        pending, starts = deque(), iter(range(0, len(cids), batch_size))
+
+        def submit_next():
+            start = next(starts, None)
+            if start is not None:
+                batch = cids[start : start + batch_size]
+                pending.append((start, batch, pool.submit(client.get_properties, batch)))
+
+        for _ in range(workers):
+            submit_next()
+        while pending:
+            start, batch, future = pending.popleft()
             try:
                 properties, error = future.result(), None
             except Exception as exc:
                 properties, error = [], exc
-            next_start = start + batch_size
-            if next_start < len(cids):
-                future = pool.submit(
-                    client.get_properties, cids[next_start : next_start + batch_size]
-                )
+            submit_next()
             yield start, batch, properties, error
 
 
 def merge_candidate(fragments, candidate, cid, query_ids, known_keys):
+    if isinstance(fragments, FragmentStore):
+        fragments.merge(candidate, cid, query_ids, known_keys)
+        return
     key = candidate["polar_fragment_smiles"]
     if key not in fragments:
         row = {k: candidate.get(k) for k in FRAGMENT_SCHEMA.names}
@@ -348,7 +359,12 @@ def process_records(client, matches, queries, output, config, known_keys):
             ("polar_rejections", REJECTION_SCHEMA),
         )
     }
-    fragments, reasons, stats = {}, Counter(), Counter()
+    fragments = (
+        FragmentStore(client.cache_dir, FRAGMENT_SCHEMA.names, [q["query_id"] for q in queries])
+        if hasattr(client, "cache_dir")
+        else {}
+    )
+    reasons, stats = Counter(), Counter()
     stats.update(
         {
             name: 0
@@ -378,12 +394,17 @@ def process_records(client, matches, queries, output, config, known_keys):
         if workers > 1 and cids
         else None
     )
-    for start, batch, properties, error in property_batches(client, cids, batch_size):
+    property_workers = config.get("api", {}).get("property_workers", 1)
+    for start, batch, properties, error in property_batches(
+        client, cids, batch_size, workers=property_workers
+    ):
         if error is not None:
             # Preserve all unprocessed CIDs; do not misclassify network failures as chemistry.
             missing_cids.extend(batch)
             log(f"properties batch failed ({len(batch)} CIDs): {error}")
             continue
+        returned_cids = {prop["CID"] for prop in properties}
+        missing_cids.extend(cid for cid in batch if cid not in returned_cids)
         raw_rows = [
             normalize_raw(prop, matches[prop["CID"]], {families[q] for q in matches[prop["CID"]]})
             for prop in properties
@@ -425,6 +446,8 @@ def process_records(client, matches, queries, output, config, known_keys):
                 )
         if chemistry_cache:
             chemistry_cache.flush()
+        if isinstance(fragments, FragmentStore):
+            fragments.flush()
         if start % 1000 == 0:
             log(
                 f"processed {min(start + batch_size, len(cids))}/{len(cids)} CIDs; "
@@ -446,97 +469,104 @@ def process_records(client, matches, queries, output, config, known_keys):
         chemistry_cache.close()
     for sink in sinks.values():
         sink.close()
-    fragment_rows = []
-    for row in sorted(fragments.values(), key=lambda r: r["polar_id"]):
-        for name in ("source_cids", "matched_query_ids", "review_flags", "filter_flags"):
-            row[name] = sorted(row[name])
-        row["source_count"] = len(row["source_cids"])
-        fragment_rows.append(row)
-    pq.write_table(
-        pa.Table.from_pylist(fragment_rows, schema=FRAGMENT_SCHEMA),
-        output / "pubchem_polar_fragments.parquet",
-        compression="zstd",
+    family_counts, status_counts, filter_counts, descriptors = Counter(), Counter(), Counter(), {}
+    descriptors = {key: [] for key in ("molecular_weight", "carbon_count", "phosphorus_count")}
+    charge_counts = dict.fromkeys(
+        (
+            "nonzero_formal_charge",
+            "neutral_multiple_charge_assignments",
+            "also_soft_limit_review",
+            "also_long_chain_review",
+        ),
+        0,
     )
+    other_counts, buckets = Counter(), {}
+    fragment_sink = ParquetSink(output / "pubchem_polar_fragments.parquet", FRAGMENT_SCHEMA)
+    fragment_rows = (
+        fragments.iter_rows()
+        if isinstance(fragments, FragmentStore)
+        else iter(sorted(fragments.values(), key=lambda r: r["polar_id"]))
+    )
+    exported = 0
     with (output / "pubchem_polar_review.tsv").open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=FRAGMENT_SCHEMA.names, delimiter="\t")
         writer.writeheader()
         for row in fragment_rows:
+            for name in ("source_cids", "matched_query_ids", "review_flags", "filter_flags"):
+                row[name] = sorted(row[name])
+            row["source_count"] = len(row["source_cids"])
+            fragment_sink.add(row)
             writer.writerow(
                 {
                     k: json.dumps(v, ensure_ascii=False) if isinstance(v, list) else v
                     for k, v in row.items()
                 }
             )
-    family_counts = Counter(r["polar_family"] for r in fragment_rows)
-    status_counts = Counter(r["status"] for r in fragment_rows)
+            family_counts[row["polar_family"]] += 1
+            status_counts[row["status"]] += 1
+            filter_counts.update(row["filter_flags"])
+            for key in descriptors:
+                descriptors[key].append(row[key])
+            for key in ("nitrogen", "sulfur"):
+                other_counts[key + "_containing"] += row[key + "_count"] > 0
+            other_counts["ring_containing"] += row["ring_containing"]
+            if row["status"] == "CHARGE_AMBIGUOUS":
+                charge_counts["nonzero_formal_charge"] += row["formal_charge"] != 0
+                charge_counts["neutral_multiple_charge_assignments"] += row["formal_charge"] == 0
+                charge_counts["also_soft_limit_review"] += bool(row["filter_flags"])
+                charge_counts["also_long_chain_review"] += (
+                    "long_aliphatic_carbon_run" in row["filter_flags"]
+                )
+            if row["status"] == "APPROVABLE" and not row["known_control_ids"]:
+                bucket = buckets.setdefault(row["polar_family"], [])
+                bucket.append((representative_sort_key(row), row))
+                bucket.sort(key=lambda item: item[0])
+                if len(bucket) > 20:
+                    bucket.pop()
+            exported += 1
+    fragment_sink.close()
+    if exported != len(fragments):
+        raise ValueError("Fragment store/export count mismatch")
     representatives = []
-    # Round-robin families, showing actual provenance, excluding all controls.
-    buckets = {
-        f: sorted(
-            [
-                r
-                for r in fragment_rows
-                if r["polar_family"] == f
-                and not r["known_control_ids"]
-                and r["status"] == "APPROVABLE"
-            ],
-            key=representative_sort_key,
-        )
-        for f in family_counts
-    }
     while len(representatives) < 20 and any(buckets.values()):
-        for bucket in buckets.values():
+        for family in family_counts:
+            bucket = buckets.get(family, [])
             if bucket and len(representatives) < 20:
-                representatives.append(bucket.pop(0))
+                representatives.append(bucket.pop(0)[1])
     pairs = stats["unique_cid_fragment_pairs"]
     report = {
         **dict(stats),
         "chemistry_policy_sha256": chemistry_policy_hash,
         "chemistry_workers": workers,
-        "unique_fragments": len(fragment_rows),
+        "property_workers": property_workers,
+        "unique_fragments": exported,
+        "fragment_aggregation": "sqlite-ssd" if isinstance(fragments, FragmentStore) else "memory",
         "family_counts": dict(family_counts),
         "status_counts": dict(status_counts),
-        "charge_review_breakdown": {
-            "nonzero_formal_charge": sum(
-                r["status"] == "CHARGE_AMBIGUOUS" and r["formal_charge"] != 0 for r in fragment_rows
-            ),
-            "neutral_multiple_charge_assignments": sum(
-                r["status"] == "CHARGE_AMBIGUOUS" and r["formal_charge"] == 0 for r in fragment_rows
-            ),
-            "also_soft_limit_review": sum(
-                r["status"] == "CHARGE_AMBIGUOUS" and bool(r["filter_flags"]) for r in fragment_rows
-            ),
-            "also_long_chain_review": sum(
-                r["status"] == "CHARGE_AMBIGUOUS"
-                and "long_aliphatic_carbon_run" in r["filter_flags"]
-                for r in fragment_rows
-            ),
-        },
+        "charge_review_breakdown": charge_counts,
         "rejections": dict(reasons),
         "missing_property_cids": missing_cids,
-        "cid_fragment_pair_dedup_rate": 1 - len(fragment_rows) / pairs if pairs else 0,
-        "attachment_candidate_dedup_rate": 1 - len(fragment_rows) / stats["attachment_candidates"]
+        "cid_fragment_pair_dedup_rate": 1 - exported / pairs if pairs else 0,
+        "attachment_candidate_dedup_rate": 1 - exported / stats["attachment_candidates"]
         if stats["attachment_candidates"]
         else 0,
-        "distributions": {
-            k: distribution([r[k] for r in fragment_rows])
-            for k in ("molecular_weight", "carbon_count", "phosphorus_count")
+        "distributions": {key: distribution(values) for key, values in descriptors.items()},
+        **{
+            key: other_counts[key]
+            for key in ("nitrogen_containing", "sulfur_containing", "ring_containing")
         },
-        "nitrogen_containing": sum(r["nitrogen_count"] > 0 for r in fragment_rows),
-        "sulfur_containing": sum(r["sulfur_count"] > 0 for r in fragment_rows),
-        "ring_containing": sum(r["ring_containing"] for r in fragment_rows),
-        "filter_flag_counts": dict(
-            Counter(flag for r in fragment_rows for flag in r["filter_flags"])
-        ),
+        "filter_flag_counts": dict(filter_counts),
         "known_head_recovery_from_queries": {
             name: any(k in fragments for k in keys) for name, keys in known_keys.items()
         },
         "representative_expanded_fragments_outside_controls": representatives,
     }
+    if isinstance(fragments, FragmentStore):
+        fragments.close()
     return report
 
 
-def harvest(config, config_path, output, cache_dir, stages):
+def harvest(config, config_path, output, cache_dir, stages, cached_only=False):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     controls = read_controls(Path(config_path).parent / "known_head_controls.tsv")
@@ -547,6 +577,7 @@ def harvest(config, config_path, output, cache_dir, stages):
         cache_dir,
         requests_per_second=api.get("requests_per_second", 3),
         max_retries=api.get("max_retries", 6),
+        cached_only=cached_only,
     )
     try:
         real_checks = live_controls(client, config, controls, known_keys)
@@ -587,6 +618,14 @@ def harvest(config, config_path, output, cache_dir, stages):
                     "full_query_complete": stage == "full"
                     and all(r["complete"] for r in query_results),
                     "properties_complete": not report["missing_property_cids"],
+                    "property_acquisition_mode": "cached-only" if cached_only else "online",
+                    "network_suspension": client.network_suspension,
+                    "run_status": (
+                        "PARTIAL"
+                        if report["missing_property_cids"]
+                        or not all(r["complete"] for r in query_results)
+                        else "COMPLETE"
+                    ),
                     "query_version": config["version"],
                     "config_sha256": hashlib.sha256(Path(config_path).read_bytes()).hexdigest(),
                     "rdkit_version": rdBase.rdkitVersion,

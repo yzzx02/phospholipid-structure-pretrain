@@ -27,6 +27,27 @@ def test_empty_or_failed_query_has_valid_empty_review_outputs(tmp_path):
         assert pq.read_table(tmp_path / f"pubchem_{name}.parquet").num_rows == 0
 
 
+def test_partial_properties_are_missing_data_not_chemical_rejections(tmp_path):
+    class Client:
+        def get_properties(self, cids):
+            return [
+                {
+                    "CID": 1,
+                    "SMILES": "OP(=O)(O)O",
+                    "ConnectivitySMILES": "OP(=O)(O)O",
+                    "MolecularFormula": "H3O4P",
+                    "MolecularWeight": "97.995",
+                    "Charge": 0,
+                }
+            ]
+
+    result = process_records(
+        Client(), {1: {"q"}, 2: {"q"}}, [{"query_id": "q", "family": "phosphate"}], tmp_path, {}, {}
+    )
+    assert result["properties_downloaded"] == 1 and result["missing_property_cids"] == [2]
+    assert result["rejections"] == {} and result["unique_fragments"] == 1
+
+
 def test_parquet_review_provenance_and_rejections(tmp_path):
     config = yaml.safe_load((ROOT / "configs/pubchem_polar_queries.yaml").read_text())
     _, known = validate_controls(config, read_controls(ROOT / "configs/known_head_controls.tsv"))

@@ -47,6 +47,18 @@ def audit(directory):
         len(raw_ids) + len(report["missing_property_cids"]) == report["unique_cids"],
         "Query/property accounting mismatch",
     )
+    missing_ids = set(report["missing_property_cids"])
+    require(
+        len(missing_ids) == len(report["missing_property_cids"])
+        and raw_ids.isdisjoint(missing_ids),
+        "Missing CID list duplicates/overlaps raw data",
+    )
+    expected_queries = Counter({r["query_id"]: r["cid_count"] for r in report["query_results"]})
+    require(
+        set(query_counts) <= set(expected_queries)
+        and all(count <= expected_queries[q] for q, count in query_counts.items()),
+        "Raw query provenance outside configured result scope",
+    )
     if report["properties_complete"]:
         require(
             query_counts
