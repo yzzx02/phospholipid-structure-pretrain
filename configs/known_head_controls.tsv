@@ -1,0 +1,15 @@
+control_id	kind	pubchem_name	smiles	allow_pa
+PA	positive	phosphoric acid	OP(=O)(O)O	false
+PE	positive	phosphoethanolamine	OP(=O)(O)OCCN	true
+PC	positive	phosphocholine	OP(=O)([O-])OCC[N+](C)(C)C	false
+PS	positive	O-phospho-L-serine	OP(=O)(O)OC[C@H](N)C(=O)O	false
+PG	positive	sn-glycerol 3-phosphate	OP(=O)(O)OC[C@H](O)CO	false
+PI	positive	myo-inositol 1-phosphate	OP(=O)(O)OC1C(O)C(O)C(O)C(O)C1O	false
+AEP	positive	2-aminoethylphosphonic acid	OP(=O)(O)CCN	false
+PHOSPHONOACETATE	positive	phosphonoacetic acid	OP(=O)(O)CC(=O)O	false
+PYROPHOSPHATE	positive	pyrophosphoric acid	OP(=O)(O)OP(=O)(O)O	false
+TPPO	negative	triphenylphosphine oxide	O=P(c1ccccc1)(c1ccccc1)c1ccccc1	false
+TPP	negative	triphenyl phosphate	O=P(Oc1ccccc1)(Oc1ccccc1)Oc1ccccc1	false
+TMP	negative	trimethyl phosphate	COP(=O)(OC)OC	false
+PS_THIO	negative	O,O-diethyl dithiophosphoric acid	CCOP(=S)(S)OCC	false
+METAL	negative		OP(=O)(O)O.[Cu+2]	false

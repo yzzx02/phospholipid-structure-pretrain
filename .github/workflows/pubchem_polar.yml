@@ -1,0 +1,36 @@
+name: PubChem polar chemistry only
+on:
+  push:
+    paths: &polar_paths
+      - 'src/structure_pretrain/pubchem_polar/**'
+      - 'scripts/harvest_pubchem_polar.py'
+      - 'configs/pubchem_polar_queries.yaml'
+      - 'configs/known_head_controls.tsv'
+      - 'tests/pubchem_polar/**'
+      - '.github/workflows/pubchem_polar.yml'
+  pull_request:
+    paths: *polar_paths
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  polar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install chemistry dependencies without torch
+        run: |
+          python -m pip install -r requirements-extraction.txt pytest==9.0.3 ruff==0.15.17
+          python -m pip install --no-deps -e .
+      - name: Offline validation only
+        run: |
+          python -c "import sys; import structure_pretrain.pubchem_polar.pipeline; assert 'torch' not in sys.modules"
+          python -m ruff check .
+          python -m ruff format --check .
+          python -m pytest -q --confcutdir=tests/pubchem_polar tests/pubchem_polar
+          python -m pytest -q --confcutdir=tests/library_builder tests/library_builder

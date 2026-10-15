@@ -208,7 +208,16 @@ phospholipid-structure-pretrain/
 独立提取模块和运行说明见 [MSDIAL_CHAIN_EXTRACTION.md](docs/MSDIAL_CHAIN_EXTRACTION.md)。
 两版全量扫描结果及审核要点见 [MSDIAL_CHAIN_EXTRACTION_RESULTS.md](docs/MSDIAL_CHAIN_EXTRACTION_RESULTS.md)。
 从本地 2025/2022 LBM2 读取元数据、以分子图提取 A/O/P 链、统计双键位置版本并输出人工审核候选。
-此阶段不训练、不生成批准版链表或最终结构库；本地大表在 `data/private/msdial_chain_review/`，不上传源库。
+原提取阶段只输出证据。后续已按 2025 单位置版本规则冻结 322 条链，位置保持不变；
+本地大表在 `data/private/msdial_chain_review/`，不上传源库。
+
+## PubChem 极性片段扩展
+
+独立 CPU 化学流程见 [PUBCHEM_POLAR.md](docs/PUBCHEM_POLAR.md)。
+`scripts/harvest_pubchem_polar.py` 先验证正负对照，再依次执行 1k/query、10k/query 和 full。
+检索 phosphate / phosphonate / polyphosphate，保留真实 PubChem CID 和所有酸性连接位点，
+输出标准化去重后的人工审核表；本阶段不生成批准版头基表、不训练、不生成完整脂质库。
+审核包在 `data/private/pubchem_polar_review/`；原始大表与 SSD 缓存不上传 GitHub。
 
 ## 后续数据 TODO
 
