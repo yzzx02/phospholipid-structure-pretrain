@@ -88,6 +88,8 @@ def test_parquet_review_provenance_and_rejections(tmp_path):
     assert "matched_query_ids" not in cache.get(1, inputs[1])["candidates"][0]
     cache.close()
     # A provenance error in persisted data must be found independently of pipeline counters.
+    report["pubchem_query_controls"] = {}
+    (tmp_path / "pubchem_polar_report.json").write_text(json.dumps(report), encoding="utf-8")
     raw_path = tmp_path / "pubchem_polar_raw.parquet"
     raw = pq.read_table(raw_path)
     pq.write_table(raw.slice(1), raw_path)
