@@ -355,3 +355,28 @@ def test_cross_version_cache_preserves_independent_evidence(tmp_path):
     assert candidates["A-16:0"]["observations"] == 1
     assert candidates["A-16:0"]["total_unique_parent_structures"] == 1
     db.close()
+
+
+def test_pe_report_excludes_lyso_pe(tmp_path):
+    source = tmp_path / "pe.lbm2"
+    pack_lbm(
+        source,
+        [
+            row(lipid(chain(18, [1], "P"), chain(16)), "PE P-18:0/16:0", "EtherPE"),
+            row(lipid(chain(18, [1], "P"), chain(16)), "PE O-18:1/16:0", "EtherPE"),
+            row(lipid(chain(18, [1], "P")), "LPE P-18:0", "EtherLPE"),
+            row(lipid(chain(16, [1], "P")), "LPE P-16:0", "EtherLPE"),
+        ],
+    )
+    output = tmp_path / "out"
+    scan(source, "2025", output, CONFIG)
+    summary = report(output, CONFIG)
+    assert summary["2025"]["pe_p_unique_tokens"] == 1
+    data = json.loads(
+        (output / "msdial_chain_review/extraction_report.json").read_text(encoding="utf-8")
+    )
+    assert data["pe_p"][0]["chain_token"] == "P-18:1"
+    assert data["pe_p"][0]["unique_parent_structure_count"] == 1
+    assert data["pe_p"][0]["scope"] == "PE_ONLY_EXCLUDES_LPE"
+    assert data["source_label_conflict_observations"]["2025"] == 1
+    assert data["source_label_review_required_tokens"] == 1

@@ -6,6 +6,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import pyarrow as pa
+import pyarrow.dataset as ds
 import pyarrow.parquet as pq
 from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors
@@ -55,6 +56,9 @@ COMPARISON_COLUMNS = [
     "status_2022",
     "other_linkage_tokens_in_other_version",
     "variant_set_equal",
+    "source_label_conflicts_2025",
+    "source_label_conflicts_2022",
+    "source_label_review_required",
 ]
 COMPARISON_SCHEMA = pa.schema(
     [
@@ -70,6 +74,9 @@ COMPARISON_SCHEMA = pa.schema(
         ("status_2022", pa.string()),
         ("other_linkage_tokens_in_other_version", pa.list_(pa.string())),
         ("variant_set_equal", pa.bool_()),
+        ("source_label_conflicts_2025", pa.int64()),
+        ("source_label_conflicts_2022", pa.int64()),
+        ("source_label_review_required", pa.bool_()),
     ]
 )
 
@@ -248,6 +255,103 @@ def metadata_report(db, checkpoint):
     return result
 
 
+def pe_only_support(review, version, db):
+    """Recompute strict PE support from evidence; LPE remains in the general tables."""
+    db.execute("DROP TABLE IF EXISTS temp.pe_review")
+    db.execute("""CREATE TEMP TABLE pe_review (
+        token TEXT, fragment TEXT, positions TEXT, parent INTEGER,
+        PRIMARY KEY(token,fragment,parent)) WITHOUT ROWID""")
+    evidence = ds.dataset(review / f"msdial{version}_chain_evidence.parquet", format="parquet")
+    columns = [
+        "chain_token",
+        "canonical_fragment_smiles",
+        "db_positions",
+        "parent_structure_id",
+        "source_compound_class",
+        "source_ontology",
+        "source_name",
+        "linkage_type",
+        "source_ether_label",
+        "source_named_db_count",
+        "source_p_db_count_includes_vinyl",
+        "source_naming_status",
+    ]
+    examples = {}
+    nomenclature = {}
+    for batch in evidence.scanner(
+        columns=columns, filter=ds.field("linkage_type").isin(["O", "P"])
+    ).to_batches():
+        for row in batch.to_pylist():
+            signature = tuple(
+                row[k]
+                for k in (
+                    "chain_token",
+                    "source_ether_label",
+                    "source_named_db_count",
+                    "source_p_db_count_includes_vinyl",
+                    "source_naming_status",
+                )
+            )
+            if signature not in nomenclature:
+                nomenclature[signature] = {"record_count": 0, "example_names": []}
+            entry = nomenclature[signature]
+            entry["record_count"] += 1
+            entry["example_names"] = sorted(
+                set(entry["example_names"] + [row["source_name"] or ""])
+            )[:3]
+            if row["linkage_type"] != "P":
+                continue
+            cls = row["source_compound_class"] or row["source_ontology"] or ""
+            if cls.lower() not in {"pe", "etherpe", "oxpe"}:
+                continue
+            key = row["chain_token"], row["canonical_fragment_smiles"]
+            db.execute(
+                "INSERT OR IGNORE INTO pe_review VALUES(?,?,?,?)",
+                (*key, json.dumps(row["db_positions"]), row["parent_structure_id"]),
+            )
+            examples[key] = sorted(set(examples.get(key, []) + [row["source_name"] or ""]))[:3]
+    by_token = defaultdict(list)
+    for token, frag, positions, count in db.execute(
+        "SELECT token,fragment,positions,count(*) FROM pe_review GROUP BY token,fragment"
+    ):
+        by_token[token].append(
+            {
+                "fragment": frag,
+                "positions": json.loads(positions),
+                "unique_parent_structures": count,
+                "examples": examples[token, frag],
+            }
+        )
+    rows = []
+    for token, supporting in sorted(by_token.items()):
+        supporting.sort(key=lambda r: (-r["unique_parent_structures"], r["fragment"]))
+        union = db.execute(
+            "SELECT count(DISTINCT parent) FROM pe_review WHERE token=?", (token,)
+        ).fetchone()[0]
+        rows.append(
+            {
+                "source_version": version,
+                "chain_token": token,
+                "representative_db_positions": supporting[0]["positions"],
+                "unique_parent_structure_count": union,
+                "positional_variants": supporting,
+                "example_names": supporting[0]["examples"],
+                "scope": "PE_ONLY_EXCLUDES_LPE",
+            }
+        )
+    naming_rows = []
+    fields = [
+        "chain_token",
+        "source_ether_label",
+        "source_named_db_count",
+        "source_p_db_count_includes_vinyl",
+        "source_naming_status",
+    ]
+    for signature, value in sorted(nomenclature.items(), key=lambda pair: str(pair[0])):
+        naming_rows.append({"source_version": version, **dict(zip(fields, signature)), **value})
+    return rows, naming_rows
+
+
 def report(output, config):
     output = Path(output)
     review = output / "msdial_chain_review"
@@ -280,45 +384,7 @@ def report(output, config):
         )
         write_json(output / f"msdial{version}_metadata_report.json", meta)
         write_json(review / f"msdial{version}_metadata_report.json", meta)
-        pe = []
-        for token in candidates:
-            if not token.startswith("P-"):
-                continue
-            supporting = []
-            for vid, fragment, positions in db.execute(
-                "SELECT id,fragment,positions FROM variants WHERE token=?", (token,)
-            ):
-                n = db.execute("SELECT count(*) FROM pe WHERE variant=?", (vid,)).fetchone()[0]
-                if n:
-                    names = [
-                        r[0]
-                        for r in db.execute("SELECT name FROM pe_examples WHERE variant=?", (vid,))
-                    ]
-                    supporting.append(
-                        {
-                            "fragment": fragment,
-                            "positions": json.loads(positions),
-                            "unique_parent_structures": n,
-                            "examples": names,
-                        }
-                    )
-            if supporting:
-                supporting.sort(key=lambda r: (-r["unique_parent_structures"], r["fragment"]))
-                union = db.execute(
-                    """SELECT count(DISTINCT pe.parent) FROM pe
-                    JOIN variants v ON v.id=pe.variant WHERE v.token=?""",
-                    (token,),
-                ).fetchone()[0]
-                pe.append(
-                    {
-                        "source_version": version,
-                        "chain_token": token,
-                        "representative_db_positions": supporting[0]["positions"],
-                        "unique_parent_structure_count": union,
-                        "positional_variants": supporting,
-                        "example_names": supporting[0]["examples"],
-                    }
-                )
+        pe, naming = pe_only_support(review, version, db)
         versions[version] = {
             "variants": variants,
             "candidates": candidates,
@@ -326,11 +392,39 @@ def report(output, config):
             "checkpoint": checkpoint,
             "metadata": meta,
             "pe": pe,
+            "naming": naming,
         }
         db.close()
     empty = {"candidates": {}, "by_token": {}}
     a, b = versions.get("2025", empty), versions.get("2022", empty)
     comparison = compare_versions(a["candidates"], b["candidates"], a["by_token"], b["by_token"])
+    naming_rows = [row for info in versions.values() for row in info["naming"]]
+    conflicts = Counter()
+    for row in naming_rows:
+        if row["source_naming_status"] == "SOURCE_LABEL_LINKAGE_CONFLICT":
+            conflicts[row["source_version"], row["chain_token"]] += row["record_count"]
+    for row in comparison:
+        token = row["chain_token"]
+        row["source_label_conflicts_2025"] = conflicts["2025", token]
+        row["source_label_conflicts_2022"] = conflicts["2022", token]
+        row["source_label_review_required"] = bool(
+            conflicts["2025", token] or conflicts["2022", token]
+        )
+        row["review_required"] |= row["source_label_review_required"]
+    write_tsv(
+        review / "source_naming_conventions.tsv",
+        naming_rows,
+        [
+            "source_version",
+            "chain_token",
+            "source_ether_label",
+            "source_named_db_count",
+            "source_p_db_count_includes_vinyl",
+            "source_naming_status",
+            "record_count",
+            "example_names",
+        ],
+    )
     write_tsv(review / "chain_version_comparison.tsv", comparison, COMPARISON_COLUMNS)
     pq.write_table(
         pa.Table.from_pylist(comparison, COMPARISON_SCHEMA),
@@ -404,6 +498,7 @@ def report(output, config):
             "example_names",
             "version_agreement",
             "positional_variants",
+            "scope",
         ],
     )
     summary = {}
@@ -485,6 +580,13 @@ def report(output, config):
             "anchors": anchors,
             "op_equivalence_candidate_pairs": len(op),
             "pe_p": pe,
+            "source_naming_conventions": naming_rows,
+            "source_label_conflict_observations": {
+                v: sum(n for (version, _), n in conflicts.items() if version == v) for v in versions
+            },
+            "source_label_review_required_tokens": sum(
+                r["source_label_review_required"] for r in comparison
+            ),
             "config": config,
             "training_performed": False,
             "final_library_built": False,

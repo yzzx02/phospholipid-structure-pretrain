@@ -32,6 +32,9 @@ python scripts/extract_msdial_chain_evidence.py --source 'D:\浏览器下载文�
 `shared_structure_cache_hits` 报告复用的不同 SMILES 数；不命中的结构正常执行 RDKit 图解析。
 恢复会重新解压当前块，跳过已提交记录；不重复计数。临时 raw 文件在正常退出时清理。
 峰值 RSS 以 100 ms 周期采样，包含原生解压及映射工作集；运行时间包含解压、解析、化学处理和分片写入，汇总耗时另计。
+SQLite 有大量随机读写，建议 `data/private/_state/` 位于 SSD；最终 Parquet 可留在容量较大的机械盘。
+若使用目录联接，必须在提取进程退出后复制完整状态（包含尚存的 WAL/SHM），校验数据库，再从原路径续跑。
+保留源状态备份，不能在正在写库时直接移动 SQLite 主文件。
 
 字段依据作者仓库固定提交 `8556036fb73d77e4d703eb4263defe025d604a5d`：
 
@@ -73,6 +76,10 @@ O/P 等质量表只在两版本实际观察 token 的并集中找同组成对，
 `data/private/msdial_chain_review/` 内包含计划指定文件；另保留 2022 evidence/variants/candidates/metadata report 便于追溯。
 `msdial2022_chain_crosscheck.parquet` 为 token 级交叉核对表，与 `chain_version_comparison.tsv` 同字段；
 逐条 2022 链证据在 `msdial2022_chain_evidence.parquet` 分片数据集中。
+PE-P 专表严格使用 PE / EtherPE / OxPE，排除 LPE / EtherLPE；后者仍保留在完整 evidence 和 variants 中。
+PE 专表直接从已提交链证据重新聚合，父结构支持数仍在 SQLite 临时表去重，无需重新扫描原库。
+`source_naming_conventions.tsv` 单独汇总原名称的 O/P 标记及 DB 数口径，保留名称示例。
+版本表的 MATCH / LINKAGE_CONFLICT 描述分子图；源名称与图类型不符另列 source_label_conflicts 字段，强制 review_required=true，避免图一致时漏掉命名问题。
 大表的 `.parquet` 路径是**分片数据集目录**，不是单一文件：
 
 ```python

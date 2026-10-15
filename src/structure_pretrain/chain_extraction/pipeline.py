@@ -131,11 +131,6 @@ def connect(path):
             PRIMARY KEY(variant,class)) WITHOUT ROWID;
         CREATE TABLE IF NOT EXISTS examples (variant INTEGER, name TEXT,
             PRIMARY KEY(variant,name)) WITHOUT ROWID;
-        CREATE TABLE IF NOT EXISTS pe (variant INTEGER, parent INTEGER,
-            PRIMARY KEY(variant,parent)) WITHOUT ROWID;
-        CREATE TABLE IF NOT EXISTS pe_examples (variant INTEGER, name TEXT,
-            PRIMARY KEY(variant,name)) WITHOUT ROWID;
-        CREATE TABLE IF NOT EXISTS pe_counts (variant INTEGER PRIMARY KEY, n INTEGER);
     """)
     return db
 
@@ -164,7 +159,6 @@ def _aggregate(db, result, row, counts):
     db.execute("INSERT OR IGNORE INTO parents(smiles) VALUES(?)", (parent,))
     parent_id = db.execute("SELECT id FROM parents WHERE smiles=?", (parent,)).fetchone()[0]
     cls = row.get("compound_class") or row.get("ontology") or "(missing)"
-    is_pe = cls.lower() in {"pe", "etherpe", "lysope", "lpe", "etherlpe", "oxpe"}
     observations = []
     for chain in result["chains"]:
         token, fragment = chain["chain_token"], chain["canonical_fragment_smiles"]
@@ -188,18 +182,6 @@ def _aggregate(db, result, row, counts):
         db.execute("INSERT OR IGNORE INTO classes VALUES(?,?)", (vid, cls))
         if db.execute("SELECT count(*) FROM examples WHERE variant=?", (vid,)).fetchone()[0] < 3:
             db.execute("INSERT OR IGNORE INTO examples VALUES(?,?)", (vid, row["name"] or ""))
-        if is_pe and chain["linkage_type"] == "P":
-            db.execute("INSERT OR IGNORE INTO pe VALUES(?,?)", (vid, parent_id))
-            db.execute(
-                "INSERT INTO pe_counts VALUES(?,1) ON CONFLICT(variant) DO UPDATE SET n=n+1", (vid,)
-            )
-            if (
-                db.execute("SELECT count(*) FROM pe_examples WHERE variant=?", (vid,)).fetchone()[0]
-                < 3
-            ):
-                db.execute(
-                    "INSERT OR IGNORE INTO pe_examples VALUES(?,?)", (vid, row["name"] or "")
-                )
         naming = source_naming(chain, row["name"])
         counts["naming:" + chain["linkage_type"] + ":" + naming["source_naming_status"]] += 1
         if naming["source_p_db_count_includes_vinyl"] is not None:

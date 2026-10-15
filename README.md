@@ -206,6 +206,7 @@ phospholipid-structure-pretrain/
 ## MS-DIAL 真实链证据提取
 
 独立提取模块和运行说明见 [MSDIAL_CHAIN_EXTRACTION.md](docs/MSDIAL_CHAIN_EXTRACTION.md)。
+两版全量扫描结果及审核要点见 [MSDIAL_CHAIN_EXTRACTION_RESULTS.md](docs/MSDIAL_CHAIN_EXTRACTION_RESULTS.md)。
 从本地 2025/2022 LBM2 读取元数据、以分子图提取 A/O/P 链、统计双键位置版本并输出人工审核候选。
 此阶段不训练、不生成批准版链表或最终结构库；本地大表在 `data/private/msdial_chain_review/`，不上传源库。
 
