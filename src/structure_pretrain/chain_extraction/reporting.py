@@ -274,6 +274,10 @@ def report(output, config):
             CANDIDATE_COLUMNS,
         )
         meta = metadata_report(db, checkpoint)
+        marker = output / "_state" / f"{version}.chemistry.json"
+        meta["chemistry_cache_fingerprint"] = (
+            json.loads(marker.read_text())["fingerprint"] if marker.exists() else None
+        )
         write_json(output / f"msdial{version}_metadata_report.json", meta)
         write_json(review / f"msdial{version}_metadata_report.json", meta)
         pe = []
@@ -464,7 +468,16 @@ def report(output, config):
         review / "extraction_report.json",
         {
             "versions": summary,
-            "version_agreement_counts": dict(Counter(r["version_agreement"] for r in comparison)),
+            "version_agreement_counts": {
+                s: sum(r["version_agreement"] == s for r in comparison)
+                for s in (
+                    "MATCH",
+                    "POSITION_CONFLICT",
+                    "LINKAGE_CONFLICT",
+                    "ONLY_2025",
+                    "ONLY_2022",
+                )
+            },
             "crosscheck_complete": all(
                 v in versions and versions[v]["metadata"]["full_scan_complete"]
                 for v in ("2025", "2022")
@@ -486,6 +499,8 @@ def report(output, config):
                 "Cross-version candidate comparison is provisional until both full scans complete.",
                 "LINKAGE_CONFLICT: absent exact token; opposite O/P with same residue formula.",
                 "Terminal/conjugated graph DB positions are preserved pending biological review.",
+                "Parent support is library structure support, not biological abundance.",
+                "Cross-version agreement does not independently validate natural DB positions.",
             ],
         },
     )

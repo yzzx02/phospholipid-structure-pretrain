@@ -1,5 +1,6 @@
 """Chunk checkpoints, disk-backed distinct counts, and structure/parent aggregation."""
 
+import hashlib
 import json
 import os
 import sqlite3
@@ -11,9 +12,11 @@ from pathlib import Path
 import psutil
 import pyarrow as pa
 import pyarrow.parquet as pq
+from rdkit import rdBase
 
 from structure_pretrain.library_builder.msdial_inventory import lz4_prefix
 
+from . import chemistry
 from .chemistry import extract_structure, is_candidate, source_naming
 from .reader import blocks, iter_metadata, raw_block
 
@@ -142,10 +145,15 @@ def get_state(db):
     return json.loads(row[0]) if row else None
 
 
+def chemistry_fingerprint():
+    payload = Path(chemistry.__file__).read_bytes() + rdBase.rdkitVersion.encode()
+    return hashlib.sha256(payload).hexdigest()
+
+
 def _bump_unique(db, table, counts):
     db.executemany(
         f"INSERT INTO {table} VALUES(?,?) ON CONFLICT(value) DO UPDATE SET n=n+excluded.n",
-        counts.items(),
+        sorted(counts.items()),  # Improve B-tree page locality within a bounded chunk.
     )
 
 
@@ -202,7 +210,7 @@ def _aggregate(db, result, row, counts):
     return observations
 
 
-def process_chunk(db, rows, version, start_index, counts):
+def process_chunk(db, rows, version, start_index, counts, shared_cache=None):
     metadata, evidence, rejections = [], [], []
     smiles_counts, ik_counts = Counter(), Counter()
     local_cache = {}  # bounded by this chunk, cleared after checkpoint
@@ -232,9 +240,20 @@ def process_chunk(db, rows, version, start_index, counts):
             if cached:
                 result = json.loads(cached[0])
             else:
-                result = extract_structure(smiles)
+                prior = (
+                    shared_cache.execute(
+                        "SELECT result FROM cache WHERE smiles=?", (smiles,)
+                    ).fetchone()
+                    if shared_cache is not None
+                    else None
+                )
+                if prior:
+                    result = json.loads(prior[0])
+                    counts["shared_structure_cache_hits"] += 1
+                else:
+                    result = extract_structure(smiles)
+                    counts["unique_structures_computed"] += 1
                 db.execute("INSERT INTO cache VALUES(?,?)", (smiles, json.dumps(result)))
-                counts["unique_structures_computed"] += 1
             local_cache[smiles] = result
         counts["rdkit_success_records"] += bool(result["parsed"])
         counts["backbone_success_records"] += bool(result["backbone"])
@@ -265,6 +284,28 @@ def scan(path, version, output, config, resume=False, start_block=0, max_records
         raise ValueError(f"Existing scan: use --resume or another output directory: {db_path}")
     db = connect(db_path)
     checkpoint = get_state(db)
+    fingerprint = chemistry_fingerprint()
+    marker = state_dir / f"{version}.chemistry.json"
+    if marker.exists() and json.loads(marker.read_text())["fingerprint"] != fingerprint:
+        raise ValueError("Chemistry code/RDKit changed; use a new output directory")
+    if not checkpoint:
+        write_json(marker, {"fingerprint": fingerprint})
+    shared_cache = None
+    prior_marker = state_dir / "2025.chemistry.json"
+    prior_db = state_dir / "2025.sqlite"
+    if (
+        version == "2022"
+        and prior_marker.exists()
+        and prior_db.exists()
+        and json.loads(prior_marker.read_text())["fingerprint"] == fingerprint
+    ):
+        candidate = sqlite3.connect(prior_db.resolve().as_uri() + "?mode=ro", uri=True)
+        candidate.execute("PRAGMA cache_size=-32768")
+        prior_state = get_state(candidate)
+        if prior_state and prior_state.get("complete"):
+            shared_cache = candidate
+        else:
+            candidate.close()
     path = Path(path).resolve()
     identity = {
         "path": str(path),
@@ -314,7 +355,7 @@ def scan(path, version, output, config, resume=False, start_block=0, max_records
                     if len(chunk) >= config["chunk_records"] or limit:
                         n = len(chunk)
                         meta, evidence, rejected = process_chunk(
-                            db, chunk, version, next_index, counts
+                            db, chunk, version, next_index, counts, shared_cache
                         )
                         part = f"part-{next_index:09d}.parquet"
                         write_part(
@@ -359,7 +400,9 @@ def scan(path, version, output, config, resume=False, start_block=0, max_records
                 if chunk:
                     # Route the final short chunk through the same atomic commit path.
                     n = len(chunk)
-                    meta, evidence, rejected = process_chunk(db, chunk, version, next_index, counts)
+                    meta, evidence, rejected = process_chunk(
+                        db, chunk, version, next_index, counts, shared_cache
+                    )
                     part = f"part-{next_index:09d}.parquet"
                     write_part(
                         output / f"msdial{version}_metadata.parquet" / part, meta, META_SCHEMA
@@ -389,4 +432,6 @@ def scan(path, version, output, config, resume=False, start_block=0, max_records
         db.execute("INSERT OR REPLACE INTO state VALUES('checkpoint',?)", (json.dumps(checkpoint),))
         db.commit()
     db.close()
+    if shared_cache is not None:
+        shared_cache.close()
     return checkpoint

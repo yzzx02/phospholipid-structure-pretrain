@@ -338,3 +338,20 @@ def test_partial_normal_and_modified_chains_are_reported_separately():
     result = extract_structure(lipid(chain(16), "C(=O)CCC(O)C"))
     assert [c["chain_token"] for c in result["chains"]] == ["A-16:0"]
     assert result["rejections"][0]["reason"] == "unsupported_modified_chain"
+
+
+def test_cross_version_cache_preserves_independent_evidence(tmp_path):
+    source25, source22 = tmp_path / "2025.lbm2", tmp_path / "2022.lbm2"
+    r16, r18, r20 = [row(lipid(chain(n))) for n in (16, 18, 20)]
+    pack_lbm(source25, [r16] * 10 + [r18])
+    pack_lbm(source22, [r16, r18, r20], version="2022")
+    output = tmp_path / "out"
+    scan(source25, "2025", output, CONFIG)
+    state22 = scan(source22, "2022", output, CONFIG)
+    assert state22["counts"]["shared_structure_cache_hits"] == 2
+    assert state22["counts"]["unique_structures_computed"] == 1
+    db = connect(output / "_state/2022.sqlite")
+    _, candidates, _ = aggregate(db, CONFIG)
+    assert candidates["A-16:0"]["observations"] == 1
+    assert candidates["A-16:0"]["total_unique_parent_structures"] == 1
+    db.close()

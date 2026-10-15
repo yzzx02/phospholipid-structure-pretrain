@@ -27,6 +27,9 @@ python scripts/extract_msdial_chain_evidence.py --source 'D:\浏览器下载文�
 单个 raw 块约 1 GiB，mmap 页可由操作系统回收；这是分块处理，不是逐字节压缩流解码。
 每 1 万条写一个 Zstd Parquet 分片；独立 SMILES、InChIKey、化学缓存和父结构支持数用 SQLite 统计。
 没有 526 万记录或全库唯一 SMILES 的 Python set。每次 checkpoint 先原子重命名分片，再提交 SQLite。
+2022 可只读复用已完成 2025 扫描的**完全相同 SMILES** 化学缓存，条件是化学代码和 RDKit 版本指纹一致。
+仍逐条扫描 2022 元数据；其证据、父结构去重和频次独立统计，不复用 2025 的名称或支持数。
+`shared_structure_cache_hits` 报告复用的不同 SMILES 数；不命中的结构正常执行 RDKit 图解析。
 恢复会重新解压当前块，跳过已提交记录；不重复计数。临时 raw 文件在正常退出时清理。
 峰值 RSS 以 100 ms 周期采样，包含原生解压及映射工作集；运行时间包含解压、解析、化学处理和分片写入，汇总耗时另计。
 
@@ -57,6 +60,8 @@ python scripts/extract_msdial_chain_evidence.py --source 'D:\浏览器下载文�
 配置：`dominant_fraction=0.80`，`low_evidence_min_unique_parents=5`。
 先判 LOW_EVIDENCE；证据足且只有一个位置版本为 UNIQUE；多版本时首位 ≥0.80 且次位 ≤0.20、首位严格领先才为 DOMINANT；其他为 CONFLICT。
 同支持数用 canonical fragment 排序保证可复现，不代表生物学偏好。所有结果只是人工审核候选。
+库内母结构支持数不是实测谱图次数或生物丰度，亦受原库结构枚举范围影响。
+即使两个库版本都采用同一位置，也只能证明库约定一致，不能作为天然双键位置的独立验证。
 
 MATCH 要求两个版本首位候选及完整 positional variant 集合均相同；否则 POSITION_CONFLICT。
 缺失精确 token 时保留 ONLY_2025 / ONLY_2022；如果另一版本实际观察到同分子组成的相反 O/P linkage，则记 LINKAGE_CONFLICT，列出实际 counterpart。
