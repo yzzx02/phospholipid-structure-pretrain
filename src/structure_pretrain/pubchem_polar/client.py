@@ -52,9 +52,11 @@ class PubChemClient:
         self.last_request = -float("inf")
         self.stats = {"network_requests": 0, "response_cache_hits": 0, "retries": 0}
 
-    def get(self, path, params=None):
+    def get(self, path, params=None, form=None):
         url = BASE + path + ("?" + urllib.parse.urlencode(params) if params else "")
-        key = hashlib.sha256(url.encode()).hexdigest()
+        body = urllib.parse.urlencode(form).encode() if form is not None else None
+        identity = url.encode() + (b"\nPOST\n" + body if body is not None else b"")
+        key = hashlib.sha256(identity).hexdigest()
         cached = self.cache_dir / "responses" / f"{key}.json"
         if cached.exists():
             self.stats["response_cache_hits"] += 1
@@ -65,9 +67,11 @@ class PubChemClient:
             self.stats["network_requests"] += 1
             request = urllib.request.Request(
                 url,
+                data=body,
                 headers={
                     "User-Agent": "phospholipid-structure-pretrain/0.1 (polar-review)",
                     "Accept": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
                 },
             )
             try:
@@ -80,6 +84,7 @@ class PubChemClient:
                     cached,
                     {
                         "url": url,
+                        "request_form": form,
                         "retrieved_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                         "data": data,
                     },
@@ -135,17 +140,17 @@ class PubChemClient:
             )
         }
         missing = sorted(set(cids) - existing.keys())
-        # PubChem's front-end can reject very long CID URLs with HTTP 403.
-        # Keep each GET short; logical output batches may still be larger.
+        # PubChem supports POSTed CID lists; avoid long URLs rejected by the front-end.
         if len(missing) > 150:
-            for start in range(0, len(missing), 150):
-                existing.update(
-                    {row["CID"]: row for row in self.get_properties(missing[start : start + 150])}
-                )
+            data = self.get(
+                f"/compound/cid/property/{PROPERTIES}/JSON",
+                form={"cid": ",".join(map(str, missing))},
+            )
         elif missing:
             data = self.get(
                 f"/compound/cid/{','.join(map(str, missing))}/property/{PROPERTIES}/JSON"
             )
+        if missing:
             rows = data.get("PropertyTable", {}).get("Properties", [])
             with self.db:
                 for row in rows:

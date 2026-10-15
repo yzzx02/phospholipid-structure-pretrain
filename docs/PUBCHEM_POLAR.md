@@ -48,8 +48,8 @@ PS/PG/PI、aminoethylphosphonate、phosphonoacetate 和 pyrophosphate。
 负对照包括 TPPO、triphenyl phosphate、trimethyl phosphate、P=S；金属负对照是本地构造的
 含铜多组分记录，不虚构其 PubChem CID。任一对照失败则不启动大查询。
 
-默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性逻辑批次 500 CID，HTTP GET 再分成
-最多 150 个未缓存 CID，避免过长 URL 被服务端拒绝。429/503 等暂时错误
+默认全局串行 3 requests/s（可配置，但拒绝 >4）；属性每批 500 CID；少于 151 个未缓存 CID
+用短 GET，更大批次使用标准 PUG REST POST 表单，避免过长 URL 被服务端拒绝。429/503 等暂时错误
 指数退避，重试同样限速；遵守数字 `Retry-After`，记录请求/重试数。
 
 首两阶段明确标记 `SAMPLED_PARTIAL`，不是随机样本，不能用其保留率推断全库保留率。

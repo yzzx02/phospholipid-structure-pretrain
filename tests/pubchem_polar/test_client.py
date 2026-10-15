@@ -1,6 +1,7 @@
 import io
 import json
 import urllib.error
+import urllib.parse
 
 import pytest
 
@@ -53,21 +54,23 @@ def test_properties_not_refetched_across_query_batches(tmp_path):
     client.close()
 
 
-def test_large_logical_batch_uses_short_cid_urls(tmp_path):
+def test_large_logical_batch_uses_post_and_reuses_cache(tmp_path):
     calls = []
 
     def opener(request, timeout):
         calls.append(request.full_url)
-        cid_text = request.full_url.split("/cid/")[1].split("/")[0]
+        assert request.get_method() == "POST"
+        assert len(request.full_url) < 250
+        cid_text = urllib.parse.parse_qs(request.data.decode())["cid"][0]
         cids = [int(c) for c in cid_text.split(",")]
-        assert len(cids) <= 150
+        assert len(cids) == 500
         return Response({"PropertyTable": {"Properties": [{"CID": c} for c in cids]}})
 
     client = PubChemClient(tmp_path, opener=opener, sleeper=lambda _: None)
     assert len(client.get_properties(list(range(1, 501)))) == 500
-    assert len(calls) == 4
+    assert len(calls) == 1
     assert len(client.get_properties(list(range(1, 501)))) == 500
-    assert len(calls) == 4
+    assert len(calls) == 1
     client.close()
 
 
