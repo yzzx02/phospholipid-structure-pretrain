@@ -5,7 +5,7 @@ on:
       - 'src/structure_pretrain/models/**'
       - 'src/structure_pretrain/training/**'
       - 'src/structure_pretrain/data/**'
-      - 'src/structure_pretrain/retrieval/**'
+      - 'src/structure_pretrain/retrieval/structural_retrieval.py'
       - 'src/structure_pretrain/utils/**'
       - 'src/structure_pretrain/config.py'
       - 'configs/structure_pretrain_*.yaml'

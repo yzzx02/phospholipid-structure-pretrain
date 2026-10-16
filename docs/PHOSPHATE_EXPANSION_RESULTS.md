@@ -111,6 +111,10 @@ SHA-256：`1c64767c36323d6e4ec5e9dc8bd73d741d1ce5d0cea94e0df008df0e243b6e6d`。
 
 ## 6. 特殊结构与 P 链覆盖缺口
 
+后续执行时用户已明确撤回 P 全覆盖要求：P/A 仅保留为 exact PE 的少量特殊分支，
+不新增强制覆盖配额，不改 2M 主体采样。下文的覆盖预留建议仅为本轮历史分析；
+最新执行规则见 [FULL_LIBRARY_V02.md](FULL_LIBRARY_V02.md)。
+
 既有五个 cyanomethyl / cyanoethyl / keto-inositol 特殊头基全部继续 must-include。
 在 2M 计划中分别获得 14、14、15、15、13 个不同背景；必选代表组合也保留。
 

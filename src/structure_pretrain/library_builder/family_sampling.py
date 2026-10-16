@@ -124,7 +124,7 @@ def dry_run_family_schedule(polars, details, selected, bank, config, weights, lo
     budget = allocate_family_budget(polars, details, selected, config, weights)
     sampler = StratifiedSampler(bank, config)
     by_id = {c.combination_id: c for c in bank}
-    families, linkage, origins = Counter(), Counter(), Counter()
+    families, linkage, origins, tokens = Counter(), Counter(), Counter(), Counter()
     head_counts, mandatory_family, special_head_counts = {}, Counter(), {}
     schedule_hash = hashlib.sha256()
     selected_count = 0
@@ -146,6 +146,7 @@ def dry_run_family_schedule(polars, details, selected, bank, config, weights, lo
             families[family] += 1
             linkage["lyso" if combo.is_lyso else combo.linkage_family] += 1
             origins[details[identifier].get("structure_origin", "unspecified")] += 1
+            tokens.update(set(combo.chain_tokens))
             schedule_hash.update(f"{identifier}\t{combo.combination_id}\n".encode())
         head_counts[identifier] = actual
         if details[identifier]["is_special_case"]:
@@ -195,6 +196,7 @@ def dry_run_family_schedule(polars, details, selected, bank, config, weights, lo
             "within_2000000": selected_count <= 2_000_000,
             "unused_budget": config.max_structures - selected_count,
             "distinct_chain_ids_per_head": True,
+            "chain_token_counts": dict(sorted(tokens.items())),
             "full_graph_canonical_dedup_performed": False,
             "estimate_limitation": (
                 "Counts are exact for planned head/chain pairs. Full assembled-graph canonical "

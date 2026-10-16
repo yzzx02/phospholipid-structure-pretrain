@@ -1,6 +1,6 @@
 # STRUCTURE-ONLY PRETRAINING v0.1
 
-**当前阶段：独立结构库构建，不训练模型。** 已完成 phosphate 极性片段扩充，得到 195,305 个候选头基，并完成最终库上限 **200 万**的 family-aware 预算模拟。详见 [扩充方法](docs/PHOSPHATE_EXPANSION.md)和[扩充与预算结果](docs/PHOSPHATE_EXPANSION_RESULTS.md)。当前仍停在 dry-run，正式组装前需补足 P 链覆盖。基础入口见[建库执行与验证说明](docs/LIBRARY_BUILDER.md)及[找到的 MS-DIAL 原始库](docs/MSDIAL_LOCAL_SOURCES.md)。现有预训练网络、retrieval、loss 和训练脚本保持原实现。
+**当前阶段：200 万候选配对的正式结构库组装与检索审计，不训练模型。** 方法见 [2M 正式库与索引审计](docs/FULL_LIBRARY_V02.md)。用户已取消 P 链全覆盖硬门槛，保留原 2M 采样和少量 exact PE-P/A 分支。极性片段扩充结果见[扩充方法](docs/PHOSPHATE_EXPANSION.md)和[扩充与预算结果](docs/PHOSPHATE_EXPANSION_RESULTS.md)。新增独立的索引与审计入口；现有预训练网络、loss 和训练脚本保持原实现。
 
 当前仅实现**基于结构检索模板的磷脂结构预训练框架**。只保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
 

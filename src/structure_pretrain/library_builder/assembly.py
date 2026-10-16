@@ -8,11 +8,17 @@ from .validation import attachment
 SCAFFOLD = "[*:1]OCC(O[*:2])CO[*:3]"
 
 
-def assemble(chains: dict[str, ChainRule], combo: ChainCombination, polar: PolarRule):
+def assemble(
+    chains: dict[str, ChainRule],
+    combo: ChainCombination,
+    polar: PolarRule,
+    *,
+    fragment_parser=parse_molecule,
+):
     tokens = tuple(sorted(combo.chain_tokens, key=chain_sort_key))
     if len(tokens) not in (1, 2):
         raise ValueError("v0.1 assembles mono-phosphatidyl with one or two chains")
-    molecule = parse_molecule(SCAFFOLD)
+    molecule = fragment_parser(SCAFFOLD)
     scaffold_dummies = {
         atom.GetAtomMapNum(): (atom.GetIdx(), atom.GetNeighbors()[0].GetIdx())
         for atom in molecule.GetAtoms()
@@ -20,10 +26,10 @@ def assemble(chains: dict[str, ChainRule], combo: ChainCombination, polar: Polar
     }
     links, remove = [], [dummy for dummy, _ in scaffold_dummies.values()]
     fragments = [
-        (index + 1, parse_molecule(chains[token].representative_fragment_smiles))
+        (index + 1, fragment_parser(chains[token].representative_fragment_smiles))
         for index, token in enumerate(tokens)
     ]
-    fragments.append((3, parse_molecule(polar.polar_fragment_smiles)))
+    fragments.append((3, fragment_parser(polar.polar_fragment_smiles)))
     for slot, fragment in fragments:
         offset = molecule.GetNumAtoms()
         dummy, neighbor = attachment(fragment)

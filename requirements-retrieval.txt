@@ -1,0 +1,4 @@
+# Indexed CPU Morgan retrieval and offline readiness audit. No training dependencies.
+-r requirements-library.txt
+numpy>=2,<3
+usearch==2.26.4
