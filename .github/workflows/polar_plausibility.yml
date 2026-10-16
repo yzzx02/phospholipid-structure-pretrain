@@ -29,7 +29,7 @@ jobs:
           cache: pip
       - name: Install chemistry-only dependencies
         run: |
-          python -m pip install -r requirements-library.txt requests pytest==9.0.3 ruff==0.15.17
+          python -m pip install -r requirements-extraction.txt -r requirements-pubchem.txt pytest==9.0.3 ruff==0.15.17
           python -m pip install --no-deps -e .
       - name: Lint and offline tests, no private data or training
         run: |
