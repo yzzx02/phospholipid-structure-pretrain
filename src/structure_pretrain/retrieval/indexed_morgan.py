@@ -3,6 +3,7 @@
 import hashlib
 import json
 import time
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -144,6 +145,10 @@ class FingerprintCache:
         start, end = self.offsets[group : group + 2]
         return self.postings[start : min(end, start + count)]
 
+    @lru_cache(maxsize=65536)
+    def rdkit_group(self, group):
+        return DataStructs.CreateFromBinaryText(bytes(self.vectors[group]))
+
 
 class IndexedMorganRetriever:
     """Reusable full-library query API. Returns row IDs for the Parquet template loader."""
@@ -157,6 +162,14 @@ class IndexedMorganRetriever:
         self.settings = report["selected_settings"]
         self.index.expansion_search = self.settings["expansion_search"]
         self.hashes = load_array(self.cache.path / "group_hashes.npy")
+        readiness = self.cache.path / "retrieval_readiness_report.json"
+        self.exact_zero_candidates = (
+            json.loads(readiness.read_text(encoding="utf-8"))
+            .get("zero_template_exact_confirmation", {})
+            .get("exact_candidates", {})
+            if readiness.exists()
+            else {}
+        )
 
     def retrieve_smiles(self, smiles):
         from rdkit.Chem import rdFingerprintGenerator
@@ -182,6 +195,16 @@ class IndexedMorganRetriever:
             and self.hashes[group] == key
             and np.array_equal(vector, self.cache.vectors[group])
         )
+        if own and str(group) in self.exact_zero_candidates:
+            return [
+                {
+                    "row_index": row,
+                    "structure_id": bytes(self.cache.ids[row]).decode(),
+                    "structure_similarity": score,
+                }
+                for row, score in self.exact_zero_candidates[str(group)]
+                if bytes(self.cache.ids[row]) != target_id
+            ][:10]
         if own and self.cache.offsets[group + 1] - self.cache.offsets[group] >= 11:
             keys = [group]
         else:
@@ -190,7 +213,14 @@ class IndexedMorganRetriever:
             )
             keys = ([group] if own else []) + list(match.keys)
         hits = rank_groups(
-            vector, keys, self.cache.vectors, self.cache.members, self.cache.ids, -1, k=11
+            vector,
+            keys,
+            self.cache.vectors,
+            self.cache.members,
+            self.cache.ids,
+            -1,
+            k=11,
+            fp_lookup=self.cache.rdkit_group,
         )
         return [
             {
@@ -219,10 +249,17 @@ def make_index(vectors, keys=None, expansion_search=128, threads=4):
     return index
 
 
-def rank_groups(query_fp, group_keys, vectors, members, ids, exclude_row, k=10, threshold=0.4):
-    keys = list(dict.fromkeys(int(g) for g in group_keys))
+def rank_groups(
+    query_fp, group_keys, vectors, members, ids, exclude_row, k=10, threshold=0.4, fp_lookup=None
+):
+    # HNSW keys are nearest-first by native Tanimoto; an own FP group is prepended
+    # at distance zero. >=K+1 groups suffice for K graphs after excluding the target.
+    keys = list(dict.fromkeys(int(g) for g in group_keys))[: max(16, k + 1)]
     query = DataStructs.CreateFromBinaryText(bytes(query_fp))
-    refs = [DataStructs.CreateFromBinaryText(bytes(vectors[g])) for g in keys]
+    refs = [
+        (fp_lookup(g) if fp_lookup else DataStructs.CreateFromBinaryText(bytes(vectors[g])))
+        for g in keys
+    ]
     scores = DataStructs.BulkTanimotoSimilarity(query, refs)
     candidates = []
     for group, score in zip(keys, scores):
@@ -300,6 +337,7 @@ def exact_benchmark(cache, output, target_count=10000, reference_count=20000, se
                 members,
                 cache.ids,
                 int(row),
+                fp_lookup=cache.rdkit_group,
             )
             truth = gold[i]
             selected = {r for r, _ in hits}
@@ -319,6 +357,7 @@ def exact_benchmark(cache, output, target_count=10000, reference_count=20000, se
         result = {
             "expansion_search": expansion,
             "candidate_groups": candidate_groups,
+            "rdkit_rerank_groups": 16,
             "strict_id_recall_at_10": float(np.mean(strict)),
             "tie_aware_recall_at_10": float(np.mean(tie_aware)),
             "top1_score_recall": float(np.mean(top1)),
@@ -386,6 +425,59 @@ def summarize_metrics(counts, maximum, mean):
     }
 
 
+def exact_zero_check(cache, counts, maximum, means, limit=100):
+    """Confirm rare zero-template groups without all-library all-pairs computation."""
+    zero = np.flatnonzero(counts == 0)
+    if len(zero) > limit:
+        return {"status": "unconfirmed_many_zeros", "zero_groups": len(zero), "checked": 0}
+    corrected, exact_candidates = 0, {}
+    for group in zero:
+        query = cache.rdkit_group(int(group))
+        best = []
+        for start in range(0, len(cache.vectors), 4096):
+            keys = range(start, min(start + 4096, len(cache.vectors)))
+            refs = [DataStructs.CreateFromBinaryText(bytes(cache.vectors[g])) for g in keys]
+            scores = np.asarray(DataStructs.BulkTanimotoSimilarity(query, refs))
+            if (
+                start <= group < start + len(scores)
+                and cache.offsets[group + 1] - cache.offsets[group] == 1
+            ):
+                scores[group - start] = -1
+            positions = np.flatnonzero(scores >= 0.4)
+            if len(positions) > 16:
+                positions = positions[np.argpartition(-scores[positions], 15)[:16]]
+            best.extend((start + int(i), float(scores[i])) for i in positions)
+            best = sorted(best, key=lambda item: -item[1])[:16]
+        row = int(cache.members(int(group), 1)[0])
+        hits = rank_groups(
+            cache.fp[row],
+            [g for g, _ in best],
+            cache.vectors,
+            cache.members,
+            cache.ids,
+            row,
+            fp_lookup=cache.rdkit_group,
+        )
+        counts[group] = len(hits)
+        exact_candidates[str(int(group))] = hits
+        if hits:
+            maximum[group] = hits[0][1]
+            means[group] = sum(score for _, score in hits) / len(hits)
+            corrected += 1
+        print(
+            f"exact zero-template confirmation group {int(group)}: {len(hits)} templates",
+            flush=True,
+        )
+    return {
+        "status": "complete",
+        "zero_groups_before_check": len(zero),
+        "checked": len(zero),
+        "groups_corrected": corrected,
+        "exact_zero_groups": int(np.count_nonzero(counts == 0)),
+        "exact_candidates": exact_candidates,
+    }
+
+
 def full_readiness(cache, benchmark, output):
     output = Path(output)
     settings = benchmark["selected_settings"]
@@ -423,6 +515,7 @@ def full_readiness(cache, benchmark, output):
                 cache.members,
                 cache.ids,
                 row,
+                fp_lookup=cache.rdkit_group,
             )
             counts[group] = len(hits)
             if hits:
@@ -442,6 +535,7 @@ def full_readiness(cache, benchmark, output):
                 f"readiness {start + len(groups)}/{len(todo)} nontrivial fingerprint groups",
                 flush=True,
             )
+    zero_confirmation = exact_zero_check(cache, counts, maximum, means)
     row_count, row_max, row_mean = (
         counts[cache.group_of_row],
         maximum[cache.group_of_row],
@@ -491,6 +585,7 @@ def full_readiness(cache, benchmark, output):
         "grouped": grouped,
         "all_pairs_full_library_computation_performed": False,
         "readiness_is_approximate_search_based": True,
+        "zero_template_exact_confirmation": zero_confirmation,
         "training_performed": False,
         "dataset_split_created": False,
         "structures_sha256": cache.manifest["structures_sha256"],

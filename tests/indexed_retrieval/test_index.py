@@ -1,4 +1,5 @@
 import hashlib
+from types import SimpleNamespace
 
 import numpy as np
 import pyarrow as pa
@@ -9,6 +10,7 @@ from rdkit.Chem import rdFingerprintGenerator
 from structure_pretrain.retrieval.indexed_morgan import (
     IndexedMorganRetriever,
     exact_benchmark,
+    exact_zero_check,
     full_readiness,
     make_index,
     prepare_cache,
@@ -74,3 +76,21 @@ def test_exact_rerank_filters_subthreshold_and_deduplicates_group_keys():
     postings = {0: [0, 1], 1: [2]}
     hits = rank_groups(vectors[0], [0, 0, 1], vectors, lambda g, count: postings[g][:count], ids, 0)
     assert hits == [(1, 1.0)]
+
+
+def test_zero_template_exact_confirmation_recovers_missed_graphs():
+    vectors = np.zeros((3, 256), dtype=np.uint8)
+    vectors[:, 0] = (1, 2, 3)
+    rows = {0: [0, 1], 1: [2], 2: [3]}
+    cache = SimpleNamespace(
+        vectors=vectors,
+        fp=vectors[[0, 0, 1, 2]],
+        offsets=np.array([0, 2, 3, 4]),
+        ids=np.array(["a", "b", "c", "d"], dtype="S67"),
+        members=lambda g, n: rows[g][:n],
+        rdkit_group=lambda g: DataStructs.CreateFromBinaryText(bytes(vectors[g])),
+    )
+    counts, maximum, means = np.array([0, 1, 1]), np.zeros(3), np.zeros(3)
+    report = exact_zero_check(cache, counts, maximum, means)
+    assert report["groups_corrected"] == 1
+    assert counts[0] == 2 and maximum[0] == 1 and means[0] == 0.75

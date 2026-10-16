@@ -71,6 +71,9 @@ P 只用于 exact PE、生成 analog 不冒认 direct source CID，并重新统�
 HNSW 仅索引不同的指纹向量，使用 [USearch](https://github.com/unum-cloud/usearch) 2.26.4 的
 bit-packed Tanimoto 距离，connectivity=32、expansion_add=256。
 候选组再经 **RDKit BulkTanimotoSimilarity 精确重排**，最后展开为不同完整结构模板。
+HNSW 返回的候选已按原生 Tanimoto 距离排序；保留前 16 个不同指纹组交给 RDKit 重排，
+覆盖十个模板及排除目标所需的组数，并在相同流程的 exact benchmark 中检验召回。
+RDKit 指纹对象缓存最多 65,536 组，避免反复构造对象导致全库审计过慢。
 若某指纹组至少有 11 个不同图，则排除目标后可直接得到十个 similarity=1 的模板；这是精确捷径。
 
 先固定 seed=42，从正式库随机抽 20,000 个 reference graphs，其中随机取 10,000 个 targets。
@@ -96,6 +99,8 @@ max similarity 和 top-10 mean similarity 分布。
 同指纹组内所有目标的数值指标相同，可按组计算后精确映射回每个 canonical 结构。
 按 chemistry_family、CORE/EXTENDED、结构来源，以及 PubChem-derived / generated analog 分组。
 来源和标签仅在统计分组时使用，不进入候选检索。
+对罕见零模板结果追加分块 exact Tanimoto 扫描以确认；最多复核 100 个零模板指纹组，
+若超过该上限则明确报告尚未精确确认，避免退化为全库两两计算。
 
 `IndexedMorganRetriever.retrieve_smiles()` 提供可复用查询 API，返回结构 ID、Parquet row index 和精确重排分数。
 `data/private/morgan_readiness_v0.1/` 保存原表哈希、指纹缓存、HNSW、benchmark、逐目标指标与汇总报告。

@@ -1,8 +1,8 @@
 # STRUCTURE-ONLY PRETRAINING v0.1
 
-**当前阶段：200 万候选配对的正式结构库组装与检索审计，不训练模型。** 方法见 [2M 正式库与索引审计](docs/FULL_LIBRARY_V02.md)。用户已取消 P 链全覆盖硬门槛，保留原 2M 采样和少量 exact PE-P/A 分支。极性片段扩充结果见[扩充方法](docs/PHOSPHATE_EXPANSION.md)和[扩充与预算结果](docs/PHOSPHATE_EXPANSION_RESULTS.md)。新增独立的索引与审计入口；现有预训练网络、loss 和训练脚本保持原实现。
+**当前阶段：200 万条唯一完整结构已生成并通过独立质量审计，正在做 Morgan 检索审计。** 详见 [正式库结果](docs/FULL_LIBRARY_V02_RESULTS.md)及[方法与入口](docs/FULL_LIBRARY_V02.md)。P 覆盖按用户最新要求仅作统计，保留原采样中的 3 个 exact PE-P/A 配对。现有预训练网络、loss 和训练脚本保持原实现，本轮未训练、未划分训练/验证集。
 
-当前仅实现**基于结构检索模板的磷脂结构预训练框架**。只保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
+当前实现**基于结构检索模板的磷脂结构预训练框架**，保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。本轮另提供独立的完整结构库、中性分子式、冻结链规则及索引。训练入口仍使用下述 dummy 数据；真实训练的数据适配、词表、划分和模板泄漏规则留待后续讨论。
 
 本仓库的示例使用小型 alkyl phosphate toy structures 和**人为输出标签**，不是化学上配套的真实磷脂训练集。它们只核验接口、张量、梯度、训练和 checkpoint。当前不提供预测准确率结论。
 
@@ -230,9 +230,10 @@ phospholipid-structure-pretrain/
 扩充表在 `data/private/polar_expansion_v0.2/polar_moieties_expanded_v0.2.tsv`，
 包含 145,322 个真实 PubChem 来源片段和 49,983 个规则生成 phosphate analog。
 新版配置为 `configs/library_build_expanded_v02.yaml`，允许上限 2,000,000；
-旧版配置与上限保留。v0.2 默认只检查输入和预算，本轮不运行最终完整库。
+旧版配置与上限保留。旧 v0.2 入口默认仍只检查输入和预算；本轮使用独立
+`scripts/build_2m_library.py --execute` 已生成 `data/structure_library_v0.2/`。
 后续仍需处理标签对齐、训练/验证/测试划分与检索库使用规则。
 当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
 真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
 
-MS/MS、谱图检索、Spectrum Transformer、微调和完整候选组装全部留待后续讨论，本仓库当前入口不包含这些流程。
+MS/MS、谱图检索、Spectrum Transformer 和微调留待后续讨论，本仓库当前入口不包含这些流程。
