@@ -85,9 +85,11 @@ python scripts/build_structure_library_v02.py
 ## 离线测试
 
 ```bash
-python -m pytest -q --confcutdir=tests tests/library_builder tests/pubchem_polar \
-  tests/chain_extraction tests/polar_plausibility tests/library_v02
+for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02; do
+  python -m pytest -q --confcutdir="tests/$suite" "tests/$suite"
+done
 ```
 
 v0.2 整体组装测试只使用明确标记的微型 fixture，验证预算、规则、去重与来源字段，
 不使用私有大表，也不训练。完整库规模下的速度和磁盘用量尚未实测。
+每个化学测试目录分别设置 confcutdir，避免加载依赖 PyTorch 的模型总测试配置。

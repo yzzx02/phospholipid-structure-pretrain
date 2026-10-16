@@ -36,4 +36,6 @@ jobs:
           python -m ruff check .
           python -m ruff format --check .
           python -c "import sys; import structure_pretrain.library_builder.full_library_v02; assert 'torch' not in sys.modules"
-          python -m pytest -q --confcutdir=tests tests/library_builder tests/pubchem_polar tests/chain_extraction tests/polar_plausibility tests/library_v02
+          for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02; do
+            python -m pytest -q --confcutdir="tests/$suite" "tests/$suite"
+          done
