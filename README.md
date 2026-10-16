@@ -1,6 +1,6 @@
 # STRUCTURE-ONLY PRETRAINING v0.1
 
-**当前阶段：独立结构库构建，不训练模型。** 已新增预算控制的 library builder 和本地 MS-DIAL 元数据核验入口，详见 [建库执行与验证说明](docs/LIBRARY_BUILDER.md)及 [找到的 MS-DIAL 原始库](docs/MSDIAL_LOCAL_SOURCES.md)。现有预训练网络、retrieval、loss 和训练脚本保持原实现。
+**当前阶段：独立结构库构建，不训练模型。** 已完成 phosphate 极性片段扩充，得到 195,305 个候选头基，并完成最终库上限 **200 万**的 family-aware 预算模拟。详见 [扩充方法](docs/PHOSPHATE_EXPANSION.md)和[扩充与预算结果](docs/PHOSPHATE_EXPANSION_RESULTS.md)。当前仍停在 dry-run，正式组装前需补足 P 链覆盖。基础入口见[建库执行与验证说明](docs/LIBRARY_BUILDER.md)及[找到的 MS-DIAL 原始库](docs/MSDIAL_LOCAL_SOURCES.md)。现有预训练网络、retrieval、loss 和训练脚本保持原实现。
 
 当前仅实现**基于结构检索模板的磷脂结构预训练框架**。只保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。真实磷脂结构库、中性分子式库、headgroup 切割规则和 chain vocabulary 由后续数据构建阶段提供。
 
@@ -226,8 +226,11 @@ phospholipid-structure-pretrain/
 链 vocabulary 已冻结，真实 polar 候选按 P attachment 边界生成审核包。
 第二层 CORE/EXTENDED 筛选、特殊结构核验和独立 v0.2 组装入口见
 [POLAR_PLAUSIBILITY.md](docs/POLAR_PLAUSIBILITY.md)。
-正式筛选输出在本地 `data/private/pubchem_polar_plausibility_v0.1/`；
-v0.2 默认只检查输入和预算，本轮不运行最终完整库。
+正式 baseline 筛选输出在本地 `data/private/pubchem_polar_plausibility_v0.1/`，保持原样；
+扩充表在 `data/private/polar_expansion_v0.2/polar_moieties_expanded_v0.2.tsv`，
+包含 145,322 个真实 PubChem 来源片段和 49,983 个规则生成 phosphate analog。
+新版配置为 `configs/library_build_expanded_v02.yaml`，允许上限 2,000,000；
+旧版配置与上限保留。v0.2 默认只检查输入和预算，本轮不运行最终完整库。
 后续仍需处理标签对齐、训练/验证/测试划分与检索库使用规则。
 当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
 真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。

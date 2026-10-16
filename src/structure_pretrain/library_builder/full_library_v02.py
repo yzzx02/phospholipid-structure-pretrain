@@ -19,6 +19,7 @@ from .canonicalize import nonisomeric_smiles, parse_molecule
 from .chain_combinations import active_anchors, build_combination_bank, make_combination, permitted
 from .chain_library import boolean, import_chains
 from .deduplicate import StructureStore
+from .family_sampling import allocate_family_budget, planned_extras
 from .parquet_io import (
     CHAIN_SCHEMA,
     COMBINATION_SCHEMA,
@@ -44,6 +45,12 @@ PROVENANCE_FIELDS = [
     ("is_full_lipid_reported", pa.bool_()),
     ("is_programmatically_assembled", pa.bool_()),
     ("notes", pa.string()),
+    ("structure_origin", pa.string()),
+    ("source_cids", pa.list_(pa.int64())),
+    ("parent_source_cids", pa.list_(pa.int64())),
+    ("source_attachment_provenance", pa.string()),
+    ("also_generated_as_phosphate_analog", pa.bool_()),
+    ("analog_parent_polar_ids", pa.list_(pa.string())),
 ]
 STRUCTURES_V02 = pa.schema(list(STRUCTURE_SCHEMA) + [pa.field(*f) for f in PROVENANCE_FIELDS])
 POLARS_V02 = pa.schema(
@@ -56,6 +63,7 @@ class AnchorOptions:
     adaptive_anchor_threshold: float = 0.90
     mandatory_common_anchor_count: int = 3
     optional_anchor_budget_fraction: float = 0.35
+    family_sampling_weight: dict[str, float] | None = None
 
 
 def load_config_v02(path):
@@ -74,6 +82,15 @@ def load_config_v02(path):
         and options.mandatory_common_anchor_count >= 3
     ):
         raise ValueError("Invalid adaptive anchor options")
+    if options.family_sampling_weight is not None:
+        from math import isfinite
+
+        if set(options.family_sampling_weight) != {
+            "phosphate",
+            "phosphonate",
+            "polyphosphate",
+        } or any(not isfinite(v) or v <= 0 for v in options.family_sampling_weight.values()):
+            raise ValueError("All three chemistry families need finite positive sampling weights")
     return config, options
 
 
@@ -82,10 +99,18 @@ def read_tsv(path):
         return list(csv.DictReader(stream, delimiter="\t"))
 
 
+def list_field(row, name):
+    value = row.get(name) or []
+    return json.loads(value) if isinstance(value, str) else value
+
+
 def metadata(row):
+    family = row.get("chemistry_family", row["polar_family"])
+    if row.get("special_case_family") in {"keto_inositol", "PI_reference"}:
+        family = "phosphate"
     return {
         "polar_plausibility_tier": row["polar_plausibility_tier"],
-        "chemistry_family": row.get("chemistry_family", row["polar_family"]),
+        "chemistry_family": family,
         "is_special_case": boolean(row.get("is_special_case"), False),
         "special_case_family": row.get("special_case_family", ""),
         "evidence_source": row.get("evidence_source") or row["source"],
@@ -94,6 +119,23 @@ def metadata(row):
         "is_full_lipid_reported": False,
         "is_programmatically_assembled": True,
         "notes": row.get("notes", ""),
+        "structure_origin": row.get("structure_origin")
+        or (
+            "generated_keto_inositol"
+            if row["source"] == "assembled_from_known_polar"
+            else "pubchem_baseline"
+            if row["source"] == "PubChem"
+            else "external_supplied"
+        ),
+        "source_cids": list_field(row, "source_cids"),
+        "parent_source_cids": list_field(row, "parent_source_cids"),
+        "source_attachment_provenance": json.dumps(
+            list_field(row, "source_attachment_provenance"), sort_keys=True
+        ),
+        "also_generated_as_phosphate_analog": boolean(
+            row.get("also_generated_as_phosphate_analog"), False
+        ),
+        "analog_parent_polar_ids": list_field(row, "analog_parent_polar_ids"),
     }
 
 
@@ -177,7 +219,10 @@ def plan_anchors(polars, anchors, config, options, required_combos=None):
     adaptive = (
         len(polars) * len(anchors) >= config.max_structures * options.adaptive_anchor_threshold
     )
-    common = anchors[: options.mandatory_common_anchor_count] if adaptive else anchors
+    family_aware = options.family_sampling_weight is not None
+    common = (
+        anchors[: options.mandatory_common_anchor_count] if adaptive or family_aware else anchors
+    )
     selected = {p.polar_id: {c.combination_id for c in common} for p in polars}
     if any(not p.allow_aa for p in polars):
         raise ValueError("v0.2 requires shared AA backgrounds for every polar")
@@ -193,7 +238,7 @@ def plan_anchors(polars, anchors, config, options, required_combos=None):
     optional_remaining = int(
         (config.max_structures - mandatory_count) * options.optional_anchor_budget_fraction
     )
-    if adaptive:
+    if adaptive and not family_aware:
         optional = anchors[options.mandatory_common_anchor_count :]
         # Cycle heads in a seed-derived order, rotating anchor choice independently per head.
         order = sorted(polars, key=lambda p: stable_number(f"{config.seed}|optional|{p.polar_id}"))
@@ -208,6 +253,9 @@ def plan_anchors(polars, anchors, config, options, required_combos=None):
                     optional_remaining -= 1
     return selected, {
         "adaptive_anchors": adaptive,
+        "anchor_policy": "three_common_then_family_weighted_extras"
+        if family_aware
+        else "adaptive_shared_anchors",
         "common_anchor_ids": [c.combination_id for c in common],
         "required_before_optional_rotation": mandatory_count,
         "selected_anchor_and_special_structures": sum(len(v) for v in selected.values()),
@@ -230,9 +278,10 @@ def preflight_v02(config, options, chains_path, approved_path, report_path, spec
     report = {
         "status": "preflight_complete_no_assembly",
         "polar_count": len(polars),
-        "real_filtered_polar_count": json.loads(Path(report_path).read_text())[
-            "approved_polar_count"
-        ],
+        "real_filtered_polar_count": json.loads(Path(report_path).read_text(encoding="utf-8")).get(
+            "empirical_polar_count",
+            json.loads(Path(report_path).read_text(encoding="utf-8"))["approved_polar_count"],
+        ),
         "generated_supplemental_head_count": sum(
             p.source == "assembled_from_known_polar" for p in polars
         ),
@@ -333,28 +382,41 @@ def build_v02(
                 total_extra_target, round(config.max_structures * config.lyso_fraction_target)
             )
             extra_counts = Counter()
-            # Bounded head turns avoid retaining H deterministic sampling generators.
-            for index, polar in enumerate(polars):
-                quota = min(config.max_extra_per_head, base + (index < remainder))
-                lyso_quota = min(
-                    quota, (lyso_remaining + len(polars) - index - 1) // (len(polars) - index)
+            if options.family_sampling_weight is not None:
+                budget = allocate_family_budget(
+                    polars, details, selected, config, options.family_sampling_weight
                 )
-                used = 0
-                for combo in sampler.lyso_candidates(polar):
-                    if used >= lyso_quota or store.count >= config.max_structures:
-                        break
-                    if combo.combination_id not in selected[polar.polar_id] and add(polar, combo):
-                        used += 1
-                lyso_remaining -= used
-                extra_counts[polar.polar_id] += used
-                for combo in sampler.candidates(polar, lyso=False):
-                    if (
-                        extra_counts[polar.polar_id] >= quota
-                        or store.count >= config.max_structures
-                    ):
-                        break
-                    if combo.combination_id not in selected[polar.polar_id] and add(polar, combo):
-                        extra_counts[polar.polar_id] += 1
+                for polar in polars:
+                    for combo in planned_extras(polar, selected[polar.polar_id], budget, sampler):
+                        if add(polar, combo):
+                            extra_counts[polar.polar_id] += 1
+            else:
+                # Preserve the earlier uniform v0.2 schedule for its existing configuration.
+                for index, polar in enumerate(polars):
+                    quota = min(config.max_extra_per_head, base + (index < remainder))
+                    lyso_quota = min(
+                        quota, (lyso_remaining + len(polars) - index - 1) // (len(polars) - index)
+                    )
+                    used = 0
+                    for combo in sampler.lyso_candidates(polar):
+                        if used >= lyso_quota or store.count >= config.max_structures:
+                            break
+                        if combo.combination_id not in selected[polar.polar_id] and add(
+                            polar, combo
+                        ):
+                            used += 1
+                    lyso_remaining -= used
+                    extra_counts[polar.polar_id] += used
+                    for combo in sampler.candidates(polar, lyso=False):
+                        if (
+                            extra_counts[polar.polar_id] >= quota
+                            or store.count >= config.max_structures
+                        ):
+                            break
+                        if combo.combination_id not in selected[polar.polar_id] and add(
+                            polar, combo
+                        ):
+                            extra_counts[polar.polar_id] += 1
             accumulator = ReportAccumulator(polars)
             special_rows, special_counts = [], Counter()
             per_head_anchors = Counter()
@@ -405,6 +467,11 @@ def build_v02(
                     ),
                     "programmatically_assembled_special_structures": len(special_rows),
                     "within_1500000": store.count <= 1_500_000,
+                    "within_2000000": store.count <= 2_000_000,
+                    "within_configured_budget": store.count <= config.max_structures,
+                    "chemistry_family_used_for_extra_budget": options.family_sampling_weight
+                    is not None,
+                    "family_sampling_weight": options.family_sampling_weight,
                     "full_lipid_library_generated": True,
                     "provenance_used_for_loss_sampling_or_labels": False,
                 }

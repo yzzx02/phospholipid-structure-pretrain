@@ -1,0 +1,15 @@
+schema_version: polar-expansion-v0.2
+seed: 42
+workers: 4
+baseline_sha256: 8b675f2b3d6a5d19dbc6801c3cf68a5782d153a5c9107fc2def2572177bbea8b
+baseline_family_counts:
+  phosphate: 39591
+  phosphonate: 62867
+  polyphosphate: 939
+allowed_rescue_status: MULTIPLE_ATTACHMENT_AMBIGUITY
+generate_analogs_only_if_phosphate_less_than_phosphonate: true
+dry_run_budgets: [1500000, 2000000]
+family_sampling_weight:
+  phosphate: 2.0
+  phosphonate: 1.0
+  polyphosphate: 1.0

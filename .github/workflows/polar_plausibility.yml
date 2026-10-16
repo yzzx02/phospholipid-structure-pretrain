@@ -3,14 +3,20 @@ on:
   push:
     paths: &polar_paths
       - 'src/structure_pretrain/polar_plausibility/**'
-      - 'src/structure_pretrain/library_builder/*v02.py'
+      - 'src/structure_pretrain/polar_expansion/**'
+      - 'src/structure_pretrain/library_builder/**'
       - 'scripts/*polar_plausibility.py'
       - 'scripts/filter_pubchem_polar.py'
+      - 'scripts/expand_phosphate_polars.py'
+      - 'scripts/dry_run_expanded_library.py'
+      - 'scripts/audit_polar_expansion.py'
       - 'scripts/*v02.py'
       - 'configs/polar*.yaml'
       - 'configs/library_build_v02.yaml'
+      - 'configs/library_build_expanded_v02.yaml'
       - 'tests/polar_plausibility/**'
       - 'tests/library_v02/**'
+      - 'tests/polar_expansion/**'
       - '.github/workflows/polar_plausibility.yml'
   pull_request:
     paths: *polar_paths
@@ -36,6 +42,6 @@ jobs:
           python -m ruff check .
           python -m ruff format --check .
           python -c "import sys; import structure_pretrain.library_builder.full_library_v02; assert 'torch' not in sys.modules"
-          for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02; do
+          for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02 polar_expansion; do
             python -m pytest -q --confcutdir="tests/$suite" "tests/$suite"
           done

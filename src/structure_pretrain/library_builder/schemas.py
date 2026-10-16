@@ -5,6 +5,7 @@ import yaml
 
 ELEMENTS = ("C", "H", "N", "O", "P", "S", "F", "Cl", "Br", "I")
 HARD_MAX_STRUCTURES = 1_500_000
+HARD_MAX_STRUCTURES_V02 = 2_000_000
 
 
 class LibraryValidationError(ValueError):
@@ -124,8 +125,13 @@ class BuildConfig:
     chain_sampling: ChainSamplingConfig = field(default_factory=ChainSamplingConfig)
 
     def validate(self):
-        if not 1 <= self.max_structures <= HARD_MAX_STRUCTURES:
-            raise ValueError("max_structures must be between 1 and 1,500,000")
+        maximum = (
+            HARD_MAX_STRUCTURES_V02
+            if self.schema_version == "structure-library-v0.2"
+            else HARD_MAX_STRUCTURES
+        )
+        if not 1 <= self.max_structures <= maximum:
+            raise ValueError(f"max_structures must be between 1 and {maximum:,}")
         if self.max_extra_per_head < 0 or self.max_chain_combinations < 1:
             raise ValueError("Invalid per-head or combination-bank budget")
         if not 0 <= self.lyso_fraction_target < 1 or self.parquet_batch_size < 1:
