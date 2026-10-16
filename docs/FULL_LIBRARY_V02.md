@@ -2,6 +2,7 @@
 
 本轮执行完整结构库组装、质量审计和检索可用性审计，不训练、不创建 train/validation/test 划分。
 所有批量输入、完整结构、指纹索引和逐目标指标保存在本地，不上传 GitHub。
+正式实测数量、分组检索指标与 API 核验见 [FULL_LIBRARY_V02_RESULTS.md](FULL_LIBRARY_V02_RESULTS.md)。
 
 ## 本轮最新 P 链规则
 
