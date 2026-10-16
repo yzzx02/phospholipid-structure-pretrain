@@ -1,0 +1,10 @@
+schema_version: polar-reactivity-v0.1
+rules:
+  - reason: REJECT_REACTIVE_O_HALOGEN
+    smarts: '[O]-[F,Cl,Br,I]'
+  - reason: REJECT_ACYL_HALIDE
+    smarts: '[C](=[O])-[F,Cl,Br,I]'
+  - reason: REJECT_SULFONYL_HALIDE
+    smarts: '[S](=[O])(=[O])-[F,Cl,Br,I]'
+  - reason: REJECT_PEROXIDE
+    smarts: '[O]-[O]'

@@ -1,0 +1,31 @@
+schema_version: polar-plausibility-v0.1
+seed: 42
+core:
+  max_molecular_weight: 350
+  max_carbon_count: 15
+  max_phosphorus_count: 2
+  max_aliphatic_carbon_run: 6
+  min_hetero_fraction: 0.20
+  max_halogen_count: 2
+extended:
+  max_molecular_weight: 600
+  max_carbon_count: 30
+  max_phosphorus_count: 3
+  max_aliphatic_carbon_run: 10
+  min_hetero_fraction: 0.10
+  max_halogen_count: 4
+profiles:
+  conservative:
+    core_mw: 300
+    core_c: 12
+  default:
+    core_mw: 350
+    core_c: 15
+  broad:
+    core_mw: 450
+    core_c: 20
+spotcheck:
+  CORE: 100
+  EXTENDED: 150
+  HOLD: 100
+  per_reject_reason: 20

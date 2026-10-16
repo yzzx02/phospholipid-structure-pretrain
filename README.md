@@ -223,6 +223,13 @@ phospholipid-structure-pretrain/
 
 ## 后续数据 TODO
 
-链 vocabulary 已冻结，真实 polar 候选按 P attachment 边界生成审核包；后续先确认头基审核与 approved 导出规则，再讨论完整结构组装、标签对齐、训练/验证/测试划分与检索库使用规则。当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
+链 vocabulary 已冻结，真实 polar 候选按 P attachment 边界生成审核包。
+第二层 CORE/EXTENDED 筛选、特殊结构核验和独立 v0.2 组装入口见
+[POLAR_PLAUSIBILITY.md](docs/POLAR_PLAUSIBILITY.md)。
+正式筛选输出在本地 `data/private/pubchem_polar_plausibility_v0.1/`；
+v0.2 默认只检查输入和预算，本轮不运行最终完整库。
+后续仍需处理标签对齐、训练/验证/测试划分与检索库使用规则。
+当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
+真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
 
 MS/MS、谱图检索、Spectrum Transformer、微调和完整候选组装全部留待后续讨论，本仓库当前入口不包含这些流程。

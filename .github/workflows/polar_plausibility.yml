@@ -1,0 +1,39 @@
+name: Offline polar plausibility and v02 library fixtures
+on:
+  push:
+    paths: &polar_paths
+      - 'src/structure_pretrain/polar_plausibility/**'
+      - 'src/structure_pretrain/library_builder/*v02.py'
+      - 'scripts/*polar_plausibility.py'
+      - 'scripts/filter_pubchem_polar.py'
+      - 'scripts/*v02.py'
+      - 'configs/polar*.yaml'
+      - 'configs/library_build_v02.yaml'
+      - 'tests/polar_plausibility/**'
+      - 'tests/library_v02/**'
+      - '.github/workflows/polar_plausibility.yml'
+  pull_request:
+    paths: *polar_paths
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install chemistry-only dependencies
+        run: |
+          python -m pip install -r requirements-library.txt requests pytest==9.0.3 ruff==0.15.17
+          python -m pip install --no-deps -e .
+      - name: Lint and offline tests, no private data or training
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
+          python -c "import sys; import structure_pretrain.library_builder.full_library_v02; assert 'torch' not in sys.modules"
+          python -m pytest -q --confcutdir=tests tests/library_builder tests/pubchem_polar tests/chain_extraction tests/polar_plausibility tests/library_v02
