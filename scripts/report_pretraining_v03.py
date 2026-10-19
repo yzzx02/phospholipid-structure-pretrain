@@ -15,6 +15,33 @@ def report(prepared, smoke, destination):
     split = read_json(prepared / "split_audit.json")
     reconstruction = read_json(prepared / "reconstruction_audit.json")
     coverage = read_json(prepared / "retrieval_coverage_by_split.json")
+    manifest = read_json(prepared / "labels_manifest.json")
+    formula_stats = read_json(prepared / "formula_stats_train_only.json")
+    integrity = read_json(prepared / "retrieval_integrity_audit.json")
+    checked_pairs = sum(v["exact_scores_checked"] for v in integrity["modes"].values())
+    changed_files = [
+        "src/structure_pretrain/config.py",
+        "src/structure_pretrain/data/prepare_v03.py",
+        "src/structure_pretrain/data/real_structure_dataset.py",
+        "src/structure_pretrain/data/chain_vocab.py",
+        "src/structure_pretrain/data/schema.py",
+        "src/structure_pretrain/data/batching.py",
+        "src/structure_pretrain/retrieval/train_only.py",
+        "src/structure_pretrain/models/structure_pretrain_model.py",
+        "src/structure_pretrain/models/template_token_projector.py",
+        "src/structure_pretrain/models/chain_head.py",
+        "src/structure_pretrain/models/polar_decoder.py",
+        "src/structure_pretrain/training/losses.py",
+        "src/structure_pretrain/training/generation_metrics.py",
+        "src/structure_pretrain/training/lightning_module.py",
+        "src/structure_pretrain/utils/formula.py",
+        "train_structure_real.py",
+        "scripts/verify_pretraining_v03.py",
+        "scripts/report_pretraining_v03.py",
+        "scripts/count_parameters.py",
+        "scripts/check_rocm.py",
+        "tests/test_pretraining_v03.py",
+    ]
     models = {}
     for name in ("fingerprint", "graph"):
         path = smoke / name
@@ -58,6 +85,9 @@ def report(prepared, smoke, destination):
         "schema": "pretraining-v03-aggregate-results",
         "version": "v0.3",
         "structures_sha256": labels["structures_sha256"],
+        "frozen_inputs_sha256": manifest["inputs_sha256"],
+        "frozen_original_index_sha256": manifest["frozen_index_sha256"],
+        "principal_added_or_modified_files": changed_files,
         "model": {
             "outputs": ["chain_2_canonical_slots", "P_containing_polar_fragment"],
             "dimensions": {"structure": 256, "formula": 128, "fusion": 512},
@@ -134,7 +164,8 @@ def report(prepared, smoke, destination):
             "result_counts": [x["count"] for x in coverage["exact_low_count_confirmations"]],
         },
         "head_difficulty": read_json(prepared / "head_difficulty_audit.json")["results"],
-        "retrieval_integrity": read_json(prepared / "retrieval_integrity_audit.json"),
+        "retrieval_integrity": integrity,
+        "formula_statistics": formula_stats,
         "smoke_sampling": read_json(prepared / "smoke_sampling_audit.json")["splits"],
         "models": models,
         "gpu_verification": "pending execution on RX9070XT/WSL/ROCm",
@@ -153,11 +184,17 @@ def report(prepared, smoke, destination):
         "1. **文件和保留模块**：新增全库准备、train-only检索、lazy Dataset、"
         "真实训练/自由生成/迁移核验入口。保留3层GINE(128内部宽度、7/3特征、sum pooling)"
         "或Morgan MLP、2层模板集合Transformer与2层polar decoder。",
+        "主要新增/修改文件见[聚合JSON](results/PRETRAINING_V03_RESULTS.json)的"
+        "`principal_added_or_modified_files`；另更新六份`configs/pretraining_v03_*.yaml`、"
+        "README、数据契约、方法和WSL文档及对应回归测试/CPU CI。"
+        "原builder、冻结链词表和双键代表结构、7/3化学特征、dummy回归入口保留。",
         "2. **两个输出**：Chain Head `[B,2,323]` 与含P Polar Decoder `[B,L−1,63]`。"
         "ArchitectureHead及四槽路径已移除；槽位不代表sn。",
         "3. **融合**：结构256D、公式/差值20→128D、concat384→512D已实现。",
         "4. **公式/相似度**：中性式必填、target−template有符号差值；缺失直接失败。"
         "模型不接收formula_available或Tanimoto；分数留在检索cache，统计仅用合法train pairs。",
+        f"流式公式统计使用{formula_stats['pair_count']:,}个合法train pairs，"
+        "普通/跨头基两模式按初始50/50配置合并；validation/test不参与拟合。",
         f"5. **标签/tokenizer**：{labels['rows_checked']:,}行、"
         f"{labels['valid_polar_ids']:,}个有效polar，"
         f"OOV={tokens['oov']}，截断={tokens['truncated']}，max={tokens['max_polar_length']}（含BOS/EOS）。"
@@ -196,15 +233,19 @@ def report(prepared, smoke, destination):
         "",
         "ANN候选内RDKit精确重算；不足10均对全train bank精确回查。"
         "另作固定全bank精确样本benchmark，不将近似HNSW称为全库穷举TopK。详细分布见聚合JSON。",
+        f"两模式持久化缓存独立检查共{checked_pairs:,}"
+        "个template pairs，train权限、自身/重复图及禁止同头基违规均为0。",
         "",
         f"8. **标签重建**：{reconstruction['sample_count']}条，"
         f"包括全部{reconstruction['all_special_structures']}条特殊结构，"
         "组装、canonical完整图和分子式全部100%匹配。此为标签核验，不是模型预测率。",
         "",
-        "9. **本机真实训练**：每种encoder使用512 train/128 validation，先FP后GINE，"
-        "含保存、重载和实际恢复更新。以下为工程检查：",
+        "9. **本机真实训练**：每种encoder的固定可用池为512 train/128 validation，先FP后GINE。"
+        "各运行10步，再从checkpoint实际恢复到11步；batch2，累计各消费22条、22个不同train目标，"
+        "不是训练遍历了全部512条。以下为工程检查：",
         "",
-        "|encoder|实际累计steps|first→last train loss|val loss|greedy有效polar|EOS|peak RAM GiB|",
+        "|encoder|实际累计steps|first→last train loss|val loss|greedy有效polar|EOS|"
+        "初始10步RAM峰值 GiB|",
         "|---|---:|---|---:|---:|---:|---:|",
     ]
     for name, metrics in models.items():
@@ -217,12 +258,47 @@ def report(prepared, smoke, destination):
         )
     lines += [
         "",
+        "所有模块梯度有限且参数确有更新，checkpoint重载logits一致，恢复后继续完成一次optimizer更新。",
+        "",
+        "|encoder|实际参数数|teacher-forced polar token accuracy|初始10步 steps/s|"
+        "初始10步 samples/s|resume进程RAM峰值 GiB|",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for name, metrics in models.items():
+        resources = metrics["resources"]
+        resume_resources = metrics.get("resume_resources", resources)
+        lines.append(
+            f"|{name}|{metrics['parameters']:,}|"
+            f"{metrics['validation_teacher_forced']['polar_token_accuracy']:.4f}|"
+            f"{resources['steps_per_second']:.3f}|{resources['samples_per_second']:.3f}|"
+            f"{resume_resources['peak_RAM_bytes'] / 2**30:.3f}|"
+        )
+    lines += [
+        "",
+        "吞吐只计训练更新时间，不包含初始化、验证及greedy/beam生成；加载计时另列JSON。"
+        "RAM为主进程峰值，本机workers=0；CPU FP32运行，没有GPU显存测量。",
+        "",
         "自由生成固定16个validation目标，greedy和beam5从BOS起步，按原始EOS/长度状态评价；"
         "未修复或后验筛式。Teacher forcing、Top5/链/完整结构指标及吞吐详见JSON。"
-        "10–11个优化步骤不足以评价科学效果，0合法率也如实保留。",
+        "两模型16/16均耗尽长度且无EOS，polar合法率、Top5命中、完整组装及公式匹配均为0。"
+        "EOS停止代码路径有单测，但真实11步模型尚未学会停止，不能宣称已通过生成质量验收。"
+        "10–11个优化步骤不足以评价科学效果；本轮是structure-oracle检索条件，不能称作MS/MS鉴定准确率。",
         "",
         "10. **GPU待运行**：HIP/GPU、GINE和Transformer backward、FP32/BF16/FP16、checkpoint恢复、"
         "VRAM/吞吐与20k/2k/1000-step真实GPU smoke，命令见[WSL_ROCm.md](WSL_ROCm.md)。",
+        "在另一台电脑已经正确安装HIP PyTorch、迁移私有数据并进入仓库后执行：",
+        "",
+        "```bash",
+        "python scripts/verify_pretraining_v03.py",
+        "python scripts/check_rocm.py --output outputs/pretraining_v03/rocm_preflight",
+        "python train_structure_real.py --device rocm "
+        "--config configs/pretraining_v03_rocm_fp.yaml "
+        "--output outputs/pretraining_v03/rocm_smoke/fingerprint",
+        "python train_structure_real.py --device rocm "
+        "--config configs/pretraining_v03_rocm_gine.yaml "
+        "--output outputs/pretraining_v03/rocm_smoke/graph",
+        "```",
+        "",
         "",
         "11. **正式预训练门槛**：真实RX9070XT算子与GPU smoke尚未通过，这是目前必须完成的验收。"
         "标签/重建/无泄漏/合法bank/本机管线检查见上表。生成合法性与chain表现须在有意义的GPU训练后重新评价；"
@@ -234,6 +310,7 @@ def report(prepared, smoke, destination):
         "聚合数值：[PRETRAINING_V03_RESULTS.json](results/PRETRAINING_V03_RESULTS.json)。"
         "私有产物在`data/private/pretraining_v03/`与`outputs/pretraining_v03/local_smoke/`；"
         "结构、逐样本预测、索引和checkpoint不在GitHub。",
+        "全部冻结输入哈希及原索引哈希保存在聚合JSON；派生数据另存，原始2M与v0.3原库完整保留。",
     ]
     (destination.parent / "PRETRAINING_V03_RESULTS.md").write_text(
         "\n".join(lines) + "\n", encoding="utf-8"

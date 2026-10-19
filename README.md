@@ -52,6 +52,11 @@ python -m structure_pretrain.retrieval.train_only --threads 2
 
 ## 当前电脑：显式小训练
 
+本轮真实数据运行已完成：FP/GINE各累计11步（10步+实际恢复1步）。
+全库标签/划分/合法检索与671条标签重建审计通过；16目标自由生成均未产生EOS，合法率为0。
+详细指标、参数数量和十二项验收回答见[真实接入结果](docs/PRETRAINING_V03_RESULTS.md)。
+该结果用于核验管线，GPU生成质量仍待另一台设备验证。
+
 ```bash
 python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --output outputs/pretraining_v03/local_smoke/fingerprint
 python train_structure_real.py --config configs/pretraining_v03_local_gine.yaml --output outputs/pretraining_v03/local_smoke/graph
