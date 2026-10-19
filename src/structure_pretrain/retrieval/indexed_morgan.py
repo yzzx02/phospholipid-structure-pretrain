@@ -29,6 +29,21 @@ def load_array(path):
     return np.load(path, mmap_mode="r", allow_pickle=False)
 
 
+def selected_parquet_rows(path, row_indices, columns, batch_size=10000):
+    """Stream selected rows; empty selections never become Arrow null indices."""
+    source = pq.ParquetFile(path)
+    indices = np.asarray(sorted(set(int(i) for i in row_indices)), dtype=np.int64)
+    if len(indices) and (indices[0] < 0 or indices[-1] >= source.metadata.num_rows):
+        raise ValueError("Selected Parquet row index outside the source")
+    offset = 0
+    for batch in source.iter_batches(batch_size=batch_size, columns=columns):
+        left, right = np.searchsorted(indices, [offset, offset + batch.num_rows])
+        local = indices[left:right] - offset
+        if len(local):
+            yield from batch.take(local).to_pylist()
+        offset += batch.num_rows
+
+
 def prepare_cache(structures, output, log=print):
     structures, output = Path(structures), Path(output)
     manifest_path = output / "fingerprint_manifest.json"

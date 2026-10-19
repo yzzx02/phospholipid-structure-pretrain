@@ -16,6 +16,7 @@ from structure_pretrain.retrieval.indexed_morgan import (
     exact_benchmark,
     make_index,
     prepare_cache,
+    selected_parquet_rows,
 )
 
 
@@ -47,20 +48,18 @@ def build(library, output, threads):
         print(f"v0.3 index built in {time.monotonic() - start:.1f}s", flush=True)
     retriever = IndexedMorganRetriever(output)
     rng = np.random.default_rng(107)
-    sample = set(rng.choice(len(cache.fp), 100, replace=False).tolist())
+    sample = set(rng.choice(len(cache.fp), min(100, len(cache.fp)), replace=False).tolist())
     source = pq.ParquetFile(library / "increment_structures.parquet")
-    increment_samples = (
-        source.read(columns=["canonical_smiles", "structure_id"])
-        .take(
-            pa_indices := sorted(
-                rng.choice(
-                    source.metadata.num_rows, min(100, source.metadata.num_rows), replace=False
-                ).tolist()
-            )
-        )
-        .to_pylist()
+    increment_indices = rng.choice(
+        source.metadata.num_rows, min(100, source.metadata.num_rows), replace=False
     )
-    assert len(pa_indices) == len(increment_samples)
+    increment_samples = list(
+        selected_parquet_rows(
+            library / "increment_structures.parquet",
+            increment_indices,
+            ["canonical_smiles", "structure_id"],
+        )
+    )
     checked = 0
 
     def check(row):
@@ -74,14 +73,11 @@ def build(library, output, threads):
 
     for row in increment_samples:
         check(row)
-    offset = 0
-    for batch in pq.ParquetFile(library / "structures.parquet").iter_batches(
-        batch_size=10000, columns=["canonical_smiles", "structure_id"]
+    for row in selected_parquet_rows(
+        library / "structures.parquet", sample, ["canonical_smiles", "structure_id"]
     ):
-        positions = sorted(i - offset for i in sample if offset <= i < offset + batch.num_rows)
-        for row in batch.take(positions).to_pylist():
-            check(row)
-        offset += batch.num_rows
+        check(row)
+    assert checked == len(increment_indices) + len(sample)
     result = {
         "status": "passed",
         "version": "v0.3",

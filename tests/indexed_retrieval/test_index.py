@@ -15,7 +15,24 @@ from structure_pretrain.retrieval.indexed_morgan import (
     make_index,
     prepare_cache,
     rank_groups,
+    selected_parquet_rows,
 )
+
+
+def test_sparse_parquet_selection_skips_empty_batches_and_preserves_absolute_rows(tmp_path):
+    source = tmp_path / "rows.parquet"
+    pq.write_table(
+        pa.table({"id": list(range(10)), "text": [f"row-{i}" for i in range(10)]}), source
+    )
+    assert list(selected_parquet_rows(source, [9, 0, 9], ["text"], batch_size=2)) == [
+        {"text": "row-0"},
+        {"text": "row-9"},
+    ]
+    assert list(selected_parquet_rows(source, [], ["text"], batch_size=2)) == []
+    import pytest
+
+    with pytest.raises(ValueError, match="outside"):
+        list(selected_parquet_rows(source, [10], ["text"]))
 
 
 def test_native_tanimoto_and_rdkit_exact_scores_agree():
