@@ -1,8 +1,16 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
 
 from scripts.prepare_midterm_v03 import choose_stratified, relation_codes
-from structure_pretrain.training.quality_v03 import polar_checks
+from structure_pretrain.data.prepare_v03 import canonical_polar
+from structure_pretrain.library_builder.assembly import assemble
+from structure_pretrain.library_builder.chain_combinations import make_combination
+from structure_pretrain.library_builder.chain_library import import_chains
+from structure_pretrain.library_builder.polar_library import import_polars
+from structure_pretrain.library_builder.schemas import ELEMENTS
+from structure_pretrain.training.quality_v03 import polar_checks, score_candidate
 
 
 @pytest.mark.parametrize(
@@ -43,3 +51,38 @@ def test_diagnostic_sampling_reproducible_and_distinct_heads():
     assert len(set(groups[selected])) == 128
     assert not set(selected) & set(range(128))
     assert len({strata[int(i)] for i in selected}) == 12
+
+
+def test_complete_assembly_formula_and_isomer_failure_stages():
+    example = Path(__file__).resolve().parents[1] / "examples/library_builder"
+    errors = []
+    chains = import_chains(example / "chains.tsv", errors)
+    polar = import_polars(example / "polar_moieties.tsv", errors)[1]
+    assert not errors
+    text = polar.polar_fragment_smiles
+    graph = canonical_polar(text)
+    target = assemble(chains, make_combination(("A-14:0", "A-18:0"), chains), polar)
+    formula = [target[f"neutral_formula_{e}"] for e in ELEMENTS]
+
+    def score(tokens, expected_formula=formula):
+        return score_candidate(
+            text,
+            True,
+            tokens,
+            chains,
+            {graph: polar},
+            expected_formula,
+            graph,
+            target["canonical_smiles"],
+            {graph},
+        )
+
+    correct = score(["A-14:0", "A-18:0"])
+    assert correct["category"] == "correct_structure"
+    assert correct["morgan_similarity"] == 1
+    assert correct["template_copy"]
+    isomer = score(["A-16:0", "A-16:0"])
+    assert isomer["formula_match"] and not isomer["full_exact"]
+    assert isomer["category"] == "formula_matches_wrong_structure"
+    assert score(["A-16:0", "NULL"])["category"] == "formula_mismatch"
+    assert score(["NULL", "NULL"])["category"] == "chain_combination"

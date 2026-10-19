@@ -1,0 +1,282 @@
+{
+  "schema": "midterm-fixed-cohort-audit-v1",
+  "selection_manifest_sha256": "58d978d0b91125481b3d5a4fd868c0d76c131a0e834a89135fdbb52fcbde358e",
+  "cohorts": {
+    "train_pool": {
+      "count": 20000,
+      "rows_sha256": "7ba4c583dfdb609cc8c90e038e0b3ee3299f843266841f4447c0f63c5d8c441c",
+      "target_ids_sha256": "4d6859512a593e5c985c3946d904c9d796cb73ebeacebb5fa31a9d1903a0df4f",
+      "canonical_head_count": 18112
+    },
+    "validation_pool": {
+      "count": 2000,
+      "rows_sha256": "e15e36621d9fa53db646dfaf0094d4fdd162a7e9634120e77027773320dc5010",
+      "target_ids_sha256": "5e616443467f8237766747cc09ffb0bae69d7b2f65d49086b761450d581629ac",
+      "canonical_head_count": 1810,
+      "stratum_marginals": {
+        "family": {
+          "phosphate": 1229,
+          "phosphonate": 521,
+          "polyphosphate": 250
+        },
+        "label_length_bin": {
+          "L0": 477,
+          "L1": 696,
+          "L2": 477,
+          "L3": 350
+        },
+        "chain_linkage": {
+          "A/A": 1117,
+          "A": 35,
+          "O/A": 848
+        },
+        "cross_head_top1_similarity_bin": {
+          "S1": 331,
+          "S2": 1162,
+          "S3": 501,
+          "S0": 6
+        }
+      }
+    },
+    "smoke_128": {
+      "count": 128,
+      "rows_sha256": "5a7bd6f23b8c3e814a0d9ca0c7e8ad2c65744baebfaaf7461edd26134672a0f4",
+      "target_ids_sha256": "959a3c9b8b77338c8534c59a6774ad72fe1d2bf65e088e6f28e61c5a20b8c159",
+      "canonical_head_count": 122,
+      "stratum_marginals": {
+        "family": {
+          "phosphate": 86,
+          "phosphonate": 27,
+          "polyphosphate": 15
+        },
+        "label_length_bin": {
+          "L0": 25,
+          "L1": 52,
+          "L2": 33,
+          "L3": 18
+        },
+        "chain_linkage": {
+          "A/A": 78,
+          "A": 8,
+          "O/A": 42
+        },
+        "cross_head_top1_similarity_bin": {
+          "S1": 26,
+          "S2": 63,
+          "S3": 39
+        }
+      }
+    },
+    "diagnostic_512": {
+      "count": 512,
+      "rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd",
+      "target_ids_sha256": "bbf65a1976c0a11f57afe4e8d016b95c3fe570c0cf6472e3b29d6c1fdb1f696a",
+      "canonical_head_count": 512,
+      "stratum_marginals": {
+        "family": {
+          "phosphate": 212,
+          "phosphonate": 162,
+          "polyphosphate": 138
+        },
+        "label_length_bin": {
+          "L0": 112,
+          "L1": 138,
+          "L2": 140,
+          "L3": 122
+        },
+        "chain_linkage": {
+          "A/A": 172,
+          "A": 171,
+          "O/A": 169
+        },
+        "cross_head_top1_similarity_bin": {
+          "S1": 147,
+          "S2": 153,
+          "S3": 152,
+          "S0": 60
+        }
+      }
+    }
+  },
+  "template_relations": {
+    "scope": "all frozen TRAIN targets and both frozen Top10 caches",
+    "target_denominator": 1813451,
+    "relation_codes": {
+      "H": "different head, same chains",
+      "C": "same head, different chains",
+      "HC": "different head and chains"
+    },
+    "pair_identity_exclusion": "frozen unique canonical full graphs; self rows forbidden",
+    "mixture_unchanged": {
+      "normal": 0.5,
+      "polar_excluded": 0.5
+    },
+    "modes": {
+      "normal": {
+        "pair_count": 18134510,
+        "zero_template_targets": 0,
+        "pairs": {
+          "H": {
+            "count": 1991181,
+            "fraction": 0.1098006508033578
+          },
+          "C": {
+            "count": 11056313,
+            "fraction": 0.6096835811940879
+          },
+          "HC": {
+            "count": 5087016,
+            "fraction": 0.28051576800255423
+          }
+        },
+        "targets_with_at_least_one": {
+          "H": {
+            "count": 629114,
+            "fraction": 0.3469153564116152
+          },
+          "C": {
+            "count": 1752621,
+            "fraction": 0.9664562207636159
+          },
+          "HC": {
+            "count": 1428607,
+            "fraction": 0.7877836235994246
+          }
+        },
+        "target_type_bitmask_counts": {
+          "1": 44578,
+          "2": 233276,
+          "3": 106990,
+          "4": 3200,
+          "5": 13052,
+          "6": 947861,
+          "7": 464494
+        },
+        "bitmask_definition": "H=1,C=2,HC=4; multi-type targets retain multiple bits",
+        "relation_and_similarity_pair_counts": {
+          "H/[.4,.6)": 18232,
+          "H/[.6,.8)": 564690,
+          "H/[.8,.9)": 1030155,
+          "H/[.9,1]": 378104,
+          "C/[.4,.6)": 65,
+          "C/[.6,.8)": 695746,
+          "C/[.8,.9)": 4122581,
+          "C/[.9,1]": 6237921,
+          "HC/[.4,.6)": 5402,
+          "HC/[.6,.8)": 632270,
+          "HC/[.8,.9)": 3084021,
+          "HC/[.9,1]": 1365323
+        },
+        "relation_and_similarity_target_counts": {
+          "H/[.4,.6)": 3280,
+          "H/[.6,.8)": 152462,
+          "H/[.8,.9)": 451285,
+          "H/[.9,1]": 227339,
+          "C/[.4,.6)": 41,
+          "C/[.6,.8)": 248223,
+          "C/[.8,.9)": 1332965,
+          "C/[.9,1]": 1545870,
+          "HC/[.4,.6)": 1890,
+          "HC/[.6,.8)": 254027,
+          "HC/[.8,.9)": 1089957,
+          "HC/[.9,1]": 437316
+        },
+        "similarity_target_denominator": 1813451,
+        "similarity_pair_denominator": 18134510,
+        "per_top10_codes_preserved_privately": true,
+        "per_top10_codes_sha256": "fe4ffb027f60eebb520d0836b68c33d66c5daaa75babef8a56688d56a13dd4d9"
+      },
+      "polar_excluded": {
+        "pair_count": 18134490,
+        "zero_template_targets": 0,
+        "pairs": {
+          "H": {
+            "count": 3281105,
+            "fraction": 0.18093174939025028
+          },
+          "C": {
+            "count": 0,
+            "fraction": 0.0
+          },
+          "HC": {
+            "count": 14853385,
+            "fraction": 0.8190682506097497
+          }
+        },
+        "targets_with_at_least_one": {
+          "H": {
+            "count": 710433,
+            "fraction": 0.3917574833838907
+          },
+          "C": {
+            "count": 0,
+            "fraction": 0.0
+          },
+          "HC": {
+            "count": 1711825,
+            "fraction": 0.9439598864264874
+          }
+        },
+        "target_type_bitmask_counts": {
+          "1": 101626,
+          "4": 1103018,
+          "5": 608807
+        },
+        "bitmask_definition": "H=1,C=2,HC=4; multi-type targets retain multiple bits",
+        "relation_and_similarity_pair_counts": {
+          "H/[.4,.6)": 36664,
+          "H/[.6,.8)": 1164900,
+          "H/[.8,.9)": 1658778,
+          "H/[.9,1]": 420763,
+          "C/[.4,.6)": 0,
+          "C/[.6,.8)": 0,
+          "C/[.8,.9)": 0,
+          "C/[.9,1]": 0,
+          "HC/[.4,.6)": 78528,
+          "HC/[.6,.8)": 4919367,
+          "HC/[.8,.9)": 8187752,
+          "HC/[.9,1]": 1667738
+        },
+        "relation_and_similarity_target_counts": {
+          "H/[.4,.6)": 8537,
+          "H/[.6,.8)": 284904,
+          "H/[.8,.9)": 576014,
+          "H/[.9,1]": 228595,
+          "C/[.4,.6)": 0,
+          "C/[.6,.8)": 0,
+          "C/[.8,.9)": 0,
+          "C/[.9,1]": 0,
+          "HC/[.4,.6)": 15429,
+          "HC/[.6,.8)": 810173,
+          "HC/[.8,.9)": 1356619,
+          "HC/[.9,1]": 438229
+        },
+        "similarity_target_denominator": 1813451,
+        "similarity_pair_denominator": 18134490,
+        "per_top10_codes_preserved_privately": true,
+        "per_top10_codes_sha256": "334466e5251a7bd4f4c1fdf70f63b5342dc29ec80d294fb308f5e4751c8084cb"
+      }
+    }
+  },
+  "test_targets_used": 0,
+  "p_a_validation_targets": 0,
+  "diagnostic_is_population_weighted": false,
+  "actual_20k_pool_mode_counts": {
+    "normal": 10003,
+    "polar_excluded": 9997,
+    "epoch": 0,
+    "selection_unchanged": true
+  },
+  "length_bin_edges": [
+    32,
+    48,
+    64
+  ],
+  "similarity_bin_edges": [
+    0.4,
+    0.6,
+    0.8,
+    0.9,
+    1
+  ]
+}
