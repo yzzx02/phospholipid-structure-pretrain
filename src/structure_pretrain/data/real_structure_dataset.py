@@ -58,6 +58,7 @@ class RealStructureDataset(Dataset):
         shard_cache_size=4,
         seed=42,
         cross_fraction=0.5,
+        max_top_k=10,
     ):
         self.root, self.frozen = Path(prepared), Path(frozen_index)
         self.manifest = read_json(self.root / "labels_manifest.json")
@@ -79,9 +80,10 @@ class RealStructureDataset(Dataset):
             "mixed",
         ):
             raise ValueError("Invalid encoder/retrieval mode")
-        if split not in SPLITS or not 0 <= cross_fraction <= 1:
+        if split not in SPLITS or not 0 <= cross_fraction <= 1 or not 1 <= max_top_k <= 10:
             raise ValueError("Invalid split or cross-head mixture")
         self.encoder, self.mode, self.split = encoder, mode, split
+        self.max_top_k = max_top_k
         self.seed, self.epoch, self.cross_fraction = seed, 0, cross_fraction
         self.feature_cache_size, self.feature_cache = feature_cache_size, OrderedDict()
         self.store = ShardedRowStore(prepared, shard_cache_size)
@@ -186,7 +188,7 @@ class RealStructureDataset(Dataset):
     def __getitem__(self, index):
         row = int(self.targets[index])
         refs = self.refs[self.mode_for(row)][row]
-        refs = refs[refs >= 0]
+        refs = refs[refs >= 0][: self.max_top_k]
         if not len(refs):
             raise ValueError(
                 f"Zero-template target {bytes(self.ids[row]).decode()}; coverage must report it"
@@ -285,9 +287,12 @@ def sample_targets(prepared, train_count=512, validation_count=128, seed=42, pri
             if len(selected) >= count:
                 break
         if len(selected) < count:
-            selected += [int(r) for r in shuffled if int(r) not in set(selected)][
-                : count - len(selected)
-            ]
+            for row in shuffled:
+                if int(row) not in selected_set:
+                    selected.append(int(row))
+                    selected_set.add(int(row))
+                if len(selected) >= count:
+                    break
         samples[SPLITS[i]] = np.array(selected, dtype=np.int64)
         np.save(prepared / f"local_smoke_{SPLITS[i]}_rows.npy", samples[SPLITS[i]])
     return samples

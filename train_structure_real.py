@@ -96,6 +96,16 @@ def main():
         )
     )
     run = raw["run"]
+    if (config.retrieval.radius, config.retrieval.fp_size, config.retrieval.minimum_similarity) != (
+        2,
+        2048,
+        0.4,
+    ):
+        p.error("Frozen v0.3 retrieval requires Morgan radius2/2048/threshold0.4")
+    if not 1 <= config.retrieval.max_top_k <= 10:
+        p.error("max_top_k must be 1..10")
+    if run["kind"] == "rocm_smoke" and args.device != "rocm":
+        p.error("The ROCm smoke config requires --device rocm and a passing device check")
     steps = args.steps if args.steps is not None else run["steps"]
     if steps < 1:
         p.error("steps must be positive")
@@ -111,6 +121,7 @@ def main():
             resources = read_json(smoke / "resource_metrics.json")
             if (
                 not resources.get("hip")
+                or not resources.get("device", "").startswith("cuda")
                 or metrics["optimizer_steps_total"] < 1000
                 or metrics["train_targets"] < 20000
                 or metrics["validation_targets"] < 2000
@@ -150,6 +161,7 @@ def main():
         "tokenization_audit.json",
         "reconstruction_audit.json",
         "split_audit.json",
+        "retrieval_integrity_audit.json",
     ):
         if read_json(root / name)["status"] != "passed":
             raise ValueError(f"Training gate failed: {name}")
@@ -178,6 +190,7 @@ def main():
         samples["train"],
         seed=config.train.seed,
         cross_fraction=run["cross_fraction"],
+        max_top_k=config.retrieval.max_top_k,
     )
     validation = RealStructureDataset(
         root,
@@ -187,6 +200,7 @@ def main():
         "polar_excluded",
         samples["validation"],
         seed=config.train.seed,
+        max_top_k=config.retrieval.max_top_k,
     )
     stats = read_json(root / "formula_stats_train_only.json")
     if stats["structures_sha256"] != label["structures_sha256"] or not stats["training_pairs_only"]:
@@ -203,6 +217,7 @@ def main():
         "retrieval_sha256": file_hash(root / "retrieval_coverage_by_split.json"),
         "model_config": asdict(config.model),
         "train_config": asdict(config.train),
+        "retrieval_config": asdict(config.retrieval),
         "run": run,
         "train_targets_sha256": hashlib.sha256(samples["train"].tobytes()).hexdigest(),
         "validation_targets_sha256": hashlib.sha256(samples["validation"].tobytes()).hexdigest(),
@@ -259,7 +274,11 @@ def main():
     if steps <= step:
         p.error("--steps is total optimizer steps and must exceed the resume step")
     start_step = step
-    collate = partial(collate_structure_examples, pad_id=train.tokenizer.pad_id)
+    collate = partial(
+        collate_structure_examples,
+        pad_id=train.tokenizer.pad_id,
+        max_top_k=config.retrieval.max_top_k,
+    )
     accum = run["gradient_accumulation"]
     loader_options = {"num_workers": config.train.num_workers, "collate_fn": collate}
     if config.train.num_workers:
@@ -331,6 +350,8 @@ def main():
             if step % run.get("checkpoint_every", 500) == 0:
                 save_checkpoint()
         previous = time.monotonic()
+    if device.type == "cuda":
+        torch.cuda.synchronize()
     elapsed = time.monotonic() - started
     updates = {name: not torch.equal(value, before[name]) for name, value in watched.items()}
     if not all(updates.values()) or not all(gradient_checks.values()):
@@ -460,7 +481,8 @@ def main():
         * accum
         / max(loading_seconds, 1e-9),
         "peak_RAM_bytes": peak_ram_bytes(),
-        "peak_RAM_scope": "main process peak resident memory; local CPU workers=0",
+        "peak_RAM_scope": "main process peak resident memory",
+        "data_loader_workers_per_loader": config.train.num_workers,
         "peak_VRAM_allocated_bytes": torch.cuda.max_memory_allocated()
         if device.type == "cuda"
         else None,

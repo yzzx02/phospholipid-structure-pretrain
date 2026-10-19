@@ -24,11 +24,13 @@ Tokenizer将bracket atom及mapped dummy保留为整体token；对全部规范pol
 
 `python -m structure_pretrain.retrieval.train_only --threads 2` 为train的1,813,451个结构及其1,276,195个独立FP groups建立单独HNSW。全库冻结指纹只作query特征和行ID映射；references从索引构建前已经限定train。不从全库Top10过滤。
 
-使用原Morgan radius2、2048、无chirality、阈值.4、K≤10。HNSW connectivity32、expansion_add256、expansion_search1024；候选组数量至少128，排除头基前扫描足够postings和边界ties，最终RDKit重算分数。任何不足10的结果对整个train bank精确回查，不降阈值。另固定样本做full-train-bank exact score benchmark；结果报告明确ANN是近似TopK，不声称全库穷举最优邻居。
+使用原Morgan radius2、2048、无chirality、阈值.4、K≤10。HNSW connectivity32、expansion_add256。先在固定32个train目标上精确扫描全部train bank校准搜索强度，要求Top1分数召回≥.995、tie-aware Top10召回≥.99；当前选择expansion_search1024、候选512组。排除头基前扫描足够postings和边界ties，最终RDKit重算分数。任何不足10的结果对整个train bank精确回查，不降阈值。精确回查采用全train packed-bit扫描，保留所有边界ties，并以最大头基行数+K+1的组界保证合法TopK，最终对照RDKit。另固定样本做full-train-bank exact score benchmark。校准为小样本工程检查，不声称全库穷举最优邻居。
 
 普通模式排除self/等价完整图，允许同头基；cross模式额外排除全部相同canonical polar graph（包括ID alias）。原库规范图全局唯一已审计，行self排除因此等价于完整图排除。Validation/Test只来自未见头基，合法模板天然cross。初始train模式按稳定的row/seed计数选择约50/50，比例可配，不宣称最优。
 
 两种cache保存template row和Tanimoto，ID通过冻结row_ids映射。report逐split记录≥1/≥5/10、零模板、同头基ratio和top1/top10分布。Test只作要求的检索覆盖审计，不进入训练。原全库结果继续作为历史对照保存，但不供训练调用。
+
+持久化完成后再独立遍历所有reference pairs，核验train权限、self/重复排除、canonical polar排除、mask前缀、降序及保存分数与原始2048 bits的精确Tanimoto一致。该审计不把ANN选择本身称为全局精确TopK。
 
 ## 数据、公式和模型
 

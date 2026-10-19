@@ -28,6 +28,7 @@ from structure_pretrain.polar_plausibility.pipeline import dump_json
 from structure_pretrain.retrieval.indexed_morgan import prepare_cache
 from structure_pretrain.retrieval.train_only import (
     TrainCache,
+    audit_cache,
     exact_query,
     formula_stats,
     retrieve,
@@ -171,6 +172,9 @@ def tiny_prepared(tmp_path):
 def test_train_bank_is_enforced_before_search_and_stats_are_train_only(tiny_prepared):
     prepared, frozen, bank, _ = tiny_prepared
     report = retrieve(prepared, frozen, bank, threads=1, batch_size=2)
+    integrity = audit_cache(prepared, frozen, batch_size=2)
+    assert integrity["status"] == "passed"
+    assert integrity["modes"]["normal"]["targets_checked"] == 6
     assert report["held_out_reference_rows"] == 0
     for mode in ("normal", "polar_excluded"):
         refs = np.load(prepared / f"retrieval_{mode}/template_rows.npy")
@@ -206,6 +210,10 @@ def test_lazy_dataset_uses_real_templates_without_padding_graphs(tiny_prepared, 
             item["structures"][0], fingerprint_tensor(item["template_smiles"][0])
         )
     assert len(item["target_polar_token_ids"]) <= data.max_length
+    limited = RealStructureDataset(prepared, frozen, "validation", encoder, max_top_k=1)
+    limited_batch = collate_structure_examples([limited[0]], max_top_k=1)
+    assert limited_batch["template_counts"].tolist() == [1]
+    assert limited_batch["template_mask"].shape == (1, 1)
     assert len(rows) == 6
     with pytest.raises(ValueError, match="split boundary"):
         RealStructureDataset(prepared, frozen, "train", target_rows=[2])

@@ -576,6 +576,91 @@ def formula_stats(prepared):
     return stats
 
 
+def audit_cache(prepared, frozen, batch_size=4096):
+    """Independently check every persisted reference and exact packed-bit score."""
+    prepared, frozen = Path(prepared), Path(frozen)
+    labels = read_json(prepared / "labels_manifest.json")
+    coverage = read_json(prepared / "retrieval_coverage_by_split.json")
+    if (
+        coverage["status"] != "complete"
+        or labels["structures_sha256"] != coverage["structures_sha256"]
+    ):
+        raise ValueError("Completed matching v0.3 labels/retrieval required")
+    fp = load_array(frozen / "fingerprints.npy")
+    splits = load_array(prepared / "row_splits.npy")
+    heads = load_array(prepared / "polar_groups.npy")
+    n = labels["rows"]
+    counts = np.empty(n, np.uint16)
+    for start in range(0, n, batch_size):
+        counts[start : start + batch_size] = popcounts(fp[start : start + batch_size]).sum(-1)
+    results = {}
+    for mode in ("normal", "polar_excluded"):
+        folder = prepared / f"retrieval_{mode}"
+        manifest = read_json(folder / "manifest.json")
+        if file_hash(folder / "template_rows.npy") != manifest["rows_sha256"]:
+            raise ValueError("Reference cache hash changed")
+        if file_hash(folder / "scores.npy") != manifest["scores_sha256"]:
+            raise ValueError("Score cache hash changed")
+        rows, scores = load_array(folder / "template_rows.npy"), load_array(folder / "scores.npy")
+        compared, same_head, maximum_error, zero = 0, 0, 0.0, 0
+        for start in range(0, n, batch_size):
+            stop = min(n, start + batch_size)
+            refs, saved = np.asarray(rows[start:stop]), np.asarray(scores[start:stop])
+            mask = refs >= 0
+            if (
+                np.any(refs < -1)
+                or np.any(refs >= n)
+                or np.any(~np.isfinite(saved[mask]))
+                or np.any(saved[mask] < 0.4)
+                or np.any(np.isfinite(saved[~mask]))
+            ):
+                raise ValueError("Invalid reference/score/padding")
+            safe = np.maximum(refs, 0)
+            if np.any(splits[safe][mask] != 0) or np.any(
+                (refs == np.arange(start, stop)[:, None]) & mask
+            ):
+                raise ValueError("Held-out/self reference in persisted cache")
+            if np.any(mask[:, 1:] & ~mask[:, :-1]):
+                raise ValueError("Template mask has an internal padding hole")
+            ordered = np.sort(refs, axis=1)
+            if np.any((ordered[:, 1:] == ordered[:, :-1]) & (ordered[:, 1:] >= 0)):
+                raise ValueError("Duplicate template graph row")
+            same = (heads[safe] == heads[start:stop, None]) & mask
+            if mode == "polar_excluded" and np.any(same):
+                raise ValueError("Canonical polar graph alias leaked")
+            if np.any((saved[:, 1:] > saved[:, :-1] + 1e-7) & mask[:, 1:]):
+                raise ValueError("Tanimoto order is not descending")
+            intersection = popcounts(fp[start:stop, None, :] & fp[safe]).sum(-1)
+            union = counts[start:stop, None].astype(np.int32) + counts[safe] - intersection
+            exact = np.divide(intersection, union, out=np.ones(mask.shape), where=union != 0)
+            error = float(np.max(np.abs(exact[mask] - saved[mask]))) if mask.any() else 0.0
+            if error > 1e-7:
+                raise ValueError("Persisted similarity does not match exact target/reference bits")
+            maximum_error = max(maximum_error, error)
+            compared += int(mask.sum())
+            same_head += int(same.sum())
+            zero += int(np.count_nonzero(~mask.any(-1)))
+        results[mode] = {
+            "targets_checked": n,
+            "exact_scores_checked": compared,
+            "same_canonical_polar_pairs": same_head,
+            "zero_targets": zero,
+            "max_float32_score_error": maximum_error,
+            "held_out_self_duplicate_or_forbidden_head_violations": 0,
+        }
+    result = {
+        "schema": SCHEMA,
+        "version": "v0.3",
+        "status": "passed",
+        "structures_sha256": labels["structures_sha256"],
+        "retrieval_report_sha256": file_hash(prepared / "retrieval_coverage_by_split.json"),
+        "reference_bank_sha256": coverage["index_sha256"],
+        "modes": results,
+    }
+    dump_json(prepared / "retrieval_integrity_audit.json", result)
+    return result
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--prepared", default="data/private/pretraining_v03")
@@ -584,6 +669,7 @@ def main():
     p.add_argument("--threads", type=int, default=2)
     a = p.parse_args()
     retrieve(a.prepared, a.frozen, a.work, a.threads)
+    audit_cache(a.prepared, a.frozen)
     formula_stats(a.prepared)
 
 

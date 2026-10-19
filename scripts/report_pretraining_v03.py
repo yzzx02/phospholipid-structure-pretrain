@@ -134,6 +134,8 @@ def report(prepared, smoke, destination):
             "result_counts": [x["count"] for x in coverage["exact_low_count_confirmations"]],
         },
         "head_difficulty": read_json(prepared / "head_difficulty_audit.json")["results"],
+        "retrieval_integrity": read_json(prepared / "retrieval_integrity_audit.json"),
+        "smoke_sampling": read_json(prepared / "smoke_sampling_audit.json")["splits"],
         "models": models,
         "gpu_verification": "pending execution on RX9070XT/WSL/ROCm",
         "full_pretraining_executed": False,
