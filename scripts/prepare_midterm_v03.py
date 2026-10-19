@@ -51,6 +51,54 @@ def choose_stratified(eligible, strata, group_ids, count=512, seed=20261019):
     return np.array(chosen, dtype=np.int64)
 
 
+def audit_actual_pool(rows):
+    codes = {
+        m: np.array(np.load(ROOT / f"top10_relation_codes_{m}_private.npy", mmap_mode="r")[rows])
+        for m in ("normal", "polar_excluded")
+    }
+    scores = {
+        m: np.array(np.load(PREPARED / f"retrieval_{m}/scores.npy", mmap_mode="r")[rows])
+        for m in codes
+    }
+    keys = (rows.astype(np.uint64) * 2654435761 + 42 * 2246822519) & 0xFFFFFFFF
+    cross = keys / 2**32 < 0.5  # exact unchanged RealStructureDataset seed42, epoch0
+    codes["effective_mixed"] = np.where(cross[:, None], codes["polar_excluded"], codes["normal"])
+    scores["effective_mixed"] = np.where(cross[:, None], scores["polar_excluded"], scores["normal"])
+    result = {
+        "target_denominator": len(rows),
+        "seed": 42,
+        "epoch": 0,
+        "mode_counts": {"normal": int((~cross).sum()), "polar_excluded": int(cross.sum())},
+        "modes": {},
+    }
+    for mode, values in codes.items():
+        total = int(np.count_nonzero(values))
+        bitmask = np.zeros(len(rows), dtype=np.uint8)
+        pairs, targets, bins = {}, {}, {}
+        sim_bins = np.searchsorted(SIM_EDGES[1:], scores[mode], side="right").clip(0, 3)
+        for code, label in ((1, "H"), (2, "C"), (3, "HC")):
+            match = values == code
+            present = match.any(1)
+            bitmask |= present.astype(np.uint8) << (code - 1)
+            pairs[label] = {"count": int(match.sum()), "fraction": float(match.sum() / total)}
+            targets[label] = {"count": int(present.sum()), "fraction": float(present.mean())}
+            bins[label] = {
+                interval: {
+                    "pairs": int((match & (sim_bins == b)).sum()),
+                    "targets": int((match & (sim_bins == b)).any(1).sum()),
+                }
+                for b, interval in enumerate(SIM_LABELS)
+            }
+        result["modes"][mode] = {
+            "pair_count": total,
+            "pairs": pairs,
+            "targets_with_at_least_one": targets,
+            "target_type_bitmask_counts": dict(Counter(bitmask.tolist())),
+            "relation_similarity_counts": bins,
+        }
+    return result
+
+
 def main():
     ROOT.mkdir(parents=True, exist_ok=True)
     manifest_path = ROOT / "evaluation_manifest.json"
@@ -192,6 +240,7 @@ def main():
             "per_top10_codes_sha256": file_hash(code_path),
         }
         print(json.dumps({"audited_mode": mode, "pairs": total_pairs}), flush=True)
+    audit["actual_20k_pool"] = audit_actual_pool(cohorts["train_pool"])
     (ROOT / "template_relation_audit.json").write_text(json.dumps(audit, indent=2))
 
 

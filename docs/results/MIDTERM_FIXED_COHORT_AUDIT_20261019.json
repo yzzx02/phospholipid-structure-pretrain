@@ -256,6 +256,301 @@
         "per_top10_codes_preserved_privately": true,
         "per_top10_codes_sha256": "334466e5251a7bd4f4c1fdf70f63b5342dc29ec80d294fb308f5e4751c8084cb"
       }
+    },
+    "actual_20k_pool": {
+      "target_denominator": 20000,
+      "seed": 42,
+      "epoch": 0,
+      "mode_counts": {
+        "normal": 10003,
+        "polar_excluded": 9997
+      },
+      "modes": {
+        "normal": {
+          "pair_count": 200000,
+          "pairs": {
+            "H": {
+              "count": 16573,
+              "fraction": 0.082865
+            },
+            "C": {
+              "count": 117454,
+              "fraction": 0.58727
+            },
+            "HC": {
+              "count": 65973,
+              "fraction": 0.329865
+            }
+          },
+          "targets_with_at_least_one": {
+            "H": {
+              "count": 5308,
+              "fraction": 0.2654
+            },
+            "C": {
+              "count": 19473,
+              "fraction": 0.97365
+            },
+            "HC": {
+              "count": 16540,
+              "fraction": 0.827
+            }
+          },
+          "target_type_bitmask_counts": {
+            "6": 12457,
+            "7": 3922,
+            "3": 921,
+            "5": 99,
+            "2": 2173,
+            "1": 366,
+            "4": 62
+          },
+          "relation_similarity_counts": {
+            "H": {
+              "[.4,.6)": {
+                "pairs": 185,
+                "targets": 30
+              },
+              "[.6,.8)": {
+                "pairs": 4578,
+                "targets": 1261
+              },
+              "[.8,.9)": {
+                "pairs": 8565,
+                "targets": 3768
+              },
+              "[.9,1]": {
+                "pairs": 3245,
+                "targets": 1921
+              }
+            },
+            "C": {
+              "[.4,.6)": {
+                "pairs": 0,
+                "targets": 0
+              },
+              "[.6,.8)": {
+                "pairs": 6820,
+                "targets": 2581
+              },
+              "[.8,.9)": {
+                "pairs": 44491,
+                "targets": 14725
+              },
+              "[.9,1]": {
+                "pairs": 66143,
+                "targets": 17331
+              }
+            },
+            "HC": {
+              "[.4,.6)": {
+                "pairs": 75,
+                "targets": 24
+              },
+              "[.6,.8)": {
+                "pairs": 8321,
+                "targets": 3097
+              },
+              "[.8,.9)": {
+                "pairs": 39062,
+                "targets": 12544
+              },
+              "[.9,1]": {
+                "pairs": 18515,
+                "targets": 5415
+              }
+            }
+          }
+        },
+        "polar_excluded": {
+          "pair_count": 200000,
+          "pairs": {
+            "H": {
+              "count": 27450,
+              "fraction": 0.13725
+            },
+            "C": {
+              "count": 0,
+              "fraction": 0.0
+            },
+            "HC": {
+              "count": 172550,
+              "fraction": 0.86275
+            }
+          },
+          "targets_with_at_least_one": {
+            "H": {
+              "count": 5986,
+              "fraction": 0.2993
+            },
+            "C": {
+              "count": 0,
+              "fraction": 0.0
+            },
+            "HC": {
+              "count": 19163,
+              "fraction": 0.95815
+            }
+          },
+          "target_type_bitmask_counts": {
+            "5": 5149,
+            "1": 837,
+            "4": 14014
+          },
+          "relation_similarity_counts": {
+            "H": {
+              "[.4,.6)": {
+                "pairs": 328,
+                "targets": 72
+              },
+              "[.6,.8)": {
+                "pairs": 9668,
+                "targets": 2379
+              },
+              "[.8,.9)": {
+                "pairs": 13801,
+                "targets": 4792
+              },
+              "[.9,1]": {
+                "pairs": 3653,
+                "targets": 1929
+              }
+            },
+            "C": {
+              "[.4,.6)": {
+                "pairs": 0,
+                "targets": 0
+              },
+              "[.6,.8)": {
+                "pairs": 0,
+                "targets": 0
+              },
+              "[.8,.9)": {
+                "pairs": 0,
+                "targets": 0
+              },
+              "[.9,1]": {
+                "pairs": 0,
+                "targets": 0
+              }
+            },
+            "HC": {
+              "[.4,.6)": {
+                "pairs": 805,
+                "targets": 154
+              },
+              "[.6,.8)": {
+                "pairs": 54386,
+                "targets": 8777
+              },
+              "[.8,.9)": {
+                "pairs": 95012,
+                "targets": 15275
+              },
+              "[.9,1]": {
+                "pairs": 22347,
+                "targets": 5422
+              }
+            }
+          }
+        },
+        "effective_mixed": {
+          "pair_count": 200000,
+          "pairs": {
+            "H": {
+              "count": 22014,
+              "fraction": 0.11007
+            },
+            "C": {
+              "count": 58532,
+              "fraction": 0.29266
+            },
+            "HC": {
+              "count": 119454,
+              "fraction": 0.59727
+            }
+          },
+          "targets_with_at_least_one": {
+            "H": {
+              "count": 5655,
+              "fraction": 0.28275
+            },
+            "C": {
+              "count": 9748,
+              "fraction": 0.4874
+            },
+            "HC": {
+              "count": 17895,
+              "fraction": 0.89475
+            }
+          },
+          "target_type_bitmask_counts": {
+            "6": 6278,
+            "5": 2641,
+            "3": 453,
+            "7": 1963,
+            "1": 598,
+            "4": 7013,
+            "2": 1054
+          },
+          "relation_similarity_counts": {
+            "H": {
+              "[.4,.6)": {
+                "pairs": 265,
+                "targets": 55
+              },
+              "[.6,.8)": {
+                "pairs": 7122,
+                "targets": 1836
+              },
+              "[.8,.9)": {
+                "pairs": 11167,
+                "targets": 4295
+              },
+              "[.9,1]": {
+                "pairs": 3460,
+                "targets": 1924
+              }
+            },
+            "C": {
+              "[.4,.6)": {
+                "pairs": 0,
+                "targets": 0
+              },
+              "[.6,.8)": {
+                "pairs": 3304,
+                "targets": 1252
+              },
+              "[.8,.9)": {
+                "pairs": 22301,
+                "targets": 7368
+              },
+              "[.9,1]": {
+                "pairs": 32927,
+                "targets": 8694
+              }
+            },
+            "HC": {
+              "[.4,.6)": {
+                "pairs": 490,
+                "targets": 96
+              },
+              "[.6,.8)": {
+                "pairs": 31707,
+                "targets": 5970
+              },
+              "[.8,.9)": {
+                "pairs": 66898,
+                "targets": 13935
+              },
+              "[.9,1]": {
+                "pairs": 20359,
+                "targets": 5418
+              }
+            }
+          }
+        }
+      }
     }
   },
   "test_targets_used": 0,
