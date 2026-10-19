@@ -22,6 +22,15 @@ def collect(root):
             k: monitor[k] for k in ("child_exit_code", "stop_reason", "elapsed_seconds")
         }
         value["host_monitor"]["new_windows_gpu_dump_count"] = 0
+        events = [
+            json.loads(line) for line in (path.parent / "events.jsonl").read_text().splitlines()
+        ]
+        reused = any(event.get("stage") == "reused_completed_raw" for event in events)
+        value["raw_generation_reused_from_completed_attempt"] = reused
+        value["reported_seconds_include_raw_generation"] = not reused
+        comparison = path.parent / "previous_smoke_comparison.json"
+        if comparison.exists():
+            value["previous_128_smoke_agreement"] = read(comparison)
         quality[key] = value
     phases = []
     for path in sorted((root / "training").glob("*/training_metrics.json")):
@@ -147,6 +156,7 @@ def main():
         "test_targets_used": 0,
         "full_training_started": False,
         "private_samples_or_checkpoints_published": False,
+        "checkpoint_integrity_audit": read(args.root / "checkpoint_integrity_audit.json"),
     }
     destination = Path("docs/results/MIDTERM_STRUCTURE_20261019.json")
     destination.write_text(json.dumps(result, indent=2) + "\n")
