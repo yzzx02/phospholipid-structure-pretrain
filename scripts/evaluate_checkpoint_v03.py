@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -48,6 +49,12 @@ def evaluate(args):
     assert contract["run"]["precision"] == "fp32"
     selection_root = Path(args.manifest).parent
     manifest = read_json(args.manifest)
+    context = {
+        "checkpoint_sha256": file_hash(Path(args.checkpoint)),
+        "selection_manifest_sha256": file_hash(Path(args.manifest)),
+        "step": checkpoint_step,
+    }
+    (output / "evaluation_context.json").write_text(json.dumps(context, indent=2))
     cohorts = {
         name: np.load(selection_root / f"{name}.npy")
         for name in ["smoke_128", "diagnostic_512", "validation_pool"]
@@ -132,13 +139,26 @@ def evaluate(args):
         progress(
             {"stage": "teacher_forcing", "targets": min(start + config.train.batch_size, len(data))}
         )
-    chains, heads = load_builder_rules(args.prepared, args.library, progress)
+    (output / "teacher_metrics_private.json").write_text(json.dumps(teacher))
+    if not args.reuse_completed_raw_from:
+        chains, heads = load_builder_rules(args.prepared, args.library, progress)
     index_for_row = {int(row): i for i, row in enumerate(all_rows)}
     generation_rows = np.concatenate([cohorts["smoke_128"], cohorts["diagnostic_512"]])
     records = []
     private_path = output / "raw_predictions_private.jsonl"
-    with private_path.open("w") as private:
-        for count, row in enumerate(generation_rows, 1):
+    if args.reuse_completed_raw_from:
+        previous = Path(args.reuse_completed_raw_from)
+        assert read_json(previous / "evaluation_context.json") == context
+        records = [
+            json.loads(line)
+            for line in (previous / "raw_predictions_private.jsonl").read_text().splitlines()
+        ]
+        assert [r["row"] for r in records] == generation_rows.tolist()
+        assert all(r["target_id"].encode() == data.ids[r["row"]] for r in records)
+        shutil.copyfile(previous / "raw_predictions_private.jsonl", private_path)
+        progress({"stage": "reused_completed_raw", "targets": len(records)})
+    with private_path.open("a" if records else "w") as private:
+        for count, row in enumerate([] if records else generation_rows, 1):
             example = data[index_for_row[int(row)]]
             batch = move_batch(
                 collate_structure_examples([example], pad_id=data.tokenizer.pad_id), "cuda"
@@ -226,8 +246,8 @@ def evaluate(args):
         "schema": "midterm-quality-v1",
         "encoder": config.model.encoder,
         "step": checkpoint_step,
-        "checkpoint_sha256": file_hash(args.checkpoint),
-        "selection_manifest_sha256": file_hash(args.manifest),
+        "checkpoint_sha256": context["checkpoint_sha256"],
+        "selection_manifest_sha256": context["selection_manifest_sha256"],
         "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "attention_backend": args.attention_backend,
         "precision": "fp32",
@@ -252,6 +272,7 @@ def main():
     p.add_argument("--frozen-index", default="data/private/morgan_index_v0.3")
     p.add_argument("--library", default="data/structure_library_v0.3")
     p.add_argument("--output", required=True)
+    p.add_argument("--reuse-completed-raw-from", help="Reuse complete, hash-bound raw evaluation")
     p.add_argument("--attention-backend", choices=["math"], default="math")
     args = p.parse_args()
     with attention_backend(args.attention_backend):

@@ -4,6 +4,7 @@ param(
     [ValidateRange(1, 5000)][int]$Steps = 8,
     [string]$RunName = 'math_fp_8',
     [string]$Resume = '',
+    [string]$ReuseCompletedRawFrom = '',
     [ValidateRange(10, 3600)][int]$TimeoutSeconds = 45
 )
 $ErrorActionPreference = 'Stop'
@@ -52,6 +53,7 @@ if ($Job -eq 'diagnostic') {
         '--targets', '32', '--max-steps', "$Steps", '--batch-size', '8', '--synchronize')
 } elseif ($Job -eq 'evaluate') {
     $payload += @('-m', 'scripts.evaluate_checkpoint_v03', '--checkpoint', $Resume)
+    if ($ReuseCompletedRawFrom) { $payload += @('--reuse-completed-raw-from', $ReuseCompletedRawFrom) }
 } else {
     $configName = if ($Encoder -eq 'fingerprint') { 'fp' } else { 'gine' }
     $payload += @('train_structure_real.py', '--device', 'rocm', '--steps', "$Steps",
