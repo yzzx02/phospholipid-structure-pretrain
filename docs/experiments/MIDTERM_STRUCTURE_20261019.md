@@ -46,6 +46,10 @@ formula, full graph exact and Morgan similarity. An optional formula filter choo
 the first formula-matching beam using the same predicted chain pair and reports
 coverage plus overall and conditional exactness separately. It never replaces raw
 scores or introduces target-structure matching as a selection criterion.
+Non-NULL chain accuracy uses canonical slot agreement for non-NULL target slots;
+chain-set exactness ignores the predicted slot order. Graph equality follows the
+frozen nonisomeric builder representation and does not establish sn-specific or
+stereochemical identity.
 
 ## Template transformation audit
 
