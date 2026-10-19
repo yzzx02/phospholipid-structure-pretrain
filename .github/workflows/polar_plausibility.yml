@@ -4,7 +4,7 @@ on:
     paths: &polar_paths
       - 'src/structure_pretrain/polar_plausibility/**'
       - 'src/structure_pretrain/polar_expansion/**'
-      - 'src/structure_pretrain/retrieval/indexed_morgan.py'
+      - 'src/structure_pretrain/retrieval/**'
       - 'src/structure_pretrain/library_builder/**'
       - 'scripts/*polar_plausibility.py'
       - 'scripts/filter_pubchem_polar.py'
@@ -14,6 +14,9 @@ on:
       - 'scripts/*2m_library.py'
       - 'scripts/audit_full_library.py'
       - 'scripts/audit_morgan_readiness.py'
+      - 'scripts/audit_head_exclusion.py'
+      - 'scripts/*v03.py'
+      - 'scripts/build_v03_index.py'
       - 'scripts/*v02.py'
       - 'configs/polar*.yaml'
       - 'configs/library_build_v02.yaml'
@@ -22,6 +25,7 @@ on:
       - 'tests/library_v02/**'
       - 'tests/polar_expansion/**'
       - 'tests/indexed_retrieval/**'
+      - 'tests/incremental/**'
       - 'requirements-retrieval.txt'
       - '.github/workflows/polar_plausibility.yml'
   pull_request:
@@ -48,6 +52,6 @@ jobs:
           python -m ruff check .
           python -m ruff format --check .
           python -c "import sys; import structure_pretrain.library_builder.full_library_v02; assert 'torch' not in sys.modules"
-          for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02 polar_expansion indexed_retrieval; do
+          for suite in library_builder pubchem_polar chain_extraction polar_plausibility library_v02 polar_expansion indexed_retrieval incremental; do
             python -m pytest -q --confcutdir="tests/$suite" "tests/$suite"
           done

@@ -5,6 +5,7 @@ import json
 import time
 from functools import lru_cache
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pyarrow.parquet as pq
@@ -247,6 +248,18 @@ def make_index(vectors, keys=None, expansion_search=128, threads=4):
     for start in range(0, len(vectors), 8192):
         index.add(keys[start : start + 8192], vectors[start : start + 8192], threads=threads)
     return index
+
+
+def search_many(index, vectors, count, threads=4):
+    """USearch squeezes a one-row query matrix; keep a uniform batch interface."""
+    matches = index.search(vectors, count=count, threads=threads)
+    if hasattr(matches, "counts"):
+        return matches
+    return SimpleNamespace(
+        keys=np.atleast_2d(matches.keys),
+        distances=np.atleast_2d(matches.distances),
+        counts=np.asarray([len(matches.keys)], dtype=np.int64),
+    )
 
 
 def rank_groups(
@@ -505,7 +518,7 @@ def full_readiness(cache, benchmark, output):
     candidate_count = min(settings["candidate_groups"], len(sizes))
     for start in range(0, len(todo), 512):
         groups = todo[start : start + 512]
-        matches = index.search(np.asarray(cache.vectors[groups]), count=candidate_count, threads=4)
+        matches = search_many(index, np.asarray(cache.vectors[groups]), count=candidate_count)
         for i, group in enumerate(groups):
             row = int(cache.members(int(group), 1)[0])
             hits = rank_groups(
