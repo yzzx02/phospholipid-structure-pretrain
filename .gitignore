@@ -8,5 +8,9 @@ outputs/
 data/private/
 data/structure_library*/
 *.ckpt
+*.pt
+*.pth
+*.usearch
+sample_predictions_private.json
 .env
 .env.*

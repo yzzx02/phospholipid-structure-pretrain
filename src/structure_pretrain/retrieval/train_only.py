@@ -383,6 +383,7 @@ def retrieve(prepared, frozen, work, threads=2, batch_size=256):
     depth = calibration["selected"]["candidate_groups"]
     state_path = prepared / "retrieval_progress.json"
     start_group = 0
+    state = None
     if state_path.exists():
         state = read_json(state_path)
         if state["bank_sha256"] != bank["index_sha256"]:
@@ -394,7 +395,8 @@ def retrieve(prepared, frozen, work, threads=2, batch_size=256):
         ):
             raise ValueError("Retrieval resume search settings changed; mixed caches forbidden")
     results = open_results(prepared, len(cache.fp), resume=state_path.exists())
-    started, exact_confirmations = time.monotonic(), []
+    started = time.monotonic()
+    exact_confirmations = state.get("exact_low_count_confirmations", []) if state else []
     for start in range(start_group, len(cache.vectors), batch_size):
         end = min(start + batch_size, len(cache.vectors))
         matches = search_many(index, np.asarray(cache.vectors[start:end]), depth, threads=threads)
@@ -438,6 +440,7 @@ def retrieve(prepared, frozen, work, threads=2, batch_size=256):
                     "total_groups": len(cache.vectors),
                     "expansion_search": index.expansion_search,
                     "candidate_groups": depth,
+                    "exact_low_count_confirmations": exact_confirmations,
                 },
             )
             print(

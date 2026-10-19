@@ -28,7 +28,7 @@ Polar 边界为 `glycerol-O | P-containing polar fragment`，如 `[*:1]P(=O)(O)O
 推荐 Python3.12；本机 CPU 使用 Python3.13 / Torch2.9.1+cpu / PyG2.8.0.post1。先安装适合设备的 Torch，再安装项目。ROCm 环境按 [WSL指南](docs/WSL_ROCm.md) 保留 AMD Torch。
 
 ```bash
-python -m pip install -e '.[dev,library,retrieval]'
+python -m pip install -r requirements-extraction.txt -e '.[dev,library,retrieval]'
 python -m pytest -q
 python scripts/check_encoder_batch.py
 python scripts/count_parameters.py
