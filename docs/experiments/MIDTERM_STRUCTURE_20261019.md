@@ -77,3 +77,17 @@ Evaluate 1001, 1500 and 2000 before deciding on longer runs. Extend only with st
 hardware and a positive validation/generation trend; severe regression or fault
 stops extension. Complete FP analysis before starting the GINE midterm run.
 Full pretraining requires a separate decision; this experiment never starts it.
+
+Example supervised phase (PowerShell 7; use a fresh run name each time):
+
+```powershell
+$linuxHome = (& wsl.exe -d Ubuntu-24.04 -- printenv HOME).Trim()
+$share = '\\wsl.localhost\Ubuntu-24.04' + "$linuxHome/projects/phospholipid-structure-pretrain".Replace('/', '\')
+$supervisor = [scriptblock]::Create((Get-Content -LiteralPath "$share/scripts/supervise_rocm_diagnostic.ps1" -Raw))
+& $supervisor -Job midterm -Encoder fingerprint -Steps 1500 -RunName fp_1500_new -Resume outputs/pretraining_v03/rocm_smoke/fingerprint_resume/checkpoint/last.pt -TimeoutSeconds 3600
+& $supervisor -Job evaluate -Encoder fingerprint -Steps 1500 -RunName fp_1500_new -Resume outputs/midterm_v03/training/fp_1500_new/checkpoint/step_001500.pt -TimeoutSeconds 3600
+```
+
+The supervisor invokes `scripts/run_rocm.sh`, retains FP32/Math settings and stops
+on a new Windows GPU dump or abnormal progress stall. Repeat only after reviewing
+the preceding phase; commands above do not launch further phases automatically.

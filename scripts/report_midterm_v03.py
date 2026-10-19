@@ -213,6 +213,22 @@ def main():
         lines.append("|" + "|".join(cells) + "|")
     lines += [
         "",
+        "## 可选 Top-5 分子式筛选（512 条；不修复）",
+        "",
+        "|编码器|Step|覆盖条数|覆盖率|Full exact 条数|总体 Full exact|筛选内 Full exact|",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for (encoder, step), report in sorted(quality.items()):
+        filtered = report["cohorts"]["diagnostic_512"]["raw_generation"]["optional_formula_filter"]
+        conditional = filtered["full_exact_among_selected"]
+        conditional_text = "无候选" if conditional is None else f"{conditional:.2%}"
+        lines.append(
+            f"|{encoder}|{step}|{filtered['selected_targets']}|"
+            f"{filtered['coverage']:.2%}|{filtered['full_exact_count']}|"
+            f"{filtered['overall_full_exact']:.2%}|{conditional_text}|"
+        )
+    lines += [
+        "",
         "## 续训资源和恢复",
         "",
         "|编码器|区间|参数量|Steps/s|Samples/s|峰值分配显存 GB|状态重载|",
