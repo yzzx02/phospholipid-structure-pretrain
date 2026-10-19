@@ -1,0 +1,575 @@
+{
+  "status": "complete",
+  "date": "2026-10-19",
+  "baseline_preservation": {
+    "status": "passed",
+    "original_full_rows_preserved_all_columns": 2000000,
+    "frozen_files_verified": 37,
+    "original_input_hashes_json_bytes_preserved": true,
+    "original_library_sha256": "48ee6cca87cef1fce49cd92407f540eee7ed6dd254a0d1f5edb6141913290db4",
+    "new_library_sha256": "22eb617b25532743a29a6d6e5d3fdacf804e3a4b5289d7ca6bcf746f7395d38a"
+  },
+  "increment": {
+    "increment_planned": 15000,
+    "increment_attempted": 15000,
+    "increment_assembled": 15000,
+    "increment_unique": 15000,
+    "increment_rejected": 0,
+    "increment_canonical_duplicates": 0,
+    "increment_by_chemistry_family": {
+      "phosphonate": 12350,
+      "polyphosphate": 2650
+    },
+    "increment_by_structure_origin": {
+      "pubchem_baseline": 11280,
+      "pubchem_multi_attachment_split": 3720
+    },
+    "increment_by_plausibility_tier": {
+      "EXTENDED": 6711,
+      "CORE": 8289
+    },
+    "increment_by_linkage": {
+      "AA": 11424,
+      "OA": 3576
+    },
+    "final_unique_full_structures": 2015000,
+    "full_by_chemistry_family": {
+      "polyphosphate": 257238,
+      "phosphonate": 564915,
+      "phosphate": 1192847
+    },
+    "family_proportions": {
+      "polyphosphate": 0.12766153846153847,
+      "phosphonate": 0.2803548387096774,
+      "phosphate": 0.5919836228287841
+    },
+    "PE_PA": 3,
+    "AA": 1244203,
+    "OA": 570794,
+    "lyso": 200000
+  },
+  "selection": {
+    "policy": "One unused pair per prioritized head; no family or P quotas; no failure refill",
+    "requested_proposals": 15000,
+    "selected_unused_pairs": 15000,
+    "selected_heads": 15000,
+    "novel_chain_strata_pairs": 15000,
+    "new_chain_token_pairs": 15000,
+    "all_heads": {
+      "background_count_mean": 10.240340798541775,
+      "chain_strata_mean": 8.37977327885472,
+      "mean_max_similarity": 0.9646693682846036
+    },
+    "selected_heads_before_extension": {
+      "background_count_mean": 7.445733333333333,
+      "chain_strata_mean": 6.445733333333333,
+      "mean_max_similarity": 0.9406125370600394
+    }
+  },
+  "independent_increment_audit": {
+    "status": "passed",
+    "baseline_records_preserved_all_columns": 2000000,
+    "all_increment_graphs_independently_reassembled": 15000,
+    "canonical_overlap_with_actual_baseline_parquet": 0,
+    "reused_head_chain_pairs": 0,
+    "increment_internal_canonical_duplicates": 0,
+    "all_increment_sanitize_formula_elements_valence_and_fingerprints_checked": true,
+    "all_frozen_files_and_original_inputs_rehashed": true,
+    "all_original_input_hashes_preserved": true,
+    "no_P_increment": true,
+    "structures_sha256": "22eb617b25532743a29a6d6e5d3fdacf804e3a4b5289d7ca6bcf746f7395d38a",
+    "training_performed": false,
+    "dataset_split_created": false
+  },
+  "index": {
+    "status": "passed",
+    "version": "v0.3",
+    "row_count": 2015000,
+    "unique_fingerprint_count": 1416304,
+    "query_checks": 200,
+    "increment_queries": 100,
+    "structures_sha256": "22eb617b25532743a29a6d6e5d3fdacf804e3a4b5289d7ca6bcf746f7395d38a",
+    "index_sha256": "41795fbe7273f2c49a74ed8cc298a4427c122393ef2cf25f7e3912faa5f6bb9f",
+    "fingerprint": {
+      "radius": 2,
+      "bits": 2048,
+      "includeChirality": false
+    },
+    "exact_benchmark": {
+      "expansion_search": 1024,
+      "candidate_groups": 512,
+      "rdkit_rerank_groups": 16,
+      "strict_id_recall_at_10": 0.9981541666666666,
+      "tie_aware_recall_at_10": 0.9982241666666665,
+      "top1_score_recall": 0.997,
+      "mean_score_regret_at_10": 0.00011316913757042837
+    },
+    "full_v03_retrieval_census_performed": false,
+    "training_performed": false,
+    "dataset_split_created": false
+  },
+  "retrieval_scope": "Frozen v0.2, all original rows as targets and references",
+  "baseline_identity_only": {
+    "overall": {
+      "targets": 2000000,
+      "at_least_1": 2000000,
+      "at_least_1_fraction": 1.0,
+      "at_least_5_fraction": 0.999999,
+      "ten_fraction": 0.9999975,
+      "zero_template_count": 0,
+      "max_similarity": {
+        "count": 2000000,
+        "mean": 0.9655593633651733,
+        "quantiles": {
+          "0": 0.42424243688583374,
+          "0.01": 0.7936508059501648,
+          "0.05": 0.8536585569381714,
+          "0.25": 0.9487179517745972,
+          "0.5": 1.0,
+          "0.75": 1.0,
+          "0.95": 1.0,
+          "0.99": 1.0,
+          "1": 1.0
+        }
+      },
+      "top10_mean_similarity": {
+        "count": 2000000,
+        "mean": 0.8884873390197754,
+        "quantiles": {
+          "0": 0.4088383913040161,
+          "0.01": 0.72968590259552,
+          "0.05": 0.784783661365509,
+          "0.25": 0.863440990447998,
+          "0.5": 0.8986886739730835,
+          "0.75": 0.925164520740509,
+          "0.95": 0.9526499509811401,
+          "0.99": 0.981927752494812,
+          "1": 1.0
+        }
+      },
+      "mean_definition": "Mean over available templates up to 10; no zero padding",
+      "at_least_5": 1999998,
+      "ten": 1999995,
+      "max_similarity_one_fraction": 0.5082015
+    },
+    "same_head": {
+      "targets": 2000000,
+      "retrieved_template_pairs": 19999979,
+      "same_polar_id_pairs": 11943879,
+      "same_polar_id_pair_fraction": 0.5971945770543059,
+      "targets_with_any_same_polar_id_fraction": 0.9642945,
+      "top1_same_polar_id_fraction_among_usable": 0.8684715,
+      "per_target_same_polar_fraction": {
+        "count": 2000000,
+        "mean": 0.59719395,
+        "quantiles": {
+          "0": 0.0,
+          "0.01": 0.0,
+          "0.05": 0.1,
+          "0.25": 0.4,
+          "0.5": 0.6,
+          "0.75": 0.8,
+          "0.95": 1.0,
+          "0.99": 1.0,
+          "1": 1.0
+        }
+      }
+    },
+    "by_chemistry_family": {
+      "phosphate": {
+        "targets": 1192847,
+        "at_least_1": 1192847,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 0.9999983233390368,
+        "ten_fraction": 0.9999958083475919,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 1192847,
+          "mean": 0.9684426188468933,
+          "quantiles": {
+            "0": 0.42424243688583374,
+            "0.01": 0.800000011920929,
+            "0.05": 0.8604651093482971,
+            "0.25": 0.9538461565971375,
+            "0.5": 1.0,
+            "0.75": 1.0,
+            "0.95": 1.0,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 1192847,
+          "mean": 0.8980168700218201,
+          "quantiles": {
+            "0": 0.4088383913040161,
+            "0.01": 0.7398350834846497,
+            "0.05": 0.7939703464508057,
+            "0.25": 0.8768669366836548,
+            "0.5": 0.9094685316085815,
+            "0.75": 0.9316498041152954,
+            "0.95": 0.9568356275558472,
+            "0.99": 0.9860838651657104,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      },
+      "phosphonate": {
+        "targets": 552565,
+        "at_least_1": 552565,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 1.0,
+        "ten_fraction": 1.0,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 552565,
+          "mean": 0.9578921794891357,
+          "quantiles": {
+            "0": 0.5,
+            "0.01": 0.7777777910232544,
+            "0.05": 0.8307692408561707,
+            "0.25": 0.9333333373069763,
+            "0.5": 0.9879518151283264,
+            "0.75": 1.0,
+            "0.95": 1.0,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 552565,
+          "mean": 0.8643108606338501,
+          "quantiles": {
+            "0": 0.4518730640411377,
+            "0.01": 0.7099599838256836,
+            "0.05": 0.7603826522827148,
+            "0.25": 0.8376407623291016,
+            "0.5": 0.8737996220588684,
+            "0.75": 0.8989378213882446,
+            "0.95": 0.9352162480354309,
+            "0.99": 0.9726468920707703,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      },
+      "polyphosphate": {
+        "targets": 254588,
+        "at_least_1": 254588,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 1.0,
+        "ten_fraction": 1.0,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 254588,
+          "mean": 0.9686923623085022,
+          "quantiles": {
+            "0": 0.5625,
+            "0.01": 0.84375,
+            "0.05": 0.8888888955116272,
+            "0.25": 0.9462365508079529,
+            "0.5": 0.9890109896659851,
+            "0.75": 1.0,
+            "0.95": 1.0,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 254588,
+          "mean": 0.8963108062744141,
+          "quantiles": {
+            "0": 0.47487345337867737,
+            "0.01": 0.769034743309021,
+            "0.05": 0.8147616982460022,
+            "0.25": 0.8739650249481201,
+            "0.5": 0.9062517881393433,
+            "0.75": 0.9264092445373535,
+            "0.95": 0.9469681978225708,
+            "0.99": 0.9678123593330383,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      }
+    }
+  },
+  "exclude_all_same_polar_id": {
+    "overall": {
+      "targets": 2000000,
+      "at_least_1": 2000000,
+      "at_least_1_fraction": 1.0,
+      "at_least_5_fraction": 0.9999995,
+      "ten_fraction": 0.9999975,
+      "zero_template_count": 0,
+      "max_similarity": {
+        "count": 2000000,
+        "mean": 0.8665424585342407,
+        "quantiles": {
+          "0": 0.4215686321258545,
+          "0.01": 0.6796116232872009,
+          "0.05": 0.7613636255264282,
+          "0.25": 0.8299999833106995,
+          "0.5": 0.8679245114326477,
+          "0.75": 0.9078947305679321,
+          "0.95": 0.970588207244873,
+          "0.99": 1.0,
+          "1": 1.0
+        }
+      },
+      "top10_mean_similarity": {
+        "count": 2000000,
+        "mean": 0.8253531455993652,
+        "quantiles": {
+          "0": 0.40790611505508423,
+          "0.01": 0.6407216787338257,
+          "0.05": 0.7109563946723938,
+          "0.25": 0.7866543531417847,
+          "0.5": 0.8299775123596191,
+          "0.75": 0.8693917989730835,
+          "0.95": 0.9237757921218872,
+          "0.99": 0.9722679853439331,
+          "1": 1.0
+        }
+      },
+      "mean_definition": "Mean over available templates up to 10; no zero padding",
+      "at_least_5": 1999999,
+      "ten": 1999995,
+      "max_similarity_one_fraction": 0.032206
+    },
+    "same_head": {
+      "targets": 2000000,
+      "retrieved_template_pairs": 19999982,
+      "same_polar_id_pairs": 0,
+      "same_polar_id_pair_fraction": 0.0,
+      "targets_with_any_same_polar_id_fraction": 0.0,
+      "top1_same_polar_id_fraction_among_usable": 0.0,
+      "per_target_same_polar_fraction": {
+        "count": 2000000,
+        "mean": 0.0,
+        "quantiles": {
+          "0": 0.0,
+          "0.01": 0.0,
+          "0.05": 0.0,
+          "0.25": 0.0,
+          "0.5": 0.0,
+          "0.75": 0.0,
+          "0.95": 0.0,
+          "0.99": 0.0,
+          "1": 0.0
+        }
+      }
+    },
+    "by_chemistry_family": {
+      "phosphate": {
+        "targets": 1192847,
+        "at_least_1": 1192847,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 0.9999991616695184,
+        "ten_fraction": 0.9999966466780735,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 1192847,
+          "mean": 0.8608688116073608,
+          "quantiles": {
+            "0": 0.4215686321258545,
+            "0.01": 0.6582278609275818,
+            "0.05": 0.7469879388809204,
+            "0.25": 0.8241758346557617,
+            "0.5": 0.8627451062202454,
+            "0.75": 0.9019607901573181,
+            "0.95": 0.9726027250289917,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 1192847,
+          "mean": 0.822316586971283,
+          "quantiles": {
+            "0": 0.40790611505508423,
+            "0.01": 0.6258291602134705,
+            "0.05": 0.7019792199134827,
+            "0.25": 0.7817882299423218,
+            "0.5": 0.8272969126701355,
+            "0.75": 0.8674423098564148,
+            "0.95": 0.9293085932731628,
+            "0.99": 0.9778056144714355,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      },
+      "phosphonate": {
+        "targets": 552565,
+        "at_least_1": 552565,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 1.0,
+        "ten_fraction": 0.9999981902581597,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 552565,
+          "mean": 0.8604216575622559,
+          "quantiles": {
+            "0": 0.4566929042339325,
+            "0.01": 0.7169811129570007,
+            "0.05": 0.7719298005104065,
+            "0.25": 0.8260869383811951,
+            "0.5": 0.8571428656578064,
+            "0.75": 0.8918918967247009,
+            "0.95": 0.9649122953414917,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 552565,
+          "mean": 0.8151333332061768,
+          "quantiles": {
+            "0": 0.4315935969352722,
+            "0.01": 0.6571424007415771,
+            "0.05": 0.7136956453323364,
+            "0.25": 0.7803919911384583,
+            "0.5": 0.8176309466362,
+            "0.75": 0.8517422676086426,
+            "0.95": 0.9082126617431641,
+            "0.99": 0.963026225566864,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      },
+      "polyphosphate": {
+        "targets": 254588,
+        "at_least_1": 254588,
+        "at_least_1_fraction": 1.0,
+        "at_least_5_fraction": 1.0,
+        "ten_fraction": 1.0,
+        "zero_template_count": 0,
+        "max_similarity": {
+          "count": 254588,
+          "mean": 0.9064112305641174,
+          "quantiles": {
+            "0": 0.4912280738353729,
+            "0.01": 0.7875000238418579,
+            "0.05": 0.8351648449897766,
+            "0.25": 0.887499988079071,
+            "0.5": 0.9108911156654358,
+            "0.75": 0.9263157844543457,
+            "0.95": 0.9807692170143127,
+            "0.99": 1.0,
+            "1": 1.0
+          }
+        },
+        "top10_mean_similarity": {
+          "count": 254588,
+          "mean": 0.861759603023529,
+          "quantiles": {
+            "0": 0.47487345337867737,
+            "0.01": 0.7194766998291016,
+            "0.05": 0.7744283080101013,
+            "0.25": 0.8375320434570312,
+            "0.5": 0.8696703910827637,
+            "0.75": 0.8925795555114746,
+            "0.95": 0.9235988259315491,
+            "0.99": 0.9522601366043091,
+            "1": 1.0
+          }
+        },
+        "mean_definition": "Mean over available templates up to 10; no zero padding"
+      }
+    }
+  },
+  "original_full_retrieval_overall": {
+    "targets": 2000000,
+    "at_least_1": 2000000,
+    "at_least_1_fraction": 1.0,
+    "at_least_5_fraction": 0.999999,
+    "ten_fraction": 0.9999975,
+    "zero_template_count": 0,
+    "max_similarity": {
+      "count": 2000000,
+      "mean": 0.9655593633651733,
+      "quantiles": {
+        "0": 0.42424243688583374,
+        "0.01": 0.7936508059501648,
+        "0.05": 0.8536585569381714,
+        "0.25": 0.9487179517745972,
+        "0.5": 1.0,
+        "0.75": 1.0,
+        "0.95": 1.0,
+        "0.99": 1.0,
+        "1": 1.0
+      }
+    },
+    "top10_mean_similarity": {
+      "count": 2000000,
+      "mean": 0.8884873390197754,
+      "quantiles": {
+        "0": 0.4088383913040161,
+        "0.01": 0.72968590259552,
+        "0.05": 0.7847836017608643,
+        "0.25": 0.863440990447998,
+        "0.5": 0.8986886739730835,
+        "0.75": 0.925164520740509,
+        "0.95": 0.9526499509811401,
+        "0.99": 0.9819276928901672,
+        "1": 1.0
+      }
+    },
+    "mean_definition": "Mean over available templates up to 10; no zero padding"
+  },
+  "baseline_metric_reproduction": {
+    "template_count": {
+      "equal_rows": 2000000,
+      "max_absolute_difference": 0.0
+    },
+    "max_similarity": {
+      "equal_rows": 2000000,
+      "max_absolute_difference": 0.0
+    },
+    "top10_mean_similarity": {
+      "equal_rows": 2000000,
+      "max_absolute_difference": 1.7881393432617188e-07
+    }
+  },
+  "head_exclusion_benchmark": {
+    "status": "passed",
+    "target_count": 2000,
+    "reference_count": 20000,
+    "seed": 107,
+    "same_head_enriched_reference_rows": 10849,
+    "exact_comparisons": 40000000,
+    "seconds": 26.863011999987066,
+    "strict_id_recall_at_10": 0.99975,
+    "tie_aware_recall_at_10": 0.99975,
+    "top1_score_recall": 0.9995,
+    "mean_score_regret_at_10": 1.9533522529061596e-05,
+    "native_vs_rdkit_max_absolute_error": 4.4589734238265066e-08,
+    "settings": {
+      "expansion_search": 1024,
+      "candidate_groups": 512,
+      "adaptive_search_ceiling": 4096,
+      "postings_are_head_filtered_before_truncation": true
+    },
+    "scope": "Head-enriched benchmark subset; full-library search remains ANN, selected scores exact",
+    "training_or_validation_split_created": false
+  },
+  "exact_low_count_confirmations": 7,
+  "paired_similarity_change_among_both_usable": {
+    "targets": 2000000,
+    "max_similarity_drop_mean": 0.09901690483093262,
+    "fraction_max_similarity_decreased": 0.858778,
+    "excluded_max_exceeds_ANN_baseline_targets": 0
+  },
+  "tests": {
+    "isolated_tests": 226,
+    "ruff": "passed",
+    "linux_ci_source_commit": "d6b0c9040d892032b91fe7b621b261d410bc9578",
+    "linux_ci_url": "https://github.com/yzzx02/phospholipid-structure-pretrain/actions/runs/39191046085"
+  },
+  "retrieval_method_scope": "ANN candidates, RDKit exact selected similarities; all <10 head-excluded results confirmed exhaustively",
+  "training_performed": false,
+  "dataset_split_created": false
+}

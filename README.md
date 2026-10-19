@@ -234,6 +234,10 @@ phospholipid-structure-pretrain/
 `scripts/build_2m_library.py --execute` 已生成 `data/structure_library_v0.2/`。
 后续仍需处理标签对齐、训练/验证/测试划分与检索库使用规则。
 当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
-真实训练阶段还需评估库规模并把线性结构检索/内存缓存换成适合该规模的实现。
+原 2M 正式库及输入哈希保持原样；新增 15,000 个通过独立化学检查和全局去重的完整结构，
+另存为 v0.3（2,015,000 条），配套独立 Morgan/USearch 索引。
+增量方法见 [INCREMENT_V03.md](docs/INCREMENT_V03.md)，
+同头基排除全库检索对照及真实计数见 [INCREMENT_V03_RESULTS.md](docs/INCREMENT_V03_RESULTS.md)。
+训练接入与正式数据划分留待后续讨论。
 
 MS/MS、谱图检索、Spectrum Transformer 和微调留待后续讨论，本仓库当前入口不包含这些流程。
