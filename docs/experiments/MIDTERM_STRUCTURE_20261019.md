@@ -68,6 +68,9 @@ Runtime-only `--sample-rows-from`, `--train-only`, and
 `--steps` is the cumulative optimizer count. Each phase reuses exact original
 sample arrays, verifies the full contract on resume, and saves independent step
 files. Evaluation cannot alter saved optimizer, RNG or sampler cursor state.
+The serialized original `run.steps=1000` and `run.kind=rocm_smoke` labels remain
+unchanged for compatibility. Actual phase endpoints come from CLI `--steps` and
+the checkpoint's numeric `step`, independently audited against AdamW counters.
 
 Run under the existing Windows dump and progress supervisor. New GPU fault dumps,
 nonfinite training values, or abnormal progress stalls stop the process; do not

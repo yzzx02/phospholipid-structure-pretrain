@@ -1,5 +1,7 @@
 # Phospholipid structure pretraining v0.3
 
+**2026-10-19 中程结果：** Morgan MLP / GINE 均已从原 1,001 步检查点恢复并完成累计 5,000 步，使用同一 20k 训练池与固定 128+512 条验证样本。Math/FP32 下本轮未新增 GPU 转储；286 项测试通过。512 条诊断合法 Polar 为 43.95% / 48.44%，原始完整结构 exact 均为 0；Morgan 可选公式筛选后命中 2/512。建议先完成有界扩展与公式/链约束对照，再决定全量；未执行全库预训练或 MS/MS 微调。见 [完整中程结果](docs/experiments/MIDTERM_STRUCTURE_RESULTS_20261019.md)、[方法](docs/experiments/MIDTERM_STRUCTURE_20261019.md) 与 [聚合 JSON](docs/results/MIDTERM_STRUCTURE_20261019.json)。
+
 **2026-10-19 WSL 本机更新：** RX9070XT 使用显式 `--attention-backend math` 路径，FP/GINE 均通过 32 条真实结构过拟合及 20k 目标池 / 1000-step GPU smoke，并各实际恢复至 1001 步，无新增 Windows GPU 超时。默认 attention 路径曾触发黑屏；完整记录、修正和生成质量限制见 [本机 GPU 验证](docs/ROCM_VALIDATION_2026-10-19.md)。下文原 CPU smoke 数字继续作为历史结果保留，未执行完整多轮预训练或 MS/MS 微调。
 
 使用冻结的 2,015,000 条完整磷脂结构：输入完整结构模板和可信中性分子式，输出两个 canonical chain 槽位和含 P 极性片段。实际结果见 [本轮报告](docs/PRETRAINING_V03_RESULTS.md)，方法见 [执行说明](docs/PRETRAINING_V03.md)。
@@ -52,12 +54,12 @@ python -m structure_pretrain.retrieval.train_only --threads 2
 
 完整结构按train/validation/test为1,813,451 /100,792 /100,757；头基组175,772 /9,767 /9,767。三组的polar ID和规范图交集均为零。Test只作要求的标签/覆盖审计，不参与smoke训练或模型选择。
 
-## 当前电脑：显式小训练
+## 历史 CPU smoke：显式小训练
 
-本轮真实数据运行已完成：FP/GINE各累计11步（10步+实际恢复1步）。
+最初 CPU 真实数据接入运行：FP/GINE各累计11步（10步+实际恢复1步）。
 全库标签/划分/合法检索与671条标签重建审计通过；16目标自由生成均未产生EOS，合法率为0。
 详细指标、参数数量和十二项验收回答见[真实接入结果](docs/PRETRAINING_V03_RESULTS.md)。
-该结果用于核验管线，GPU生成质量仍待另一台设备验证。
+该结果保留为 CPU 接入历史；后续 ROCm 验证和中程生成质量见页首链接。
 
 ```bash
 python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --output outputs/pretraining_v03/local_smoke/fingerprint
@@ -69,7 +71,7 @@ python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --
 
 磁盘Dataset只缓存有限Arrow shards和模板特征，仅真实模板组成PyG Batch。公式标准化流式使用合法train pairs。checkpoint绑定数据、词表、split、检索和统计哈希，恢复优化器、RNG和消费样本游标；旧权重不兼容。
 
-9070 XT的环境检查、20k/2k/1000-step GPU smoke及独立full命令见[WSL指南](docs/WSL_ROCm.md)。本机没有执行GPU验证或完整多轮预训练。
+9070 XT的环境检查、20k/2k/1000-step GPU smoke及独立full命令见[WSL指南](docs/WSL_ROCm.md)。本机已完成显式 Math 路径的 GPU 验证与中程实验；尚未执行完整多轮预训练或 MS/MS 微调。
 
 ## 文件
 
