@@ -235,11 +235,15 @@ class RealStructureDataset(Dataset):
         }
 
 
-def sample_targets(prepared, train_count=512, validation_count=128, seed=42, priority_rows=()):
+def sample_targets(
+    prepared, train_count=512, validation_count=128, seed=42, priority_rows=(), sample_output=None
+):
     """Frozen metadata-only stratified samples; no test structures read for training."""
     import pyarrow.parquet as pq
 
     prepared = Path(prepared)
+    sample_output = prepared if sample_output is None else Path(sample_output)
+    sample_output.mkdir(parents=True, exist_ok=True)
     split = np.load(prepared / "row_splits.npy", mmap_mode="r")
     groups = np.load(prepared / "polar_groups.npy", mmap_mode="r")
     chains = np.load(prepared / "chain_labels.npy", mmap_mode="r")
@@ -294,5 +298,5 @@ def sample_targets(prepared, train_count=512, validation_count=128, seed=42, pri
                 if len(selected) >= count:
                     break
         samples[SPLITS[i]] = np.array(selected, dtype=np.int64)
-        np.save(prepared / f"local_smoke_{SPLITS[i]}_rows.npy", samples[SPLITS[i]])
+        np.save(sample_output / f"local_smoke_{SPLITS[i]}_rows.npy", samples[SPLITS[i]])
     return samples

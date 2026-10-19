@@ -1,6 +1,10 @@
 # RX 9070 XT：WSL Ubuntu + ROCm
 
-**GPU执行状态：待运行。** 当前电脑只执行CPU真实数据smoke；下面是另一台设备的明确步骤。推荐WSL2 Ubuntu24.04、Python3.12。Windows驱动、WSL运行时和HIP PyTorch按[AMD WSL支持矩阵](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/wsl/wsl_compatibility.html)及[AMD安装指导](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/install/installrad/wsl/howto_wsl.html)选择相互匹配的版本。
+**本机更新（2026-10-19）：** 已迁移全量私有数据并验证 RX9070XT。默认 attention 路径在真实过拟合时出现 GPU 超时；目前采用 `--attention-backend math`，两种 encoder 的真实 32 条过拟合已通过。后续 GPU smoke 的执行结果见[本机验证记录](ROCM_VALIDATION_2026-10-19.md)。
+
+本机仓库位于 `${PROJECT_ROOT}`，Python 固定为 `${HOME}/miniconda3/envs/torch-rocm721/bin/python`。使用 `./scripts/run_rocm.sh` 可同时设置解释器和 `HSA_ENABLE_DXG_DETECTION=1`。本机真实训练均显式使用 Math attention，以下命令已补充该参数。现有 AMD Torch 和核心依赖应保留。
+
+推荐WSL2 Ubuntu24.04、Python3.12。Windows驱动、WSL运行时和HIP PyTorch按[AMD WSL支持矩阵](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/wsl/wsl_compatibility.html)及[AMD安装指导](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/install/installrad/wsl/howto_wsl.html)选择相互匹配的版本。
 
 ## 1. 保留已工作的AMD环境
 
@@ -40,8 +44,8 @@ python scripts/check_rocm.py --output outputs/pretraining_v03/rocm_preflight
 ## 3. 真实GPU smoke，先FP后GINE
 
 ```bash
-python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_fp.yaml --output outputs/pretraining_v03/rocm_smoke/fingerprint
-python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_gine.yaml --output outputs/pretraining_v03/rocm_smoke/graph
+./scripts/run_rocm.sh train_structure_real.py --device rocm --attention-backend math --config configs/pretraining_v03_rocm_fp.yaml --output outputs/pretraining_v03/rocm_smoke/fingerprint
+./scripts/run_rocm.sh train_structure_real.py --device rocm --attention-backend math --config configs/pretraining_v03_rocm_gine.yaml --output outputs/pretraining_v03/rocm_smoke/graph
 ```
 
 初始20,000 train /2,000 validation /1,000 optimizer steps，均从冻结合法groups抽取，test不进入训练/调参。FP batch16、GINE batch8×accum2、workers2、FP32是**待实测起点**；确认显存/吞吐后可在独立配置中测试BF16/FP16、batch、accum、workers和prefetch。允许20k–50k/2k–5k/1000–5000 steps，不修改任务或冻结数据。
@@ -49,7 +53,7 @@ python train_structure_real.py --device rocm --config configs/pretraining_v03_ro
 续训示例（steps为累计数）：
 
 ```bash
-python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_fp.yaml --steps 1001 --resume outputs/pretraining_v03/rocm_smoke/fingerprint/checkpoint/last.pt --output outputs/pretraining_v03/rocm_smoke/fingerprint
+./scripts/run_rocm.sh train_structure_real.py --device rocm --attention-backend math --config configs/pretraining_v03_rocm_fp.yaml --steps 1001 --resume outputs/pretraining_v03/rocm_smoke/fingerprint/checkpoint/last.pt --output outputs/pretraining_v03/rocm_smoke/fingerprint
 ```
 
 每个输出目录保存resolved config、训练/teacher-forcing指标、独立自由生成指标、steps/s、samples/s、加载时间、RAM和VRAM，以及私有checkpoint。需实际完成一次GPU恢复并检查日志；本机的CPU恢复不能证明HIP恢复已验证。
@@ -59,11 +63,11 @@ python train_structure_real.py --device rocm --config configs/pretraining_v03_ro
 以下命令**本轮不执行**。完整数据实验仅用train组1,813,451条训练，100,792条validation，test保持封存。120,000 steps为配置占位实验长度，后续依据GPU实测确定；当前不是已验证的最优训练量。
 
 ```bash
-python train_structure_real.py --device rocm --config configs/pretraining_v03_full_fp.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke --output outputs/pretraining_v03/full/fingerprint
+./scripts/run_rocm.sh train_structure_real.py --device rocm --attention-backend math --config configs/pretraining_v03_full_fp.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke/validated --output outputs/pretraining_v03/full/fingerprint
 # GINE为单独实验：
-python train_structure_real.py --device rocm --config configs/pretraining_v03_full_gine.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke --output outputs/pretraining_v03/full/graph
+./scripts/run_rocm.sh train_structure_real.py --device rocm --attention-backend math --config configs/pretraining_v03_full_gine.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke/validated --output outputs/pretraining_v03/full/graph
 ```
 
 Full入口要求显式full配置、`--allow-full-training`和两种encoder已完成真实GPU smoke报告。Smoke不会调用full；没有任何自动训练串联。Full默认每500 steps原子替换checkpoint，恢复时检查所有数据和模型契约。
 
-当前电脑没有RX9070XT，因此HIP可用性、GINE/Transformer GPU backward、AMP数值稳定性、GPU续训、显存和GPU吞吐均为**待运行**，GitHub CPU CI也不能替代它们。
+本页最初在无 RX9070XT 的 CPU 电脑上编写。当前 WSL 本机的真实结果以[本机验证记录](ROCM_VALIDATION_2026-10-19.md)为准；Math 路径的正式长训练尚未执行。`rocm_smoke/validated/` 用链接指向已完成的 FP 续训和 GINE smoke，保留原始中断记录。

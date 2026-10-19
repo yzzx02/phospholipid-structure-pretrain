@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import random
 import time
 from dataclasses import asdict
@@ -24,8 +25,10 @@ from structure_pretrain.library_builder.pipeline import file_hash
 from structure_pretrain.library_builder.schemas import ChainRule, PolarRule
 from structure_pretrain.models.structure_pretrain_model import StructurePretrainModel
 from structure_pretrain.polar_plausibility.pipeline import dump_json
+from structure_pretrain.training.checkpoint_validation import validate_reload
 from structure_pretrain.training.generation_metrics import evaluate_generation
 from structure_pretrain.training.losses import pretraining_loss
+from structure_pretrain.utils.attention import attention_backend
 
 
 class ReproducibleBatchSampler(Sampler):
@@ -87,7 +90,13 @@ def main():
     p.add_argument("--resume")
     p.add_argument("--allow-full-training", action="store_true")
     p.add_argument("--gpu-smoke-root", default="outputs/pretraining_v03/rocm_smoke")
+    p.add_argument("--attention-backend", choices=("default", "math"), default="default")
     args = p.parse_args()
+    with attention_backend(args.attention_backend):
+        execute(args, p)
+
+
+def execute(args, p):
     raw = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
     config = OmegaConf.to_object(
         OmegaConf.merge(
@@ -148,6 +157,14 @@ def main():
     torch.manual_seed(config.train.seed)
     root, output = Path(args.prepared), Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
+    (output / "diagnostic.pid").write_text(str(os.getpid()))
+
+    def log_event(record):
+        with (output / "events.jsonl").open("a") as handle:
+            handle.write(json.dumps(record) + "\n")
+        print(json.dumps(record), flush=True)
+
+    log_event({"stage": "preparing", "attention_backend": args.attention_backend})
     label = read_json(root / "labels_manifest.json")
     if full:
         for name in ("fingerprint", "graph"):
@@ -174,7 +191,12 @@ def main():
         all_ids = np.load(Path(args.frozen_index) / "row_ids.npy", mmap_mode="r")
         priority_rows = np.flatnonzero(np.isin(all_ids, np.asarray(special_ids, dtype="S67")))
         samples = sample_targets(
-            root, run["train_targets"], run["validation_targets"], config.train.seed, priority_rows
+            root,
+            run["train_targets"],
+            run["validation_targets"],
+            config.train.seed,
+            priority_rows,
+            sample_output=output / "sample_rows",
         )
     else:
         splits = np.load(root / "row_splits.npy", mmap_mode="r")
@@ -224,6 +246,8 @@ def main():
         "outputs": ["canonical_chain_slots_2", "P_containing_polar_fragment"],
         "polar_boundary": "glycerol-O | P-containing polar fragment",
     }
+    if args.attention_backend != "default":
+        contract["attention_backend"] = args.attention_backend
     model = StructurePretrainModel(config.model, len(train.chain_vocab), train.tokenizer, stats).to(
         device
     )
@@ -249,7 +273,7 @@ def main():
         np.random.set_state(checkpoint["rng_numpy"])
         random.setstate(checkpoint["rng_python"])
         if device.type == "cuda" and checkpoint.get("rng_device") is not None:
-            torch.cuda.set_rng_state_all(checkpoint["rng_device"])
+            torch.cuda.set_rng_state_all([state.cpu() for state in checkpoint["rng_device"]])
     checkpoint_dir = output / "checkpoint"
     checkpoint_dir.mkdir(exist_ok=True)
     checkpoint_path = checkpoint_dir / "last.pt"
@@ -346,7 +370,7 @@ def main():
             metrics = {"step": step, **loss_accum.values}
             history.append(metrics)
             loss_accum = CounterValues()
-            print(json.dumps(metrics), flush=True)
+            log_event(metrics)
             if step % run.get("checkpoint_every", 500) == 0:
                 save_checkpoint()
         previous = time.monotonic()
@@ -384,6 +408,8 @@ def main():
             )
             token_count += nt
             seen += n
+            if seen % (config.train.batch_size * 10) == 0:
+                log_event({"stage": "validation", "targets": seen})
     sums = validation_totals.values
     validation_metrics = {
         "chain_loss": sums["chain_loss"] / (2 * seen),
@@ -407,17 +433,9 @@ def main():
     restored.load_state_dict(
         torch.load(checkpoint_path, map_location=device, weights_only=False)["model"]
     )
-    with torch.no_grad():
-        reference, reloaded = model(first_batch), restored(first_batch)
-        reload_identical = True
-        for key in ("chain_logits", "polar_logits"):
-            reload_identical &= torch.equal(reference[key], reloaded[key])
-            torch.testing.assert_close(
-                reference[key],
-                reloaded[key],
-                rtol=0 if device.type == "cpu" else 1e-5,
-                atol=0 if device.type == "cpu" else 1e-6,
-            )
+    reference, reload_report = validate_reload(
+        model, restored, first_batch, allow_roundoff=device.type == "cuda"
+    )
     del restored
     generated_count = min(run["generation_targets"], len(validation))
     generation_batches = (
@@ -427,10 +445,14 @@ def main():
         r["chain_token"]: rule_from_row(ChainRule, r)
         for r in pq.read_table(Path(args.library) / "chain_library.parquet").to_pylist()
     }
-    polar_rules = {
-        canonical_polar(r["polar_fragment_smiles"]): rule_from_row(PolarRule, r)
-        for r in pq.read_table(Path(args.library) / "polar_library.parquet").to_pylist()
-    }
+    polar_rules = {}
+    log_event({"stage": "loading_polar_rules", "heads": 0})
+    for part in pq.ParquetFile(Path(args.library) / "polar_library.parquet").iter_batches(
+        batch_size=2048
+    ):
+        for r in part.to_pylist():
+            polar_rules[canonical_polar(r["polar_fragment_smiles"])] = rule_from_row(PolarRule, r)
+        log_event({"stage": "loading_polar_rules", "heads": len(polar_rules)})
     generation, predictions = evaluate_generation(
         model,
         generation_batches,
@@ -440,6 +462,7 @@ def main():
         polar_rules,
         beam_size=5,
         max_length=config.model.max_polar_length,
+        progress=log_event,
     )
     training = {
         "schema": SCHEMA,
@@ -456,8 +479,7 @@ def main():
         "validation_teacher_forced": validation_metrics,
         "gradient_checks": gradient_checks,
         "parameters_changed": updates,
-        "checkpoint_reload_identical_logits": reload_identical,
-        "checkpoint_reload_logits_close": True,
+        **reload_report,
         "parameters": sum(p.numel() for p in model.parameters()),
         "module_parameters": {
             n: sum(p.numel() for p in m.parameters()) for n, m in model.named_children()
@@ -471,6 +493,7 @@ def main():
         "device": str(device),
         "torch": torch.__version__,
         "hip": torch.version.hip,
+        "attention_backend": args.attention_backend,
         "precision": precision,
         "optimizer_training_seconds": elapsed,
         "steps_per_second": (step - start_step) / elapsed,

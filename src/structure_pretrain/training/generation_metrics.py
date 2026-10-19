@@ -24,7 +24,15 @@ def prediction_polar_rule(smiles, known_heads):
 
 
 def evaluate_generation(
-    model, batches, tokenizer, chain_vocab, chains, known_heads, beam_size=5, max_length=64
+    model,
+    batches,
+    tokenizer,
+    chain_vocab,
+    chains,
+    known_heads,
+    beam_size=5,
+    max_length=64,
+    progress=None,
 ):
     totals, failures, rows = Counter(), Counter(), []
     generator = rdFingerprintGenerator.GetMorganGenerator(
@@ -108,6 +116,8 @@ def evaluate_generation(
                 failures[str(exc)] += 1
                 result["failure"] = str(exc)
             rows.append(result)
+        if progress is not None:
+            progress({"stage": "free_generation", "targets": totals["targets"]})
     n = totals["targets"]
     metrics = {
         "evaluated_targets": n,

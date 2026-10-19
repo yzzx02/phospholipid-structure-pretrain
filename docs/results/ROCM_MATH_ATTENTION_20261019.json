@@ -1,0 +1,197 @@
+{
+  "schema": "rocm-math-attention-validation-v1",
+  "date": "2026-10-19",
+  "source_code_base_commit": "6652bfa9ee4f397328abe85d5b925143f7d73dd9",
+  "environment": {
+    "gpu": "AMD Radeon RX 9070 XT",
+    "windows_driver": "32.0.31041.1004",
+    "rocm": "7.2.1",
+    "rocdxg": "1.2.0",
+    "python": "3.12.13",
+    "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+    "wsl_kernel": "6.18.33.1-microsoft-standard-WSL2",
+    "distribution": "Ubuntu 24.04.4 LTS",
+    "core_packages_changed": false
+  },
+  "observed_fault": {
+    "event": "LiveKernelEvent 141",
+    "default_attention_attempt": "stopped_after_user_reported_black_screens",
+    "root_cause_proven": false,
+    "hardware_health_proven": false
+  },
+  "workaround": {
+    "sdpa": "math",
+    "mha_fastpath": false,
+    "scope": "process-local; original flags restored on exit",
+    "no_new_dump_during_monitored_math_runs": true,
+    "not_proof_of_long_term_stability": true
+  },
+  "data": {
+    "structure_count": 2015000,
+    "train": 1813451,
+    "validation": 100792,
+    "test": 100757,
+    "all_320_transferred_files_unchanged": true
+  },
+  "tests_passed": 276,
+  "overfit": {
+    "fingerprint": {
+      "steps": 200,
+      "real_train_targets": 32,
+      "generation": {
+        "evaluated_targets": 32,
+        "eos_rate": 1.0,
+        "valid_polar_rate": 1.0,
+        "exact_polar_rate": 1.0,
+        "chain_set_exact_rate": 1.0
+      },
+      "host_seconds": 27.0947288
+    },
+    "graph": {
+      "steps": 200,
+      "real_train_targets": 32,
+      "generation": {
+        "evaluated_targets": 32,
+        "eos_rate": 1.0,
+        "valid_polar_rate": 0.9375,
+        "exact_polar_rate": 0.9375,
+        "chain_set_exact_rate": 1.0
+      },
+      "host_seconds": 27.5200461
+    }
+  },
+  "smoke": {
+    "fingerprint": {
+      "steps": 1001,
+      "resumed_from_step": 1000,
+      "real_train_pool": 20000,
+      "unique_train_targets_seen": 16016,
+      "consumed": 16016,
+      "validation_targets": 2000,
+      "teacher_forced": {
+        "chain_loss": 4.486739961624146,
+        "polar_loss": 0.8586363180563401,
+        "chain_slot_accuracy": 0.061,
+        "chain_exact_accuracy": 0.036,
+        "polar_token_accuracy": 0.698543396312367,
+        "evaluated_targets": 2000,
+        "evaluated_tokens": 87807,
+        "loss": 5.345376279680486
+      },
+      "generation": {
+        "evaluated_targets": 128,
+        "free_generation": true,
+        "beam_size": 5,
+        "generation_max_length": 84,
+        "generation_cap_is_not_target_label_truncation": true,
+        "formula_post_filtering": "not applied; raw errors retained",
+        "failure_counts": {
+          "SMILES could not be parsed": 79,
+          "Explicit valence for atom # 22 N, 4, is greater than permitted": 1,
+          "no_eos_length_exhausted": 5,
+          "Explicit valence for atom # 7 C, 5, is greater than permitted": 1,
+          "Require exactly one degree-1 attachment dummy": 3,
+          "Explicit valence for atom # 4 C, 5, is greater than permitted": 1,
+          "Can't kekulize mol.  Unkekulized atoms: 13 14 15 17 18 19 20": 1,
+          "Glycerol supplies O; polar dummy must attach to P": 1,
+          "Can't kekulize mol.  Unkekulized atoms: 19 20 21 22 23 24 25 26 27": 1,
+          "non-ring atom 16 marked aromatic": 1
+        },
+        "non_null_chain_accuracy": 0.2217741935483871,
+        "target_morgan_similarity": 0.15909887703923037,
+        "target_morgan_similarity_among_assembled": 0.5989604782653378,
+        "valid_polar_rate": 0.265625,
+        "rdkit_parse_rate": 0.296875,
+        "exact_polar_graph_rate": 0.0,
+        "top5_polar_recall": 0.0,
+        "attachment_valid_rate": 0.265625,
+        "template_copy_rate": 0.0078125,
+        "chain_count_accuracy": 1.0,
+        "chain_set_exact_rate": 0.1796875,
+        "assembly_success_rate": 0.265625,
+        "full_formula_match_rate": 0.0,
+        "full_structure_exact_rate": 0.0,
+        "eos_rate": 0.9609375,
+        "length_exhausted_rate": 0.0390625
+      },
+      "checkpoint_reload_logits_close": true,
+      "checkpoint_state_dict_identical": null,
+      "checkpoint_reload_max_abs_logit_difference": null,
+      "peak_VRAM_allocated_GiB_resume_process": 0.6920886039733887,
+      "resource_scope": "resume process (one optimizer step + validation + generation), not original 1000-step throughput",
+      "new_windows_gpu_dumps": 0
+    },
+    "graph": {
+      "steps": 1001,
+      "resumed_from_step": 1000,
+      "real_train_pool": 20000,
+      "unique_train_targets_seen": 16016,
+      "consumed": 16016,
+      "validation_targets": 2000,
+      "teacher_forced": {
+        "chain_loss": 4.691680081367493,
+        "polar_loss": 0.8819475670285615,
+        "chain_slot_accuracy": 0.0555,
+        "chain_exact_accuracy": 0.037,
+        "polar_token_accuracy": 0.68906806974387,
+        "evaluated_targets": 2000,
+        "evaluated_tokens": 87807,
+        "loss": 5.573627648396054
+      },
+      "generation": {
+        "evaluated_targets": 128,
+        "free_generation": true,
+        "beam_size": 5,
+        "generation_max_length": 84,
+        "generation_cap_is_not_target_label_truncation": true,
+        "formula_post_filtering": "not applied; raw errors retained",
+        "failure_counts": {
+          "SMILES could not be parsed": 79,
+          "Can't kekulize mol.  Unkekulized atoms: 47 48 49": 1,
+          "Explicit valence for atom # 4 C, 9, is greater than permitted": 1,
+          "Can't kekulize mol.  Unkekulized atoms: 18 19 20 21 23 24 25": 1,
+          "Require exactly one degree-1 attachment dummy": 6,
+          "Can't kekulize mol.  Unkekulized atoms: 3 4 5 8 34": 1,
+          "Explicit valence for atom # 4 C, 5, is greater than permitted": 1,
+          "no_eos_length_exhausted": 5,
+          "Can't kekulize mol.  Unkekulized atoms: 11 12 13 14 15 16 20": 1,
+          "Explicit valence for atom # 1 C, 8, is greater than permitted": 1,
+          "Glycerol supplies O; polar dummy must attach to P": 5
+        },
+        "non_null_chain_accuracy": 0.20161290322580644,
+        "target_morgan_similarity": 0.09939380967942733,
+        "target_morgan_similarity_among_assembled": 0.4893233707294884,
+        "valid_polar_rate": 0.203125,
+        "rdkit_parse_rate": 0.2890625,
+        "exact_polar_graph_rate": 0.0,
+        "top5_polar_recall": 0.0,
+        "attachment_valid_rate": 0.203125,
+        "template_copy_rate": 0.0,
+        "chain_count_accuracy": 0.9765625,
+        "chain_set_exact_rate": 0.171875,
+        "assembly_success_rate": 0.203125,
+        "full_formula_match_rate": 0.0,
+        "full_structure_exact_rate": 0.0,
+        "eos_rate": 0.9609375,
+        "length_exhausted_rate": 0.0390625
+      },
+      "checkpoint_reload_logits_close": true,
+      "checkpoint_state_dict_identical": true,
+      "checkpoint_reload_max_abs_logit_difference": {
+        "chain_logits": 2.86102294921875e-06,
+        "polar_logits": 3.337860107421875e-06
+      },
+      "peak_VRAM_allocated_GiB_resume_process": 0.6599006652832031,
+      "resource_scope": "resume process (one optimizer step + validation + generation), not original 1000-step throughput",
+      "new_windows_gpu_dumps": 0
+    }
+  },
+  "limitations": [
+    "Structure-oracle retrieval, no MS/MS input or training",
+    "No full multi-epoch pretraining",
+    "Math real-data path tested in FP32; original AMP operator tests used default attention",
+    "Resource summaries cover resume processes, not full first-1000-step throughput",
+    "Teacher-forced EOS accuracy was not measured in the original report"
+  ],
+  "next_experiment": "Frozen 128 plus stratified validation diagnosis; resume identical pools/model/optimizer at 1001 to 1500/2000; conditionally extend at fixed comparisons"
+}
