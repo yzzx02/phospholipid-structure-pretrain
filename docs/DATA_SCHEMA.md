@@ -1,83 +1,40 @@
-# 数据接口 v0.1
+# 真实结构预训练数据契约 v0.3
 
-真实数据构建尚未实施。本接口接收调用方提供的结构和监督标签，不下载数据库，不从 SMILES 计算分子式，不切割真实磷脂。
+schema：`structure-pretraining-v0.3-two-output`。完整结构只输入编码器；标签来自冻结builder的polar/chain关联表，不重新切割完整结构。
 
-## 记录输入
+`StructureRecord(structure_id, smiles, neutral_formula)` 的中性式必填：元素顺序 `C H N O P S F Cl Br I`，10个非负整数。模板为单连通、无dummy、净电荷零的完整分子。`TargetRecord(structure, chain_tokens, polar_fragment_smiles)`用于小数据adapter，正式`RealStructureDataset`从磁盘读取同一语义。
 
-`StructureRecord(structure_id, smiles, neutral_formula)`：
-
-- `structure_id`：唯一字符串；检索库不允许重复 ID。
-- `smiles`：完整、单组分、总电荷为 0 的结构；允许中性两性离子。不接收 adduct 片段或 wildcard。
-- `neutral_formula`：10 个非负整数，元素顺序 `[C,H,N,O,P,S,F,Cl,Br,I]`。**模板分子式必需**；query 的记录可为 `None`。
-
-`TargetRecord(structure, architecture, chain_tokens, headgroup_smiles, formula_available)`：
-
-- `architecture`：`0=mono_phosphatidyl`，`1=bis_phosphatidyl`。
-- `chain_tokens`：1–4 个外部标注的 A/O/P token，可重复；adapter canonical sort 后 NULL pad 到 4。不代表 sn 位点，也不预测 bis 架构内的磷脂单元配对。
-- `headgroup_smiles`：外部切割得到的 headgroup fragment，例如 `[*:1]OCCN`。切割算法和 attachment 语义不在本阶段确定。
-- `formula_available`：query 分子式可用时为 True；True 时 `structure.neutral_formula` 必须存在。
-
-结构可以带有输入库给定的双键位置；模型不输出它的位置，不校正或替换该位置。未来采用 MS-DIAL 代表结构规则时，由外部数据构建阶段统一输入结构版本。
-
-## 检索接口
-
-`StructuralRetrieval.retrieve(target: StructureRecord) -> list[TemplateHit]`，每个 hit 只有 `template` 和 `structure_similarity`。默认实现使用 Morgan radius=2、2048 bits、无 chirality、Tanimoto；最多 10 个、阈值 0.4。排除同 ID 和 canonical 等价结构；库内部重复结构只保留确定性的一个条目。canonical identity 忽略 atom mapping、立体化学，但保留二维键连接关系；当前不做 tautomer/salt 的数据库级标准化。
-
-真实阶段的 train/val/test 划分、候选库可用范围和泄漏防控规则须由数据方案明确。训练、验证和测试只依赖各自合法的检索 bank；不能为了提高分数把隐藏目标放入模板库。当前 dummy bank 仅用于程序验证，不提供独立评估证据。
-
-## Dataset item：补齐前
+链标签两个canonical槽位，按builder的O→P→A、C数、双键数排序，保留重复链；lyso尾部补NULL，不表示sn。冻结A177/O84/P61+NULL。Polar边界为`glycerol-O | P-containing polar fragment`；唯一mapped dummy连接P，由`validate_polar_fragment`和`attachment`校验，不能根据SMILES开头判断。
 
 ```python
 {
     "target_id": str,
-    "target_architecture": int,
-    "target_chain_tokens": list[int],          # 长度 4，已经 canonical sort
-    "target_headgroup_token_ids": list[int],   # BOS + lexical tokens + EOS
-    "target_formula": Tensor[10],             # 缺失时 0；模型不读取此字段
-    "template_ids": list[str],                # 长度 K，1 <= K <= 10
+    "canonical_full_smiles": str,
+    "polar_fragment_smiles": str,
+    "target_chain_tokens": list[int],       # 两槽，NULL参与监督
+    "target_polar_token_ids": list[int],    # BOS+lexical+EOS，最长84
+    "target_formula": Tensor[10],          # 必填中性元素计数
+    "template_ids": list[str],              # K=1..10，严格train bank
     "template_smiles": list[str],
-    "template_formulas": Tensor[K, 10],        # 未标准化的模板中性整数计数
-    "delta_formulas": Tensor[K, 10],           # 原始 signed difference；缺失时 0
-    "structure_similarity": Tensor[K],        # [0,1]
-    "formula_available": BoolTensor[K],
-    "template_mask": BoolTensor[K],            # 补齐前全为 True
+    "template_polar_smiles": list[str],      # 只用于生成评价
+    "template_formulas": Tensor[K,10],
+    "delta_formulas": Tensor[K,10],         # target-template，允许负数
+    "template_mask": BoolTensor[K],
     "structures": list[PyG.Data | Tensor[2048]],
     "encoder": "graph" | "fingerprint",
 }
 ```
 
-分子式以浮点 tensor 保存，但输入契约要求整数计数。0 个 hit 时 dataset 跳过该 target，记录 `skipped_target_ids`。真实标注的词表由外部提供给 `ChainVocabulary(tokens)`；只接受词表中的标签，不自行扩张。SMILES bracket atom（含 `[*:1]`）作为整个 token；额外 bracket token 由调用方传给 `SmilesTokenizer(extra_tokens=...)`。
+没有architecture监督、formula_available或模型相似度输入。Tanimoto单独保留在检索cache。模型验证目标式必填且有效模板的`template+delta=target`。padding数值零只对应mask=False，不代表真实缺失公式。
 
-`collate_structure_examples` 将模板容量补齐到 10，`template_mask=False` 为 padding，数值补 0。图和 FP **只展平真实模板**，顺序对应 `template_mask` 的 row-major True 项。labels 的 headgroup 字符串按 batch 最长长度 PAD，链槽的 NULL 仍参与分类 loss。
+Collate补至K=10，`template_counts=[B]`；真实图/FP按mask的row-major顺序展平M条，不生成padding假图。图atom为`[N,7]`、bond为`[E,3]`。结构编码`[M,256]`，公式20D独立编码128D，384D融合到512D；集合memory加TCLS后`[B,11,512]`。输出`chain_logits=[B,2,323]`和`polar_logits=[B,L-1,63]`。Polar CE只忽略PAD，监督EOS；总loss为两项CE等权相加。
 
-## 接入示例
+Canonical polar graph分组、seed42、约90/5/5；所有alias同组。三个split的references均来自train bank，train排除自身/等价完整图。跨头基模式额外排除相同canonical polar graph。Validation/Test天然跨头基。初始普通/跨头基混合.5可配置，确定性模式选择不依赖worker调度。零模板目标保留在覆盖分母，Dataset明确失败，不跳过或降低阈值。行级self排除依赖已审计的完整canonical图唯一前提。
 
-```python
-from structure_pretrain.config import RetrievalConfig
-from structure_pretrain.data.structure_dataset import StructurePretrainingDataset
-from structure_pretrain.retrieval.structural_retrieval import MorganStructuralRetriever
-from structure_pretrain.utils.formula import FormulaStandardizer
+`labels_manifest.json`绑定源表、旧索引、派生数组和shards哈希；`split_manifest.parquet`保存行→ID→polar graph→split。源`canonical_smiles`只在新shards显式映射为`canonical_full_smiles`，原表不改动。模板行通过冻结`row_ids.npy`映射ID。
 
-# library/targets/chains/tokenizer 全部由你提供的规则构建。
-retriever = MorganStructuralRetriever(library, RetrievalConfig())
-train_dataset = StructurePretrainingDataset(
-    targets, retriever, chains, tokenizer, encoder="graph"
-)
-statistics = FormulaStandardizer.fit(train_dataset.examples)
-# 将同一 statistics 传给模型；val/test 不能重新 fit。
-```
+Dataset不展开2M Python examples/graphs。默认缓存4个Arrow mmap shards、256个模板特征；spawn worker重开mmap。公式统计用流式矩，仅使用train targets/train references。普通/跨头基等权pair合并；两模式都Top10时对应等权sample mixture。常数维std=1。
 
-第一版 adapter 预处理并缓存所有检索结果和 molecular graphs，适用于 dummy 和小型接口验证。图只包含原子类别、键类别、连接索引，不计算额外位置特征。真实库规模确定后，决定磁盘缓存、批量检索和 streaming dataset 的方案，避免在大库上反复线性扫描或缓存整个数据集。
+Checkpoint绑定v0.3、标签、词表、划分、检索、公式统计哈希；恢复model/AdamW/scaler/RNG/消费样本计数。Sampler按epoch seed和消费游标恢复，DataLoader用独立RNG。旧checkpoint不兼容。
 
-## 仍待提供的规则
-
-1. phospholipid structure library 的来源、范围、结构标准化和版本。
-2. molecular formula library 的来源、neutral 化规则、缺失与错误处理、ID 对齐。
-3. architecture 标签的可靠来源及特殊结构的处理。
-4. A/O/P 链标注、P 链双键数口径、真实词表及未见 token 策略。
-5. headgroup 切割、attachment 编号、合法 fragment 和 tokenizer 词表。
-6. 代表双键位置策略与结构库之间的一致性。
-7. train/val/test 分组、重复/同系物处理、允许访问的检索 bank。
-8. 库规模、真实训练入口、缓存格式和效果评估方案。
-
-以上目前均未使用未经你确认的数据规则填补。
+Teacher forcing与BOS-only greedy/beam Top5分开评价。自由生成记录真实EOS、长度耗尽、解析/attachment/polar图合法性、polar exact、链数和无序链集合、template-copy、原builder组装、完整式/图匹配及Morgan。未组装样本的总体相似度记0，另报成功组装条件均值。没有后验修复或公式筛选。

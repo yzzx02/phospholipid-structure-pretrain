@@ -1,84 +1,69 @@
 # RX 9070 XT：WSL Ubuntu + ROCm
 
-当前本机只完成 CPU 程序验证。以下提供另一台 9070 XT 机器的安装顺序和运行入口，尚未声称 GPU 实测成功。
+**GPU执行状态：待运行。** 当前电脑只执行CPU真实数据smoke；下面是另一台设备的明确步骤。推荐WSL2 Ubuntu24.04、Python3.12。Windows驱动、WSL运行时和HIP PyTorch按[AMD WSL支持矩阵](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/wsl/wsl_compatibility.html)及[AMD安装指导](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/install/installrad/wsl/howto_wsl.html)选择相互匹配的版本。
 
-## 环境选择
+## 1. 保留已工作的AMD环境
 
-建议 WSL2 + Ubuntu 24.04 + Python 3.12。AMD 发布的 Radeon WSL 支持矩阵明确列出 RX 9070 XT，以及 PyTorch 2.9.1 + ROCm 7.2.1 的官方支持组合；该组合是本文的参考基线，不代表最新版本。驱动和运行时请按实际选择的版本成套安装。
-
-- [AMD WSL 支持矩阵](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/wsl/wsl_compatibility.html)
-- [AMD Radeon WSL 安装指导](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/install/installrad/wsl/howto_wsl.html)
-- [AMD PyTorch release wheels](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/install/installrad/native_linux/install-pytorch.html)
-- [AMD ROCm 当前安装文档](https://rocm.docs.amd.com/en/latest/install/rocm.html)
-
-先安装 Windows 端兼容的 AMD 驱动，再安装 WSL/Ubuntu 对应的 ROCm 用户态运行时。WSL 的 GPU 暴露依赖 Windows 驱动和 `/dev/dxg`，不要照搬原生 Linux 的内核驱动安装或 NVIDIA CUDA 安装命令。
-
-AMD 的 WSL 安装路线已经出现 ROCDXG 迁移。若选择需要 ROCDXG 的旧运行时，遵循官方安装说明；[AMD ROCDXG 说明](https://github.com/ROCm/librocdxg) 指出 legacy runtime 需要 `HSA_ENABLE_DXG_DETECTION=1`，从 ROCk 7.13 起去掉该要求，其源码已迁至 rocm-systems。本项目不自动修改显卡驱动、runtime library 或全局环境变量。
-
-## 获取项目和创建环境
-
-私有仓库需要你在新机器上先用 `gh auth login` 或配置 GitHub SSH key。把代码放在 WSL 自己的 Linux 文件系统中，例如 `~/projects/`，方便管理 Python 环境和缓存。
+在准备实际训练的Python环境中先检查：
 
 ```bash
-mkdir -p ~/projects
-cd ~/projects
+python -c 'import torch; print(torch.__version__, torch.version.hip, torch.cuda.is_available()); print(torch.cuda.get_device_name() if torch.cuda.is_available() else "no GPU")'
+```
+
+`torch.version.hip`必须非空、`torch.cuda.is_available()`必须True。ROCm使用`torch.cuda`接口是正常情况。没有HIP构建时，先按AMD官方对应WSL/显卡版本安装；不要运行本仓库CPU wheel命令，也不要用CPU约束文件强行替换已工作的AMD Torch。
+
+克隆代码，复制私有数据到WSL Linux文件系统中的SSD目录：
+
+```bash
 gh repo clone yzzx02/phospholipid-structure-pretrain
 cd phospholipid-structure-pretrain
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip wheel
+# 当前环境已安装匹配的AMD Torch；以下命令不安装或升级Torch。
+python -m pip install --no-deps -e .
+python -m pip install --no-deps torch-geometric==2.8.0.post1
+python -m pip install 'rdkit==2026.03.3' 'pyarrow>=20,<25' 'usearch==2.26.4' 'omegaconf>=2.3,<3' PyYAML psutil aiohttp fsspec jinja2 pyparsing requests tqdm xxhash
+python -c 'import torch; assert torch.version.hip and torch.cuda.is_available(); print(torch.__version__, torch.version.hip)'
 ```
 
-如果已装好 ROCm PyTorch，先运行下面的检查，无需重复安装：
+PyG基础GINE依赖PyTorch的scatter/index_add；不要求安装NVIDIA CUDA wheels或额外torch-scatter/torch-sparse/pyg-lib。NumPy沿用当前AMD环境的兼容版本，以上命令不主动升级它。若要运行dummy/Lightning入口，再单独补齐已验证的Lightning依赖；真实入口不使用Lightning。
+
+需要迁移的目录为 `data/structure_library_v0.3/`、`data/private/morgan_index_v0.3/`、`data/private/pretraining_v03/`。后者包括合法train index、两模式缓存、词表、公式统计和labels/split manifests。路径保持相对仓库可迁移，校验入口会检查哈希。不要复制v0.2的全库检索缓存来替换训练缓存。
+
+## 2. 算子、AMP和checkpoint预检
 
 ```bash
-python -c 'import torch; print(torch.__version__, torch.version.hip, torch.cuda.is_available())'
+python scripts/verify_pretraining_v03.py
+python scripts/check_rocm.py --output outputs/pretraining_v03/rocm_preflight
 ```
 
-注意 venv 通常隔离系统包，因此应在**当前 venv** 内安装 HIP PyTorch。
+预检检查HIP/GPU、GINE和FP两条完整模型的forward/backward、Transformer attention、FP32/BF16/FP16、参数更新、checkpoint保存及继续更新。预检采用dummy fixtures核验硬件算子，不能替代下一步真实数据smoke。失败时保留错误，不能假装通过或自动回退CPU。
 
-## 安装参考基线的 PyTorch
-
-以下 URL 取自 AMD 发布的 Linux Python 3.12 release wheels 页面，使用前需要已完成 WSL GPU runtime 安装。项目只需 torch，不使用 torchvision/torchaudio。ROCm 7.2.1 的匹配 Triton wheel 一起安装；模型本身不使用 `torch.compile`。
+## 3. 真实GPU smoke，先FP后GINE
 
 ```bash
-python -m pip install \
-  'https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2.1/torch-2.9.1%2Brocm7.2.1.lw.gitff65f5bc-cp312-cp312-linux_x86_64.whl' \
-  'https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2.1/triton-3.5.1%2Brocm7.2.1.gita272dfa8-cp312-cp312-linux_x86_64.whl'
-python -m pip install -c constraints-rocm.txt -e '.[dev]'
-python scripts/check_rocm.py
+python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_fp.yaml --output outputs/pretraining_v03/rocm_smoke/fingerprint
+python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_gine.yaml --output outputs/pretraining_v03/rocm_smoke/graph
 ```
 
-项目安装约束会固定已测试的核心包版本；`torch==2.9.1` 接受 AMD wheel 的本地版本后缀，不会要求替换成 CPU wheel。ROCm 约束保守使用 NumPy 1.26.4，CPU 已测试 NumPy 2.2.3。这里不是整个系统和 Python 依赖的完整 lockfile。
+初始20,000 train /2,000 validation /1,000 optimizer steps，均从冻结合法groups抽取，test不进入训练/调参。FP batch16、GINE batch8×accum2、workers2、FP32是**待实测起点**；确认显存/吞吐后可在独立配置中测试BF16/FP16、batch、accum、workers和prefetch。允许20k–50k/2k–5k/1000–5000 steps，不修改任务或冻结数据。
 
-PyG 从 2.3 起基础使用不需要额外扩展，见 [PyG 官方安装说明](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html)。图编码器只用 GINE 和 sum pooling，下游 Transformer 使用 PyTorch dense attention；先安装 `torch-geometric` 即可，不额外装 NVIDIA CUDA wheels、`torch-scatter`、`torch-sparse` 或 `pyg-lib`。
-
-## 验证与训练
-
-`check_rocm.py` 会检查 `torch.version.hip`、GPU 可用性、设备名称，并实际执行 GPU attention、index_add 及 backward。接着用整个模型核验 graph 和 FP 路径：
+续训示例（steps为累计数）：
 
 ```bash
-python -m pytest -q
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device rocm --steps 2 --output outputs/rocm_graph
-python train_structure_dummy.py --config configs/structure_pretrain_fp.yaml --device rocm --steps 2 --output outputs/rocm_fp
+python train_structure_real.py --device rocm --config configs/pretraining_v03_rocm_fp.yaml --steps 1001 --resume outputs/pretraining_v03/rocm_smoke/fingerprint/checkpoint/last.pt --output outputs/pretraining_v03/rocm_smoke/fingerprint
 ```
 
-ROCm 仍使用 PyTorch 的 `torch.cuda` API，Lightning 的 accelerator 仍为 `gpu`，不需要把设备字符串改为 `hip`。`--device rocm` 在环境不满足条件时退出，不会默默回退 CPU。
+每个输出目录保存resolved config、训练/teacher-forcing指标、独立自由生成指标、steps/s、samples/s、加载时间、RAM和VRAM，以及私有checkpoint。需实际完成一次GPU恢复并检查日志；本机的CPU恢复不能证明HIP恢复已验证。
 
-两条 FP32 路径都通过后，再试：
+## 4. 验收后独立启动full
+
+以下命令**本轮不执行**。完整数据实验仅用train组1,813,451条训练，100,792条validation，test保持封存。120,000 steps为配置占位实验长度，后续依据GPU实测确定；当前不是已验证的最优训练量。
 
 ```bash
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device rocm --precision 16-mixed --steps 2 --output outputs/rocm_mixed
+python train_structure_real.py --device rocm --config configs/pretraining_v03_full_fp.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke --output outputs/pretraining_v03/full/fingerprint
+# GINE为单独实验：
+python train_structure_real.py --device rocm --config configs/pretraining_v03_full_gine.yaml --allow-full-training --gpu-smoke-root outputs/pretraining_v03/rocm_smoke --output outputs/pretraining_v03/full/graph
 ```
 
-当前默认 batch size=2 用于验证。真实训练接入后再按最大原子数、Top-K、headgroup 长度和 GPU 实测显存调 batch；单凭约 16M 参数不能承诺最大 batch size。图编码器不再计算分子内部 global attention，模板 Transformer 和头基 Decoder 保留原实现。
+Full入口要求显式full配置、`--allow-full-training`和两种encoder已完成真实GPU smoke报告。Smoke不会调用full；没有任何自动训练串联。Full默认每500 steps原子替换checkpoint，恢复时检查所有数据和模型契约。
 
-## 报错定位
-
-- `hip=None`：当前 venv 的 torch 不是 ROCm 构建，或激活了错误的环境。
-- `gpu_available=False`：先检查 Windows 驱动、`/dev/dxg` 和对应 WSL runtime，按官方路线排查。
-- `device kernel image is invalid`：核对 torch wheel、ROCm 和显卡架构支持，使用同一套兼容版本；不默认加架构伪装环境变量。
-- NumPy ABI 或依赖冲突：确认按 `constraints-rocm.txt` 安装，保留错误输出再排查。
-- OOM：先维持 batch=2/FP32 跑通，再尝试 mixed precision 或减 batch；不改变已固定的模型宽度。
-
-本仓库的 GitHub Actions 只验证 Linux CPU，不能替代真实 9070 XT 验证。
+当前电脑没有RX9070XT，因此HIP可用性、GINE/Transformer GPU backward、AMP数值稳定性、GPU续训、显存和GPU吞吐均为**待运行**，GitHub CPU CI也不能替代它们。

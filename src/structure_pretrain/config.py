@@ -16,6 +16,7 @@ class GraphConfig:
 class ModelConfig:
     encoder: str = "graph"
     structure_dim: int = 256
+    formula_dim: int = 128
     d_model: int = 512
     dropout: float = 0.1
     template_dropout: float = 0.2
@@ -25,7 +26,7 @@ class ModelConfig:
     decoder_layers: int = 2
     decoder_heads: int = 8
     decoder_ffn_dim: int = 2048
-    max_headgroup_length: int = 64
+    max_polar_length: int = 64
     graph: GraphConfig = field(default_factory=GraphConfig)
 
 
@@ -46,9 +47,8 @@ class TrainConfig:
     learning_rate: float = 0.0001
     weight_decay: float = 0.01
     gradient_clip: float = 1.0
-    lambda_arch: float = 1.0
     lambda_chain: float = 1.0
-    lambda_head: float = 1.0
+    lambda_polar: float = 1.0
 
 
 @dataclass
@@ -64,8 +64,12 @@ def load_config(path: str) -> ExperimentConfig:
     )
     if config.model.encoder not in {"graph", "fingerprint"}:
         raise ValueError("encoder must be graph or fingerprint")
-    if config.model.structure_dim != 256 or config.model.d_model != 512:
-        raise ValueError("v0.1 fixes structure_dim=256 and d_model=512")
+    if (
+        config.model.structure_dim != 256
+        or config.model.formula_dim != 128
+        or config.model.d_model != 512
+    ):
+        raise ValueError("v0.3 fixes structure/formula/fusion dimensions to 256/128/512")
     if config.model.graph != GraphConfig():
         raise ValueError(
             "Graph encoder is fixed to GINE / 3 layers / hidden 128 / sum / output 256"

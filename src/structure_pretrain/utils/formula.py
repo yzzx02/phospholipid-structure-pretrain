@@ -34,28 +34,39 @@ class FormulaStandardizer(nn.Module):
 
     @staticmethod
     def fit(examples: Iterable[dict]) -> dict:
-        templates, deltas = [], []
+        # Welford parallel merge: bounded memory independent of pair count.
+        total, mean, m2 = (
+            0,
+            torch.zeros(20, dtype=torch.float64),
+            torch.zeros(20, dtype=torch.float64),
+        )
         for item in examples:
             mask = item["template_mask"].bool()
-            templates.append(item["template_formulas"][mask])
-            available = mask & item["formula_available"].bool()
-            deltas.append(item["delta_formulas"][available])
+            data = torch.cat((item["template_formulas"][mask], item["delta_formulas"][mask]), -1)
+            data = data.reshape(-1, 20).double()
+            if not len(data):
+                continue
+            if not torch.isfinite(data).all():
+                raise ValueError("Nonfinite mandatory formula in training pairs")
+            size = len(data)
+            other = data.mean(0)
+            diff = other - mean
+            m2 += ((data - other) ** 2).sum(0) + diff**2 * total * size / (total + size)
+            mean += diff * size / (total + size)
+            total += size
+        if not total:
+            raise ValueError("Need at least one legal training template pair")
+        std = (m2 / total).sqrt()
+        std = torch.where(std > 1e-6, std, torch.ones_like(std))
+        return {
+            "template_mean": mean[:10].tolist(),
+            "template_std": std[:10].tolist(),
+            "delta_mean": mean[10:].tolist(),
+            "delta_std": std[10:].tolist(),
+            "pair_count": total,
+        }
 
-        def stats(parts):
-            data = torch.cat(parts)
-            if data.numel() == 0:
-                raise ValueError("Need at least one available training formula to fit statistics")
-            mean, std = data.mean(0), data.std(0, unbiased=False)
-            # Constant elements use scale=1; no division by zero or tiny scale amplification.
-            return mean.tolist(), torch.where(std > 1e-6, std, torch.ones_like(std)).tolist()
-
-        tm, ts = stats(templates)
-        dm, ds = stats(deltas)
-        return {"template_mean": tm, "template_std": ts, "delta_mean": dm, "delta_std": ds}
-
-    def forward(self, template: torch.Tensor, delta: torch.Tensor, available: torch.Tensor):
+    def forward(self, template: torch.Tensor, delta: torch.Tensor):
         template_z = (template - self.template_mean) / self.template_std
         delta_z = (delta - self.delta_mean) / self.delta_std
-        # Zero AFTER standardization; missing query counts cannot leak through nonzero mean.
-        delta_z = torch.where(available.bool().unsqueeze(-1), delta_z, torch.zeros_like(delta_z))
         return template_z, delta_z

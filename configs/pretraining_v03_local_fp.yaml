@@ -1,0 +1,24 @@
+# Portable defaults; data paths may be overridden on the command line.
+model:
+  encoder: fingerprint
+  structure_dim: 256
+  formula_dim: 128
+  d_model: 512
+train:
+  batch_size: 2
+  cpu_threads: 2
+  num_workers: 0
+  seed: 42
+  lambda_chain: 1.0
+  lambda_polar: 1.0
+run:
+  kind: local_smoke
+  steps: 10
+  step_limit: 50
+  train_targets: 512
+  validation_targets: 128
+  generation_targets: 16
+  retrieval_mode: mixed
+  cross_fraction: 0.5
+  gradient_accumulation: 1
+  precision: fp32

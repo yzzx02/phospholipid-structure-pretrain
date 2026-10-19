@@ -26,16 +26,16 @@ def dummy_records():
         StructureRecord(f"toy-{n:02d}", "C" * n + "OP(=O)(O)O", (n, h, 0, 4, 1, 0, 0, 0, 0, 0))
         for n, h in formula_rows
     ]
-    # Cover chain counts 1/2/3/4 and missing formulas, without defining real cutting rules.
+    # One/two canonical chain slots only; all neutral formulas are mandatory.
     artificial_chains = [
         ("A-16:0",),
         ("A-18:1", "A-16:0"),
-        ("A-18:0", "O-16:0", "A-16:0"),
-        ("A-18:1", "A-16:0", "P-18:0", "A-18:0"),
+        ("A-18:0", "O-16:0"),
+        ("P-18:0", "A-18:0"),
     ]
-    heads = ("[*:1]OCCN", "[*:1]O", "[*:1]OCCO", "[*:1]OCC(O)CO")
+    heads = ("[*:1]P(=O)(O)OCCN", "[*:1]P(=O)(O)O", "[*:1]P(=O)(O)OCCO", "[*:1]P(=O)(O)OCC(O)CO")
     targets = [
-        TargetRecord(record, int(i % 4 >= 2), artificial_chains[i % 4], heads[i % 4], i % 3 != 1)
+        TargetRecord(record, artificial_chains[i % 4], heads[i % 4])
         for i, record in enumerate(library[:8])
     ]
     return library, targets

@@ -16,8 +16,6 @@ TEMPLATE_FIELDS = (
     "template_smiles",
     "template_formulas",
     "delta_formulas",
-    "structure_similarity",
-    "formula_available",
     "template_mask",
     "structures",
 )
@@ -111,9 +109,8 @@ def audit_encoder(encoder: str) -> dict:
             for key in (
                 "template_tokens",
                 "template_memory",
-                "architecture_logits",
                 "chain_logits",
-                "headgroup_logits",
+                "polar_logits",
             )
         }
     )

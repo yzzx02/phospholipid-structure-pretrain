@@ -100,7 +100,7 @@ def main():
     with torch.no_grad():
         prediction = module(batch)
     summary = {
-        "schema": "structure-only-v0.1",
+        "schema": "structure-pretraining-v0.3-two-output-dummy",
         "encoder": config.model.encoder,
         "data_kind": "toy_structures_artificial_labels_not_real_phospholipid_training",
         "global_step": trainer.global_step,
@@ -111,9 +111,8 @@ def main():
         "shapes": {
             key: list(prediction[key].shape)
             for key in (
-                "architecture_logits",
                 "chain_logits",
-                "headgroup_logits",
+                "polar_logits",
                 "template_tokens",
                 "template_memory",
                 "template_global",

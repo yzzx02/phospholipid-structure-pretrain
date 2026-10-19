@@ -1,0 +1,24 @@
+# Pending hardware execution. Test fp32 first; bf16/fp16 remain measured options.
+model:
+  encoder: graph
+  structure_dim: 256
+  formula_dim: 128
+  d_model: 512
+train:
+  batch_size: 8
+  cpu_threads: 4
+  num_workers: 2
+  seed: 42
+  lambda_chain: 1.0
+  lambda_polar: 1.0
+run:
+  kind: rocm_smoke
+  steps: 1000
+  step_limit: 5000
+  train_targets: 20000
+  validation_targets: 2000
+  generation_targets: 128
+  retrieval_mode: mixed
+  cross_fraction: 0.5
+  gradient_accumulation: 2
+  precision: fp32

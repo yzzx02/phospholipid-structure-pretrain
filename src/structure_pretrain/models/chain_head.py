@@ -6,8 +6,8 @@ class ChainHead(nn.Module):
         super().__init__()
         self.vocabulary_size = vocabulary_size
         self.mlp = nn.Sequential(
-            nn.Linear(dimension, 256), nn.GELU(), nn.Linear(256, 4 * vocabulary_size)
+            nn.Linear(dimension, 256), nn.GELU(), nn.Linear(256, 2 * vocabulary_size)
         )
 
     def forward(self, global_state):
-        return self.mlp(global_state).reshape(-1, 4, self.vocabulary_size)
+        return self.mlp(global_state).reshape(-1, 2, self.vocabulary_size)

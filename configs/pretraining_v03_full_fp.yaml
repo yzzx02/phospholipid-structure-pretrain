@@ -1,0 +1,22 @@
+# Explicit future full experiment, never invoked by smoke scripts.
+model:
+  encoder: fingerprint
+  structure_dim: 256
+  formula_dim: 128
+  d_model: 512
+train:
+  batch_size: 16
+  cpu_threads: 4
+  num_workers: 2
+  seed: 42
+run:
+  kind: full
+  steps: 120000
+  step_limit: 120000
+  train_targets: null
+  validation_targets: null
+  generation_targets: 128
+  retrieval_mode: mixed
+  cross_fraction: 0.5
+  gradient_accumulation: 1
+  precision: fp32

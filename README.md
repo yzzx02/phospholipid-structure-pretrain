@@ -1,243 +1,78 @@
-# STRUCTURE-ONLY PRETRAINING v0.1
+# Phospholipid structure pretraining v0.3
 
-**当前阶段：200 万条唯一完整候选结构、独立质量审计与全库 Morgan 检索审计均已完成。** 全部目标有可用模板，1,999,995 个目标有 10 个模板，零模板数为 0。详见 [正式库与检索结果](docs/FULL_LIBRARY_V02_RESULTS.md)及[方法与入口](docs/FULL_LIBRARY_V02.md)。P 覆盖按用户最新要求仅作统计，保留原采样中的 3 个 exact PE-P/A 配对。现有预训练网络、loss 和训练脚本保持原实现，本轮未训练、未划分训练/验证集。
+使用冻结的 2,015,000 条完整磷脂结构：输入完整结构模板和可信中性分子式，输出两个 canonical chain 槽位和含 P 极性片段。实际结果见 [本轮报告](docs/PRETRAINING_V03_RESULTS.md)，方法见 [执行说明](docs/PRETRAINING_V03.md)。
 
-当前实现**基于结构检索模板的磷脂结构预训练框架**，保留 Morgan fingerprint 基线和三层 GINE 图模型，后续网络和训练目标共享。本轮另提供独立的完整结构库、中性分子式、冻结链规则及索引。训练入口仍使用下述 dummy 数据；真实训练的数据适配、词表、划分和模板泄漏规则留待后续讨论。
+这是 **structure-oracle template retrieval**：离线检索使用已知目标完整图的 Morgan 指纹。因此本阶段指标不能称为 MS/MS 鉴定准确率。没有 MS/MS、原子掩码或其他辅助任务。
 
-本仓库的示例使用小型 alkyl phosphate toy structures 和**人为输出标签**，不是化学上配套的真实磷脂训练集。它们只核验接口、张量、梯度、训练和 checkpoint。当前不提供预测准确率结论。
-
-```text
-Target phospholipid structure
-        ↓
-Morgan structural retrieval
-radius=2 / 2048 bits / Tanimoto
-max Top-10 / min similarity 0.4
-exclude target itself and equivalent/duplicate structures
-        ↓
-K template full structures
-        ↓
-┌──────────────────────────────────────────┐
-│ Structure Encoder                        │
-│ Baseline: Morgan FP → MLP (2048→512→256) │
-│ Graph: 3-layer GINE                       │
-│ hidden=128 / layers=3                     │
-│ sum pooling → MLP → 256D                │
-└──────────────────────────────────────────┘
-        ↓
-structure embedding 256D
-+ F_template 10D + ΔF 10D
-+ structure_similarity 1D + formula_available 1D
-        ↓
-concat 278D → MLP (278→512→512)
-        ↓
-Template tokens [B, K, 512]
-        ↓
-Template Set Transformer + learned [TCLS]
-2 layers / 8 heads / FFN 2048 / no positional encoding
-template dropout=0.2; at least one valid template
-        ↓
-Architecture       4 Chain Slots       Headgroup SMILES
-2-class logits    one token per slot  causal Transformer Decoder
-                                     cross-attention to template memory
+```mermaid
+flowchart TD
+  T[目标完整图 / 可信中性分子式] --> R[独立 TRAIN bank 检索\n普通 / 跨 canonical polar graph]
+  R --> S[完整模板图 3层GINE 或 Morgan MLP\n二选一 → 256D]
+  R --> F[模板式 + 目标减模板差值\n20D → Formula MLP → 128D]
+  S --> U[Concat 384D → Fusion MLP → 512D]
+  F --> U
+  U --> ST[Template Set Transformer\n2层 / 8 heads / dropout 0.2]
+  ST --> C[Chain Head\nB × 2 × 323]
+  ST --> P[2层 Polar Decoder\ngreedy / beam Top5]
+  C --> A[冻结 mono-phosphatidyl builder]
+  P --> A
+  A --> V[Sanitize / 中性式 / canonical完整图]
 ```
 
-输入模板为完整结构；不在输入端分解架构、链或头基。输出 chain slots 采用固定 canonical sort：O → P → A，同类按 C 数、双键数升序，NULL 补足 4 个；这只是确定性顺序，不代表 sn 位置。当前不预测双键位置、E/Z 或复杂立体化学；图仍保留输入 SMILES 的二维连接关系，不重新指定双键位置。
+GINE 保留内部宽度128、sum pooling、原有7/3化学特征；没有 GPSConv、图内MHSA或RWSE。输入不拆链/头基。两个输出链槽位采用 builder 排序，**不代表 sn 位置**；lyso 为链+NULL。双键位置沿用冻结 MS-DIAL 代表结构。词表 A177/O84/P61+NULL=323，P/A 仅保留原有3条 exact PE 配对。
 
-分子式元素顺序固定为 `[C,H,N,O,P,S,F,Cl,Br,I]`，必须由调用方提供**中性分子式**。先在原始整数计数上计算 `ΔF=F_query−F_template`，保留负值，再分别用训练检索对的均值/标准差标准化。常数维度使用 std=1。query formula 缺失时 raw delta 和标准化后的 delta 都为 0，`formula_available=0`，模板自身分子式保留。统计值保存为 checkpoint buffers，验证集不重新拟合。没有额外 query formula token、相似度 encoder、rank/source embedding。
+Polar 边界为 `glycerol-O | P-containing polar fragment`，如 `[*:1]P(=O)(O)OCC#N`，attachment 在图上校验。全部195,306个标签审计后，decoder最大长度为 **84（含BOS/EOS）**，词表63，零OOV、零截断。正式模型只有链和 polar 两分支，没有骨架分类、结构相似度或分子式可用性输入。中性式必填，元素顺序 `C H N O P S F Cl Br I`，差值为 target-template。
 
-## 安装与 CPU 快速验证
+## 安装与回归
 
-Python 3.12 推荐用于 WSL；本地 CPU 已在 Python 3.13 验证。先安装所需 PyTorch 构建，再安装项目，避免覆盖已有 ROCm PyTorch。
+推荐 Python3.12；本机 CPU 使用 Python3.13 / Torch2.9.1+cpu / PyG2.8.0.post1。先安装适合设备的 Torch，再安装项目。ROCm 环境按 [WSL指南](docs/WSL_ROCm.md) 保留 AMD Torch。
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-# 以下 torch 安装命令专供 CPU 环境。
-python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -c constraints-tested.txt -e '.[dev]'
+python -m pip install -e '.[dev,library,retrieval]'
 python -m pytest -q
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device cpu --steps 2 --output outputs/graph
-python train_structure_dummy.py --config configs/structure_pretrain_fp.yaml --device cpu --steps 2 --output outputs/fingerprint
-python scripts/count_parameters.py
 python scripts/check_encoder_batch.py
+python scripts/count_parameters.py
 ```
 
-Windows venv 激活命令为 `.venv\Scripts\Activate.ps1`。训练入口默认 CPU、batch size=2、32-bit、AdamW lr=1e-4、weight decay=0.01、clip=1。两种 YAML 都使用完整默认模型，没有偷偷缩小测试模型。CLI 只接受 structure pretraining。
+`train_structure_dummy.py` 保留用于CI；toy结构和人为标签只核验程序，不代表真实训练效果。
 
-每次运行保存 `last.ckpt`、`run_summary.json` 和 CSV loss/metric 日志。继续训练例：
+## 真实数据准备
+
+私有数据不在GitHub。迁移冻结原库和索引时保留哈希。以下只生成新派生文件：
 
 ```bash
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --steps 3 --resume outputs/graph/last.ckpt --output outputs/resume
+python -m structure_pretrain.data.prepare_v03
+python scripts/audit_pretraining_head_difficulty.py
+python -m structure_pretrain.retrieval.train_only --threads 2
 ```
 
-`--steps` 指累计 optimizer steps。恢复 model、optimizer 和 Trainer；dummy DataLoader 不保存 epoch 中途游标，因此不承诺完全相同的 batch replay。此次改造前的图模型 checkpoint 不兼容，应重新训练；新的 GINE checkpoint 可正常续训。
+默认输入 `data/structure_library_v0.3/` 和 `data/private/morgan_index_v0.3/`，输出 `data/private/pretraining_v03/`；CLI可指定已校验的SSD工作目录。HNSW只装载train结构的FP groups，不能先全库Top10后过滤。Morgan radius2/2048/chirality=false，阈值.4、K≤10。分数仅在检索缓存与报告中保存。
 
-## RX 9070 XT：WSL Ubuntu + ROCm
+完整结构按train/validation/test为1,813,451 /100,792 /100,757；头基组175,772 /9,767 /9,767。三组的polar ID和规范图交集均为零。Test只作要求的标签/覆盖审计，不参与smoke训练或模型选择。
 
-安装顺序和 GPU 检查见 [WSL_ROCm.md](docs/WSL_ROCm.md)。本项目使用 PyTorch/PyG 自带基础算子，未引入 CUDA 专用 FlashAttention 或额外 PyG C++ 扩展。**已验证 CPU；尚未在你的 9070 XT 上实测。**
-
-在正确安装 HIP PyTorch 的 WSL 环境中：
+## 当前电脑：显式小训练
 
 ```bash
-python scripts/check_rocm.py
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device rocm --steps 2 --output outputs/rocm_graph
-python train_structure_dummy.py --config configs/structure_pretrain_fp.yaml --device rocm --steps 2 --output outputs/rocm_fp
-# FP32 成功后再尝试混合精度。
-python train_structure_dummy.py --config configs/structure_pretrain_graph.yaml --device rocm --precision 16-mixed --steps 2 --output outputs/rocm_fp16
+python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --output outputs/pretraining_v03/local_smoke/fingerprint
+python train_structure_real.py --config configs/pretraining_v03_local_gine.yaml --output outputs/pretraining_v03/local_smoke/graph
+python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --steps 11 --resume outputs/pretraining_v03/local_smoke/fingerprint/checkpoint/last.pt --output outputs/pretraining_v03/local_smoke/fingerprint
 ```
 
-## 完整目录与模块职责
+默认真实512 train /128 validation、10 optimizer steps、CPU batch2。自由生成独立评估固定16个validation目标，报告EOS、耗尽长度和原始无效结果；不强制EOS、不修复或后验筛式。标签不截断。CPU smoke最多50 steps，`--steps`为累计optimizer steps。
 
-```text
-phospholipid-structure-pretrain/
-├── .github/workflows/cpu.yml            # Linux CPU 自动验证
-├── .gitattributes
-├── .gitignore
-├── README.md
-├── pyproject.toml
-├── constraints-tested.txt
-├── constraints-rocm.txt
-├── train_structure_dummy.py             # CPU/ROCm train、validate、resume
-├── configs/
-│   ├── structure_pretrain_graph.yaml
-│   └── structure_pretrain_fp.yaml
-├── docs/
-│   ├── DATA_SCHEMA.md                   # 后续数据输入契约、TODO
-│   ├── WSL_ROCm.md                      # 9070 XT 安装与运行说明
-│   ├── VERIFICATION.md                  # 已执行验证与边界
-│   ├── ENCODER_SIMPLIFICATION.md        # GINE 改造、特征编码和小 batch 报告
-│   ├── encoder_batch_shapes.json        # B=2、M=5 的实际 shape / backward 记录
-│   └── verification_summary.json        # 精简的实际运行记录
-├── scripts/
-│   ├── check_rocm.py                    # HIP attention/scatter 梯度核验
-│   ├── check_encoder_batch.py           # 3+2 模板 batching/padding/梯度检查
-│   └── count_parameters.py              # 实例化模型，去重统计参数
-├── src/structure_pretrain/
-│   ├── __init__.py
-│   ├── config.py                       # 有类型配置和维度校验
-│   ├── data/
-│   │   ├── __init__.py
-│   │   ├── schema.py                   # StructureRecord/TargetRecord
-│   │   ├── structure_dataset.py        # 外部标签与检索结果转换
-│   │   ├── dummy_structure_dataset.py  # 小型合成测试数据
-│   │   ├── batching.py                 # K≤10 padding，真实模板展平
-│   │   ├── chain_vocab.py              # 外部词表、canonical sort、NULL
-│   │   ├── smiles_tokenizer.py         # BOS/EOS/PAD，attachment 原子词元
-│   │   └── molecular_graph.py          # 7 原子特征、3 键特征、FP
-│   ├── retrieval/
-│   │   ├── __init__.py
-│   │   └── structural_retrieval.py     # 可替换的 Protocol、Morgan/Tanimoto
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── graph_encoder.py            # 三层 GINE、sum pooling
-│   │   ├── fingerprint_encoder.py      # 2048→512→256 baseline
-│   │   ├── template_token_projector.py # 278→512→512，两条路径共享
-│   │   ├── template_set_transformer.py # TCLS、mask、template dropout
-│   │   ├── architecture_head.py        # 512→256→2
-│   │   ├── chain_head.py               # 512→256→4×V_chain
-│   │   ├── headgroup_decoder.py        # 2 层/8 heads/FFN2048，teacher forcing
-│   │   └── structure_pretrain_model.py # 模型组合与统一输出
-│   ├── training/
-│   │   ├── __init__.py
-│   │   ├── lightning_module.py         # device transfer、优化器、checkpoint
-│   │   └── losses.py                   # 三项 CE，PAD 忽略及基础指标
-│   └── utils/
-│       ├── __init__.py
-│       ├── formula.py                  # 10 元素检查、train-only 标准化
-│       ├── masks.py                    # 模板 dropout 至少保留一个
-│       └── seed.py                     # 随机种子、CPU 线程数
-└── tests/
-    ├── conftest.py
-    ├── test_graph_encoder.py
-    ├── test_graph_batch_padding.py
-    ├── test_fingerprint_encoder.py
-    ├── test_template_projector.py
-    ├── test_template_transformer.py
-    ├── test_structure_pretrain_forward.py
-    ├── test_structure_pretrain_backward.py
-    └── test_retrieval_and_schema.py
-```
+磁盘Dataset只缓存有限Arrow shards和模板特征，仅真实模板组成PyG Batch。公式标准化流式使用合法train pairs。checkpoint绑定数据、词表、split、检索和统计哈希，恢复优化器、RNG和消费样本游标；旧权重不兼容。
 
-`outputs/` 和本地虚拟环境不上传 GitHub。
+9070 XT的环境检查、20k/2k/1000-step GPU smoke及独立full命令见[WSL指南](docs/WSL_ROCm.md)。本机没有执行GPU验证或完整多轮预训练。
 
-## 关键 tensor shape
+## 文件
 
-`B` 为 batch size，`K=10` 为补齐容量，`M` 为当前 batch 的真实模板总数，`L` 包含 BOS/EOS 的补齐头基长度。
+- `data/prepare_v03.py`：全库标签/token、组划分、671条重建审计。
+- `retrieval/train_only.py`：独立train bank、两模式缓存、覆盖率、公式统计。
+- `data/real_structure_dataset.py`：lazy读取、有界缓存、可复现抽样。
+- `models/`：GINE/FP、独立公式融合、集合Transformer、链和polar两分支。
+- `training/generation_metrics.py`：自由生成、冻结builder组装与化学指标。
+- `train_structure_real.py`：真实训练、周期checkpoint、续训和资源报告。
+- `configs/pretraining_v03_*.yaml`：local/ROCm smoke/显式full。
+- [数据契约](docs/DATA_SCHEMA.md)、[v0.3扩库来源](docs/INCREMENT_V03_RESULTS.md)。
 
-| 张量 | Shape |
-|---|---|
-| FP / 图节点 x / 图键 edge_attr | `[M,2048]` / `[N_atoms,7]` / `[N_edges,3]` |
-| 原子 / 键 embedding | `[N_atoms,128]` / `[N_edges,128]` |
-| 图 sum pooling | `[M,128]` |
-| 真实结构 embedding | `[M,256]` |
-| 补齐结构 embedding | `[B,K,256]` |
-| template formula / signed delta | `[B,K,10]` / `[B,K,10]` |
-| similarity / formula available / template mask | 各 `[B,K]` |
-| 拼接输入 / template tokens | `[B,K,278]` / `[B,K,512]` |
-| template memory / global / memory padding mask | `[B,K+1,512]` / `[B,512]` / `[B,K+1]` |
-| architecture logits | `[B,2]` |
-| chain logits | `[B,4,V_chain]` |
-| headgroup input / label | 都为 `[B,L−1]`，分别右移一位 |
-| headgroup logits | `[B,L−1,V_smiles]` |
-
-数据 `template_mask=True` 表示有效；Transformer `padding_mask=True` 表示忽略。TCLS 总是有效，padding/dropped 模板在 encoder 和 decoder attention 中都屏蔽。
-
-## 参数与验证
-
-下列为实际实例化默认配置的可训练参数，dummy `V_chain=6`、`V_smiles=47`。真实词表改变后需重新统计。
-
-| 模块 | Graph | Fingerprint |
-|---|---:|---:|
-| Structure encoder | 154,755 | 1,181,952 |
-| TemplateTokenProjector | 406,528 | 406,528 |
-| Template Set Transformer | 6,306,304 | 6,306,304 |
-| Architecture head | 131,842 | 131,842 |
-| Chain head | 137,496 | 137,496 |
-| Headgroup decoder | 8,490,031 | 8,490,031 |
-| **总参数** | **15,626,956** | **16,654,153** |
-
-损失 `L = CE_arch + CE_chain + CE_headgroup`，三项权重均为 1。NULL 是有监督的合法 chain 类；headgroup CE 忽略 PAD、保留 EOS。没有额外辅助损失、Hungarian matching 或 formula hard constraint。
-
-验证记录见 [VERIFICATION.md](docs/VERIFICATION.md)。
-
-图编码器改造报告见 [ENCODER_SIMPLIFICATION.md](docs/ENCODER_SIMPLIFICATION.md)。实验只比较 Morgan 和 GINE；数据划分、随机种子、下游网络、优化器、学习率、loss 和训练步设置保持一致。
-
-## MS-DIAL 真实链证据提取
-
-独立提取模块和运行说明见 [MSDIAL_CHAIN_EXTRACTION.md](docs/MSDIAL_CHAIN_EXTRACTION.md)。
-两版全量扫描结果及审核要点见 [MSDIAL_CHAIN_EXTRACTION_RESULTS.md](docs/MSDIAL_CHAIN_EXTRACTION_RESULTS.md)。
-从本地 2025/2022 LBM2 读取元数据、以分子图提取 A/O/P 链、统计双键位置版本并输出人工审核候选。
-原提取阶段只输出证据。后续已按 2025 单位置版本规则冻结 322 条链，位置保持不变；
-本地大表在 `data/private/msdial_chain_review/`，不上传源库。
-
-## PubChem 极性片段扩展
-
-独立 CPU 化学流程见 [PUBCHEM_POLAR.md](docs/PUBCHEM_POLAR.md)。
-`scripts/harvest_pubchem_polar.py` 先验证正负对照，再依次执行 1k/query、10k/query 和 full。
-检索 phosphate / phosphonate / polyphosphate，保留真实 PubChem CID 和所有酸性连接位点，
-输出标准化去重后的人工审核表；本阶段不生成批准版头基表、不训练、不生成完整脂质库。
-审核包在 `data/private/pubchem_polar_review/`；原始大表与 SSD 缓存不上传 GitHub。
-分阶段实测数量、完整性核验和 20 个真实来源片段见
-[PUBCHEM_POLAR_RESULTS.md](docs/PUBCHEM_POLAR_RESULTS.md)。
-
-## 后续数据 TODO
-
-链 vocabulary 已冻结，真实 polar 候选按 P attachment 边界生成审核包。
-第二层 CORE/EXTENDED 筛选、特殊结构核验和独立 v0.2 组装入口见
-[POLAR_PLAUSIBILITY.md](docs/POLAR_PLAUSIBILITY.md)。
-正式 baseline 筛选输出在本地 `data/private/pubchem_polar_plausibility_v0.1/`，保持原样；
-扩充表在 `data/private/polar_expansion_v0.2/polar_moieties_expanded_v0.2.tsv`，
-包含 145,322 个真实 PubChem 来源片段和 49,983 个规则生成 phosphate analog。
-新版配置为 `configs/library_build_expanded_v02.yaml`，允许上限 2,000,000；
-旧版配置与上限保留。旧 v0.2 入口默认仍只检查输入和预算；本轮使用独立
-`scripts/build_2m_library.py --execute` 已生成 `data/structure_library_v0.2/`。
-后续仍需处理标签对齐、训练/验证/测试划分与检索库使用规则。
-当前训练入口仍使用 dummy 数据，接口详见 [DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
-原 2M 正式库及输入哈希保持原样；新增 15,000 个通过独立化学检查和全局去重的完整结构，
-另存为 v0.3（2,015,000 条），配套独立 Morgan/USearch 索引。
-增量方法见 [INCREMENT_V03.md](docs/INCREMENT_V03.md)，
-同头基排除全库检索对照及真实计数见 [INCREMENT_V03_RESULTS.md](docs/INCREMENT_V03_RESULTS.md)。
-训练接入与正式数据划分留待后续讨论。
-
-MS/MS、谱图检索、Spectrum Transformer 和微调留待后续讨论，本仓库当前入口不包含这些流程。
+历史v0.1 dummy报告和v0.2/v0.3建库报告继续保留；旧四槽/骨架分类和全库reference结果不描述当前模型，不能当作合法训练缓存。私有结构、逐样本预测、索引和checkpoint不上传GitHub。

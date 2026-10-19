@@ -1,5 +1,6 @@
 from dataclasses import replace
 
+import pytest
 import torch
 
 from structure_pretrain.config import RetrievalConfig
@@ -27,7 +28,7 @@ def test_exclude_target_canonical_duplicates_and_deduplicate_bank():
     assert all(0.4 <= hit.structure_similarity <= 1 for hit in hits)
 
 
-def test_max_top10_and_zero_hits_skipped():
+def test_max_top10_and_zero_hits_reported():
     library, targets = dummy_records()
     library += [
         StructureRecord(
@@ -38,15 +39,19 @@ def test_max_top10_and_zero_hits_skipped():
     retriever = MorganStructuralRetriever(library, RetrievalConfig(minimum_similarity=0))
     assert len(retriever.retrieve(library[0])) == 10
     zero = MorganStructuralRetriever([library[0]], RetrievalConfig())
-    dataset = StructurePretrainingDataset(
-        [targets[0]], zero, ChainVocabulary(DEMO_CHAIN_TOKENS), SmilesTokenizer(), "fingerprint"
-    )
-    assert len(dataset) == 0 and dataset.skipped_target_ids == [targets[0].structure.structure_id]
+    with pytest.raises(ValueError, match="Zero-template"):
+        StructurePretrainingDataset(
+            [targets[0]], zero, ChainVocabulary(DEMO_CHAIN_TOKENS), SmilesTokenizer(), "fingerprint"
+        )
 
 
 def test_supplied_formula_difference_and_chain_sort():
     vocab = ChainVocabulary(DEMO_CHAIN_TOKENS)
-    assert vocab.encode(["A-18:1", "A-16:0", "P-18:0", "O-16:0"]) == [4, 5, 1, 3]
+    assert vocab.encode(["A-18:1", "A-16:0"]) == [1, 3]
+    assert vocab.encode(["A-18:1", "O-16:0"]) == [4, 3]
+    assert vocab.encode(["A-18:1"]) == [3, 0]
+    with pytest.raises(ValueError, match="1..2"):
+        vocab.encode(["A-18:1", "A-16:0", "P-18:0"])
     from structure_pretrain.data.dummy_structure_dataset import DummyStructureDataset
 
     dataset = DummyStructureDataset("fingerprint")
@@ -54,26 +59,9 @@ def test_supplied_formula_difference_and_chain_sort():
     torch.testing.assert_close(
         item["delta_formulas"], item["target_formula"] - item["template_formulas"]
     )
-    missing = dataset[1]
-    assert not missing["formula_available"].any()
-    assert missing["delta_formulas"].count_nonzero() == 0
-    assert missing["target_formula"].count_nonzero() == 0
 
 
 def test_query_without_supplied_formula():
     library, targets = dummy_records()
-    target = replace(
-        targets[0],
-        structure=replace(targets[0].structure, neutral_formula=None),
-        formula_available=False,
-    )
-    dataset = StructurePretrainingDataset(
-        [target],
-        MorganStructuralRetriever(library, RetrievalConfig()),
-        ChainVocabulary(DEMO_CHAIN_TOKENS),
-        SmilesTokenizer(),
-        "fingerprint",
-    )
-    assert len(dataset) == 1
-    assert dataset[0]["delta_formulas"].count_nonzero() == 0
-    assert not dataset[0]["formula_available"].any()
+    with pytest.raises(ValueError, match="mandatory"):
+        replace(targets[0].structure, neutral_formula=None)

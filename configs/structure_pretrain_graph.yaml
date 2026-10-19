@@ -1,6 +1,7 @@
 model:
   encoder: graph
   structure_dim: 256
+  formula_dim: 128
   d_model: 512
   dropout: 0.1
   template_dropout: 0.2
@@ -16,7 +17,7 @@ model:
   decoder_layers: 2
   decoder_heads: 8
   decoder_ffn_dim: 2048
-  max_headgroup_length: 64
+  max_polar_length: 64
 retrieval:
   radius: 2
   fp_size: 2048
@@ -30,6 +31,5 @@ train:
   learning_rate: 0.0001
   weight_decay: 0.01
   gradient_clip: 1.0
-  lambda_arch: 1.0
   lambda_chain: 1.0
-  lambda_head: 1.0
+  lambda_polar: 1.0

@@ -49,7 +49,7 @@ class StructurePretrainLightningModule(L.LightningModule):
             {f"{stage}/{name}": value for name, value in values.items()},
             on_step=stage == "train",
             on_epoch=True,
-            batch_size=len(batch["target_architecture"]),
+            batch_size=len(batch["target_chain_tokens"]),
         )
         return losses["loss"]
 
@@ -68,7 +68,8 @@ class StructurePretrainLightningModule(L.LightningModule):
 
     def on_save_checkpoint(self, checkpoint):
         checkpoint["representation_metadata"] = {
-            "schema": "structure-only-v0.1",
+            "schema": "structure-pretraining-v0.3-two-output-dummy",
+            "polar_boundary": "glycerol-O | P-containing polar fragment",
             "elements": list(ELEMENTS),
             "chain_tokens": list(self.chains.tokens),
             "smiles_tokens": list(self.tokenizer.tokens),

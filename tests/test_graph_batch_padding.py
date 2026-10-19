@@ -14,8 +14,6 @@ def test_five_real_graphs_then_template_padding():
         "template_smiles",
         "template_formulas",
         "delta_formulas",
-        "structure_similarity",
-        "formula_available",
         "template_mask",
         "structures",
     )

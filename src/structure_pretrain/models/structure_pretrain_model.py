@@ -1,13 +1,13 @@
+import torch
 from torch import nn
 
 from structure_pretrain.config import ModelConfig
 from structure_pretrain.data.smiles_tokenizer import SmilesTokenizer
 
-from .architecture_head import ArchitectureHead
 from .chain_head import ChainHead
 from .fingerprint_encoder import FingerprintEncoder
 from .graph_encoder import GraphEncoder
-from .headgroup_decoder import HeadgroupDecoder
+from .polar_decoder import PolarDecoder
 from .template_set_transformer import TemplateSetTransformer
 from .template_token_projector import TemplateTokenProjector
 
@@ -21,6 +21,8 @@ class StructurePretrainModel(nn.Module):
         formula_statistics: dict | None = None,
     ):
         super().__init__()
+        if (config.structure_dim, config.formula_dim, config.d_model) != (256, 128, 512):
+            raise ValueError("v0.3 structure/formula/fusion dimensions must be 256/128/512")
         self.encoder_kind = config.encoder
         if config.encoder == "graph":
             self.structure_encoder = GraphEncoder(config.graph, config.dropout)
@@ -30,14 +32,27 @@ class StructurePretrainModel(nn.Module):
             raise ValueError("Unknown encoder")
         self.projector = TemplateTokenProjector(formula_statistics, config.dropout)
         self.template_set = TemplateSetTransformer(config)
-        self.architecture_head = ArchitectureHead(config.d_model)
         self.chain_head = ChainHead(chain_vocab_size, config.d_model)
-        self.headgroup_decoder = HeadgroupDecoder(config, tokenizer)
+        self.polar_decoder = PolarDecoder(config, tokenizer)
 
-    def forward(self, batch: dict, headgroup_input_ids=None):
+    def encode_templates(self, batch: dict):
         mask = batch["template_mask"]
+        query = batch.get("target_formula")
+        if (
+            query is None
+            or query.shape != (mask.shape[0], 10)
+            or not torch.isfinite(query).all()
+            or (query < 0).any()
+            or (query.sum(-1) <= 0).any()
+        ):
+            raise ValueError("Trusted finite target neutral formula [B,10] is mandatory")
+        if not torch.equal(
+            (batch["template_formulas"] + batch["delta_formulas"])[mask],
+            query[:, None].expand(-1, mask.shape[1], -1)[mask],
+        ):
+            raise ValueError("Signed formula delta must equal target minus template")
         if not mask.any(-1).all():
-            raise ValueError("Skip targets with no retrievable templates")
+            raise ValueError("Zero-template target: report coverage and resolve explicitly")
         flat = self.structure_encoder(
             batch["graphs"] if self.encoder_kind == "graph" else batch["fingerprints"]
         )
@@ -47,20 +62,31 @@ class StructurePretrainModel(nn.Module):
             structure,
             batch["template_formulas"],
             batch["delta_formulas"],
-            batch["structure_similarity"],
-            batch["formula_available"],
             mask,
         )
         memory, global_state, padding, effective = self.template_set(tokens, mask)
-        if headgroup_input_ids is None:
-            headgroup_input_ids = batch["target_headgroup_token_ids"][:, :-1]
         return {
-            "architecture_logits": self.architecture_head(global_state),
             "chain_logits": self.chain_head(global_state),
-            "headgroup_logits": self.headgroup_decoder(headgroup_input_ids, memory, padding),
             "template_tokens": tokens,
             "template_memory": memory,
             "template_global": global_state,
             "memory_padding_mask": padding,
             "effective_template_mask": effective,
         }
+
+    def forward(self, batch: dict, polar_input_ids=None):
+        output = self.encode_templates(batch)
+        if polar_input_ids is None:
+            polar_input_ids = batch["target_polar_token_ids"][:, :-1]
+        output["polar_logits"] = self.polar_decoder(
+            polar_input_ids, output["template_memory"], output["memory_padding_mask"]
+        )
+        return output
+
+    @torch.no_grad()
+    def generate(self, batch, beam_size=1, max_length=None):
+        output = self.encode_templates(batch)
+        output["polar_candidates"] = self.polar_decoder.generate(
+            output["template_memory"], output["memory_padding_mask"], beam_size, max_length
+        )
+        return output
