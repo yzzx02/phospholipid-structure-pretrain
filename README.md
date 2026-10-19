@@ -1,4 +1,10 @@
-# Phospholipid structure pretraining v0.3
+# Phospholipid structure pretraining
+
+**最新 v0.4 Polar-only：** 独立实现已知链条件下的 Polar 生成：无链 glycerol–Polar 图、重新计算的 Morgan/GINE 特征、20D Polar 分子式条件、80% 同链异头基 H＋20% 异链异头基 HC。保留 TCLS＋全部模板 memory，不再预测链。见 [v0.4 方法与复现](docs/experiments/POLAR_ONLY_V04.md)、[实测结果与限制](docs/results/POLAR_ONLY_V04_RESULTS.md)、[聚合指标与哈希](docs/results/POLAR_ONLY_V04_RESULTS.json)，配置为 [FP](configs/polar_only_v04_fp.yaml) / [GINE](configs/polar_only_v04_gine.yaml)。下方 v0.3 记录与所有旧数据、报告和 checkpoints 保留。当前仍为离线 structure-oracle 预训练，不是 MS/MS 鉴定结果。
+
+**本机 v0.4 实测：** 311项测试、全库公式/检索审计通过；FP/GINE均通过32头基过拟合和真实checkpoint续训，分别完成20k目标池的3,000步Math/FP32训练，无新增GPU故障。最终512验证头基的greedy exact均0，beam Top5为3/512与1/512；暂缓全量预训练，未执行5,000步、50k池或MS/MS微调。v0.4使用给定链，不能与v0.3预测链的完整分子指标直接混比。
+
+## v0.3 双输出实验记录
 
 **2026-10-19 中程结果：** Morgan MLP / GINE 均已从原 1,001 步检查点恢复并完成累计 5,000 步，使用同一 20k 训练池与固定 128+512 条验证样本。Math/FP32 下本轮未新增 GPU 转储；286 项测试通过。512 条诊断合法 Polar 为 43.95% / 48.44%，原始完整结构 exact 均为 0；Morgan 可选公式筛选后命中 2/512。建议先完成有界扩展与公式/链约束对照，再决定全量；未执行全库预训练或 MS/MS 微调。见 [完整中程结果](docs/experiments/MIDTERM_STRUCTURE_RESULTS_20261019.md)、[方法](docs/experiments/MIDTERM_STRUCTURE_20261019.md) 与 [聚合 JSON](docs/results/MIDTERM_STRUCTURE_20261019.json)。
 
