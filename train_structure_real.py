@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import random
+import shutil
 import time
 from dataclasses import asdict
 from functools import partial
@@ -88,6 +89,9 @@ def main():
     p.add_argument("--device", choices=("cpu", "rocm"), default="cpu")
     p.add_argument("--steps", type=int)
     p.add_argument("--resume")
+    p.add_argument("--sample-rows-from", help="Reuse exact existing smoke sample arrays")
+    p.add_argument("--retain-periodic-checkpoints", action="store_true")
+    p.add_argument("--train-only", action="store_true", help="Evaluate separately after saving")
     p.add_argument("--allow-full-training", action="store_true")
     p.add_argument("--gpu-smoke-root", default="outputs/pretraining_v03/rocm_smoke")
     p.add_argument("--attention-backend", choices=("default", "math"), default="default")
@@ -184,7 +188,21 @@ def execute(args, p):
             raise ValueError(f"Training gate failed: {name}")
     # Configured label length can never silently truncate the audited data.
     config.model.max_polar_length = label["max_polar_length"]
-    if not full:
+    if args.sample_rows_from:
+        if full or not args.resume:
+            p.error("Locked smoke rows require a smoke resume checkpoint")
+        source = Path(args.sample_rows_from)
+        samples = {
+            name: np.load(source / f"local_smoke_{name}_rows.npy")
+            for name in ("train", "validation")
+        }
+        for name, rows in samples.items():
+            if len(rows) != run[f"{name}_targets"] or len(np.unique(rows)) != len(rows):
+                raise ValueError("Locked smoke sample count or uniqueness differs")
+        (output / "sample_rows").mkdir(exist_ok=True)
+        for name, rows in samples.items():
+            np.save(output / "sample_rows" / f"local_smoke_{name}_rows.npy", rows)
+    elif not full:
         special_ids = pq.read_table(
             Path(args.library) / "special_cases.parquet", columns=["structure_id"]
         )["structure_id"].to_pylist()
@@ -274,6 +292,7 @@ def execute(args, p):
         random.setstate(checkpoint["rng_python"])
         if device.type == "cuda" and checkpoint.get("rng_device") is not None:
             torch.cuda.set_rng_state_all([state.cpu() for state in checkpoint["rng_device"]])
+        del checkpoint
     checkpoint_dir = output / "checkpoint"
     checkpoint_dir.mkdir(exist_ok=True)
     checkpoint_path = checkpoint_dir / "last.pt"
@@ -294,6 +313,13 @@ def execute(args, p):
         }
         torch.save(state, checkpoint_path.with_suffix(".partial"))
         checkpoint_path.with_suffix(".partial").replace(checkpoint_path)
+        if args.retain_periodic_checkpoints:
+            retained = checkpoint_dir / f"step_{step:06d}.pt"
+            if retained.exists():
+                if file_hash(retained) != file_hash(checkpoint_path):
+                    raise ValueError("Refusing to overwrite an independent checkpoint")
+            else:
+                shutil.copyfile(checkpoint_path, retained)
 
     if steps <= step:
         p.error("--steps is total optimizer steps and must exceed the resume step")
@@ -381,6 +407,61 @@ def execute(args, p):
     if not all(updates.values()) or not all(gradient_checks.values()):
         raise ValueError("Some real model branches failed to update")
     model.eval()
+    if args.train_only:
+        # This path changes no model/optimizer/data contract. Validation runs in a
+        # fresh process, so its generation cannot change the saved training RNG.
+        if step % run.get("checkpoint_every", 500):
+            save_checkpoint()
+        first_batch = move_batch(collate([validation[0]]), device)
+        restored = (
+            StructurePretrainModel(config.model, len(train.chain_vocab), train.tokenizer, stats)
+            .to(device)
+            .eval()
+        )
+        restored.load_state_dict(
+            torch.load(checkpoint_path, map_location=device, weights_only=False)["model"]
+        )
+        _, reload_report = validate_reload(
+            model, restored, first_batch, allow_roundoff=device.type == "cuda"
+        )
+        del restored
+        training = {
+            "contract": contract,
+            "optimizer_steps_total": step,
+            "optimizer_steps_this_run": step - start_step,
+            "resumed_from_step": start_step,
+            "train_targets": len(train),
+            "train_examples_consumed": consumed,
+            "validation_targets": len(validation),
+            "train_history": history,
+            "gradient_checks": gradient_checks,
+            "parameters_changed": updates,
+            "parameters": sum(p.numel() for p in model.parameters()),
+            "evaluation": "independent frozen-cohort evaluator; not run in training process",
+            **reload_report,
+        }
+        resource = {
+            "device": str(device),
+            "torch": torch.__version__,
+            "hip": torch.version.hip,
+            "attention_backend": args.attention_backend,
+            "precision": precision,
+            "optimizer_training_seconds": elapsed,
+            "steps_per_second": (step - start_step) / elapsed,
+            "samples_per_second": (step - start_step) * config.train.batch_size * accum / elapsed,
+            "data_loading_seconds": loading_seconds,
+            "peak_RAM_bytes": peak_ram_bytes(),
+            "peak_VRAM_allocated_bytes": torch.cuda.max_memory_allocated()
+            if device.type == "cuda"
+            else None,
+            "peak_VRAM_reserved_bytes": torch.cuda.max_memory_reserved()
+            if device.type == "cuda"
+            else None,
+        }
+        dump_json(output / "training_metrics.json", training)
+        dump_json(output / "resource_metrics.json", resource)
+        log_event({"stage": "completed", "step": step, "resources": resource})
+        return
     validation_totals, seen = CounterValues(), 0
     token_count = 0
     first_batch = None

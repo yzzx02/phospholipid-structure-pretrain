@@ -1,6 +1,6 @@
 param(
     [ValidateSet('fingerprint', 'graph')][string]$Encoder = 'fingerprint',
-    [ValidateSet('diagnostic', 'overfit', 'smoke')][string]$Job = 'diagnostic',
+    [ValidateSet('diagnostic', 'overfit', 'smoke', 'evaluate', 'midterm')][string]$Job = 'diagnostic',
     [ValidateRange(1, 5000)][int]$Steps = 8,
     [string]$RunName = 'math_fp_8',
     [string]$Resume = '',
@@ -13,6 +13,9 @@ $projectShare = '\\wsl.localhost\Ubuntu-24.04' + $projectLinux.Replace('/', '\')
 if ($RunName -notmatch '^[a-zA-Z0-9_-]+$') { throw 'RunName must contain only letters, numbers, underscore or hyphen' }
 $runRelative = "outputs/pretraining_v03/rocm_diagnosis/$RunName"
 if ($Job -eq 'overfit') { $runRelative = "outputs/pretraining_v03/rocm_overfit/$RunName" }
+if ($Job -eq 'evaluate') { $runRelative = "outputs/midterm_v03/evaluation/$RunName" }
+if ($Job -eq 'midterm') { $runRelative = "outputs/midterm_v03/training/$RunName" }
+if ($Job -in @('evaluate', 'midterm') -and -not $Resume) { throw 'A checkpoint is required' }
 if ($Job -eq 'smoke') {
     $runRelative = "outputs/pretraining_v03/rocm_smoke/$RunName"
     $gatePath = Join-Path $projectShare "outputs/pretraining_v03/rocm_overfit/${Encoder}_math/overfit_report.json"
@@ -47,14 +50,20 @@ if ($Job -eq 'diagnostic') {
 } elseif ($Job -eq 'overfit') {
     $payload += @('scripts/overfit_pretraining_v03.py', '--encoder', $Encoder,
         '--targets', '32', '--max-steps', "$Steps", '--batch-size', '8', '--synchronize')
+} elseif ($Job -eq 'evaluate') {
+    $payload += @('-m', 'scripts.evaluate_checkpoint_v03', '--checkpoint', $Resume)
 } else {
     $configName = if ($Encoder -eq 'fingerprint') { 'fp' } else { 'gine' }
     $payload += @('train_structure_real.py', '--device', 'rocm', '--steps', "$Steps",
         '--config', "configs/pretraining_v03_rocm_${configName}.yaml")
+    if ($Job -eq 'midterm') {
+        $payload += @('--sample-rows-from', "outputs/pretraining_v03/rocm_smoke/${Encoder}_resume/sample_rows",
+            '--train-only', '--retain-periodic-checkpoints')
+    }
 }
 $payload += @('--attention-backend', 'math', '--output', $runRelative)
-if ($Resume) {
-    if ($Job -ne 'smoke') { throw 'Resume is currently supported only for the real smoke entry' }
+if ($Resume -and $Job -ne 'evaluate') {
+    if ($Job -notin @('smoke', 'midterm')) { throw 'Resume requires smoke or midterm' }
     $payload += @('--resume', $Resume)
 }
 $payload | ForEach-Object { $startInfo.ArgumentList.Add($_) }
@@ -86,7 +95,7 @@ if ($reason) {
         $trainingPid = (Get-Content -LiteralPath $pidPath -Raw).Trim()
         if ($trainingPid -match '^\d+$') {
             $commandLine = & wsl.exe -d Ubuntu-24.04 -- cat "/proc/$trainingPid/cmdline" 2>$null
-            if ($commandLine -match '(diagnose_rocm_v03|overfit_pretraining_v03|train_structure_real)' -and $commandLine.Contains($runRelative)) {
+            if ($commandLine -match '(diagnose_rocm_v03|overfit_pretraining_v03|train_structure_real|evaluate_checkpoint_v03)' -and $commandLine.Contains($runRelative)) {
                 & wsl.exe -d Ubuntu-24.04 -- kill -TERM $trainingPid 2>$null
             }
         }
