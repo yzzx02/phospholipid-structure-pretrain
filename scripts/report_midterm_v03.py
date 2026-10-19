@@ -57,6 +57,9 @@ def collect(root):
                         "parameters_changed",
                         "checkpoint_state_dict_identical",
                         "checkpoint_reload_logits_close",
+                        "checkpoint_reload_identical_logits",
+                        "checkpoint_reload_max_abs_logit_difference",
+                        "checkpoint_reload_comparison",
                     )
                 },
                 "resources": read(path.parent / "resource_metrics.json"),
@@ -138,6 +141,13 @@ def main():
     if not args.publish:
         return
     decision = read(args.root / "decisions.json")
+    contracts = {}
+    for path in (args.root / "training").glob("*/training_metrics.json"):
+        contract = read(path)["contract"]
+        encoder = contract["model_config"]["encoder"]
+        if encoder in contracts:
+            assert contracts[encoder] == contract
+        contracts[encoder] = contract
     pairs = {}
     for encoder in ("fingerprint", "graph"):
         steps = sorted(step for kind, step in quality if kind == encoder)
@@ -156,7 +166,18 @@ def main():
         "test_targets_used": 0,
         "full_training_started": False,
         "private_samples_or_checkpoints_published": False,
+        "frozen_checkpoint_contracts": contracts,
         "checkpoint_integrity_audit": read(args.root / "checkpoint_integrity_audit.json"),
+    }
+    monitors = [read(p) for p in args.root.glob("*/*/host_monitor.json")]
+    result["host_monitor_summary"] = {
+        "monitored_jobs": len(monitors),
+        "successful_jobs": sum(m["child_exit_code"] == 0 for m in monitors),
+        "nonzero_exit_jobs": sum(m["child_exit_code"] != 0 for m in monitors),
+        "new_windows_gpu_dump_count": sum(len(m["new_windows_gpu_dumps"]) for m in monitors),
+        "protective_stop_reasons": [m["stop_reason"] for m in monitors if m["stop_reason"]],
+        "software_incident": "one completed FP1001 generation had a report Path type error; "
+        "all raw predictions preserved and reused after hash verification",
     }
     destination = Path("docs/results/MIDTERM_STRUCTURE_20261019.json")
     destination.write_text(json.dumps(result, indent=2) + "\n")
