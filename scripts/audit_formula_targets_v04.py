@@ -1,5 +1,6 @@
 """CPU round trip of the frozen validation targets through the unchanged Builder."""
 
+import argparse
 import json
 from pathlib import Path
 
@@ -21,7 +22,10 @@ from structure_pretrain.utils.formula import ELEMENTS
 
 
 def main():
-    output = EXPERIMENT / "target_roundtrip_audit.json"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--experiment-root", type=Path, default=EXPERIMENT)
+    args = parser.parse_args()
+    output = args.experiment_root / "target_roundtrip_audit.json"
     if output.exists():
         raise ValueError("Existing audit is protected")
     rows = np.load(SAMPLES / "diagnostic_512.npy")

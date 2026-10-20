@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import sys
 import time
 from collections import Counter
 from dataclasses import asdict
@@ -29,6 +30,7 @@ from structure_pretrain.polar_only_v04.retrieval import statistics_path
 from structure_pretrain.polar_only_v04.runtime import load_config, make_model, move, require_gpu
 from structure_pretrain.training.quality_v03 import load_builder_rules, score_candidate
 from structure_pretrain.utils.attention import attention_backend
+from structure_pretrain.utils.resources import peak_process_memory_kib
 
 EXPERIMENT = Path("outputs/formula_constrained_v04_20261020")
 EXPECTED_COHORT = "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd"
@@ -191,10 +193,24 @@ def main():
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--audit-only", action="store_true")
+    parser.add_argument("--experiment-root", type=Path, default=EXPERIMENT)
+    parser.add_argument("--gpu-backend", choices=("rocm", "native_cuda"), default="rocm")
     args = parser.parse_args()
+    experiment = args.experiment_root
+    protected = (EXPERIMENT.resolve(), Path("outputs/pretraining_v04").resolve())
     if not 0 <= args.start < 512 or not 1 <= args.count <= 512 - args.start:
         parser.error("Use a bounded slice of the frozen 512-head cohort")
-    if not args.output.resolve().is_relative_to(EXPERIMENT.resolve()):
+    if args.gpu_backend == "native_cuda" and (
+        not experiment.resolve().is_relative_to(Path("outputs").resolve())
+        or any(
+            experiment.resolve() == p
+            or experiment.resolve().is_relative_to(p)
+            or p.is_relative_to(experiment.resolve())
+            for p in protected
+        )
+    ):
+        parser.error("Native CUDA requires its own experiment root under outputs/")
+    if not args.output.resolve().is_relative_to(experiment.resolve()):
         parser.error("Separate formula-experiment output root is mandatory")
     if args.output.exists():
         parser.error("Fresh output directory required; no checkpoint/report overwrites")
@@ -214,12 +230,22 @@ def main():
             event({"stage": "decoding", "token_step": step})
 
     torch.set_num_threads(4)
+    if args.gpu_backend == "native_cuda":
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
     event({"stage": "loading", "device": args.device})
     if args.device == "cuda":
-        if not read_json(EXPERIMENT / "cpu_gate.json").get("passed"):
+        gate = read_json(experiment / "cpu_gate.json")
+        if not gate.get("passed"):
             raise ValueError("This experiment's CPU gate must pass before GPU inference")
-        device = require_gpu(EXPERIMENT)
-        require_gpu(Path("outputs/pretraining_v04"))
+        if args.gpu_backend == "native_cuda" and (
+            gate.get("gpu_backend") != "native_cuda"
+            or gate.get("interpreter") != str(Path(sys.executable).resolve())
+        ):
+            raise ValueError("Native CUDA requires this interpreter's independent CPU gate")
+        device = require_gpu(experiment, args.gpu_backend)
+        if args.gpu_backend == "rocm":
+            require_gpu(Path("outputs/pretraining_v04"))
     else:
         device = torch.device("cpu")
     key = "fp" if args.encoder == "fingerprint" else "gine"
@@ -330,7 +356,10 @@ def main():
             np.testing.assert_array_equal(output["target_polar_formula"][0].cpu().numpy(), expected)
             if args.mode == "raw":
                 beams = model.polar_decoder.generate(
-                    output["template_memory"], output["memory_padding_mask"], args.beam_size
+                    output["template_memory"],
+                    output["memory_padding_mask"],
+                    args.beam_size,
+                    progress=heartbeat,
                 )
                 beams = beams[0]
             else:
@@ -347,6 +376,17 @@ def main():
             if args.device == "cuda":
                 torch.cuda.synchronize()
             decode_seconds = time.monotonic() - decode_start
+            with (args.output / "raw_beams_private.jsonl").open("a") as stream:
+                stream.write(
+                    json.dumps(
+                        {
+                            "cohort_index": index,
+                            "row": row,
+                            "beams": beams,
+                        }
+                    )
+                    + "\n"
+                )
             validation_start = time.monotonic()
             candidates = score_beams(
                 beams,
@@ -401,10 +441,15 @@ def main():
         "peak_VRAM_allocated_bytes": torch.cuda.max_memory_allocated()
         if args.device == "cuda"
         else 0,
-        "peak_RAM_kib": __import__("resource").getrusage(0).ru_maxrss,
+        "peak_RAM_kib": peak_process_memory_kib(),
         "device": args.device,
         "torch": torch.__version__,
         "hip": torch.version.hip,
+        "cuda": torch.version.cuda,
+        "gpu_backend": args.gpu_backend,
+        "gpu_name": torch.cuda.get_device_name(0) if args.device == "cuda" else None,
+        "tf32_matmul_enabled": torch.backends.cuda.matmul.allow_tf32,
+        "tf32_cudnn_enabled": torch.backends.cudnn.allow_tf32,
         "attention_backend": "math",
         "precision": "fp32",
         "training_started": False,

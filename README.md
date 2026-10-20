@@ -83,6 +83,13 @@ python train_structure_real.py --config configs/pretraining_v03_local_fp.yaml --
 
 9070 XT的环境检查、20k/2k/1000-step GPU smoke及独立full命令见[WSL指南](docs/WSL_ROCm.md)。本机已完成显式 Math 路径的 GPU 验证与中程实验；尚未执行完整多轮预训练或 MS/MS 微调。
 
+## RTX 4070 SUPER 原生 Windows 接续
+
+本机项目、冻结数据、检查点、运行输出和缓存位于 `G:\yzx\linzhiyuce`。
+独立 CUDA 环境、CPU gate、GPU 监督器和有界/完整 512 目标实验命令见
+[NVIDIA 接续指南](docs/experiments/POLAR_FORMULA_BEAM_CUDA_V04.md)。
+[本机聚合结果](docs/results/POLAR_FORMULA_BEAM_CUDA_V04_RESULTS.md) 与旧 AMD 报告分开保存。
+
 ## 文件
 
 - `data/prepare_v03.py`：全库标签/token、组划分、671条重建审计。

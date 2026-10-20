@@ -1,5 +1,6 @@
 """Shared reproducible construction for v0.4 only."""
 
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -51,9 +52,17 @@ def move(batch, device):
     }
 
 
-def require_gpu(root):
+def require_gpu(root, backend="rocm"):
     if (Path(root) / "GPU_STOP.json").exists():
         raise RuntimeError("GPU watchdog previously stopped v0.4; no automatic retry")
+    if backend == "native_cuda":
+        if sys.platform != "win32" or torch.version.hip or not torch.version.cuda:
+            raise RuntimeError("Native Windows NVIDIA CUDA build required")
+        if not torch.cuda.is_available() or "RTX 4070" not in torch.cuda.get_device_name(0):
+            raise RuntimeError("This bounded native CUDA experiment requires an RTX 4070 GPU")
+        return torch.device("cuda")
+    if backend != "rocm":
+        raise ValueError(f"Unknown GPU backend: {backend}")
     if not torch.version.hip or not torch.cuda.is_available():
         raise RuntimeError("Verified HIP GPU required; no silent CPU fallback")
     if "9070 XT" not in torch.cuda.get_device_name(0):

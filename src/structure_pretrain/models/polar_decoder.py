@@ -46,7 +46,7 @@ class PolarDecoder(nn.Module):
         return self.output(decoded)
 
     @torch.no_grad()
-    def generate(self, memory, padding, beam_size=1, max_length=None):
+    def generate(self, memory, padding, beam_size=1, max_length=None, progress=None):
         """BOS-only autoregression. Finished hypotheses carry their actual EOS status.
 
         No target prefixes, forced EOS, chemistry repair, or formula filtering.
@@ -58,7 +58,9 @@ class PolarDecoder(nn.Module):
         results = []
         for b in range(len(memory)):
             beams = [([self.bos_id], 0.0, False)]
-            for _ in range(limit - 1):
+            for step in range(limit - 1):
+                if progress is not None:
+                    progress(step)
                 active = [beam for beam in beams if not beam[2]]
                 if not active:
                     break

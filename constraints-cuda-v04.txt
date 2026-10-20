@@ -1,0 +1,3 @@
+# Native Windows / Python 3.12; install torch==2.9.1 from the official cu128 index first.
+-c constraints-tested.txt
+numpy==2.2.3

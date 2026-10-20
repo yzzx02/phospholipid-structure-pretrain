@@ -212,6 +212,30 @@ def test_final_H_is_strict_for_both_polar_and_full_formula(builder_context):
     assert scored["polar_formula_match_including_H"] and not scored["accepted"]
 
 
+def test_unparseable_canonical_candidate_is_rejected_without_losing_other_beams(
+    builder_context, monkeypatch
+):
+    from structure_pretrain.training import quality_v03
+
+    tokenizer, context = builder_context
+    alternate = "P([*:1])(=O)(O)OCCN"
+    original = quality_v03.canonical_polar
+    monkeypatch.setattr(
+        quality_v03,
+        "canonical_polar",
+        lambda text: "[*:1]P(=O)(O)Oc1cc1" if text == alternate else original(text),
+    )
+    candidates = score_beams(
+        [beam(tokenizer, alternate, -1), beam(tokenizer, HEAD, -4)],
+        tokenizer,
+        **context,
+    )
+    assert not candidates[0]["polar_valid"] and not candidates[0]["accepted"]
+    assert candidates[0]["reason"] == "sanitize_failed"
+    assert candidates[0]["polar_smiles_internal"] == alternate
+    assert candidates[1]["accepted"]
+
+
 def test_novel_isomers_survive_but_canonical_duplicates_are_removed(builder_context):
     tokenizer, context = builder_context
     isomer = "[*:1]P(=O)(O)OC(C)N"

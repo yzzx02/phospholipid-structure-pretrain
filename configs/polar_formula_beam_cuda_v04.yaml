@@ -1,0 +1,36 @@
+experiment: polar-formula-constrained-native-cuda-v0.4
+source_base_commit: f3969d1
+gpu_backend: native_cuda
+device: NVIDIA GeForce RTX 4070 SUPER
+python_version: 3.12.10
+torch: 2.9.1+cu128
+checkpoint_steps: 3000
+encoders: [fingerprint, graph]
+beam_sizes: [5, 20, 50]
+modes: [raw, elements, elements_grammar]
+post_filter: same_raw_beams_strict_polar_and_full_neutral_formula_including_H
+cohort: diagnostic_512.npy
+cohort_rows_sha256: 694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd
+initial_slice: {start: 0, count: 32}
+remaining_slices: [{start: 32, count: 224}, {start: 256, count: 256}]
+max_length: 84
+length_penalty: 1
+renormalize_after_constraints: false
+constrain_H_during_search: false
+attention_backend: math
+precision: fp32
+allow_tf32: false
+cpu_threads: 4
+per_job_timeout_seconds: 1200
+startup_timeout_seconds: 180
+no_progress_timeout_seconds: 20
+output_root: outputs/formula_constrained_v04_rtx4070_20261020
+revised_output_root: outputs/formula_constrained_v04_rtx4070_20261020_r1
+validation_revision: reject_canonical_Polar_reparse_failures_without_repair
+completed_native_jobs_revalidated: 38
+revalidated_candidates_including_preflights: 69190
+cpu_gate: scripts/check_formula_beam_v04.py --gpu-backend native_cuda
+gpu_supervisor: scripts/supervise_formula_beam_cuda_v04.py
+matrix_launcher: scripts/run_formula_beam_cuda_v04.ps1
+aggregation: scripts/report_formula_beam_cuda_v04.py
+training_started: false

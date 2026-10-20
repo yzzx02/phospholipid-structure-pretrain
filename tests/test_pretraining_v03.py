@@ -77,6 +77,11 @@ def test_autoregression_never_reads_target_prefix_and_handles_eos():
     memory = torch.randn(2, 3, 512)
     padding = torch.zeros(2, 3, dtype=torch.bool)
     hypotheses = decoder.generate(memory, padding, beam_size=1, max_length=8)
+    progress = []
+    monitored = decoder.generate(
+        memory, padding, beam_size=1, max_length=8, progress=progress.append
+    )
+    assert monitored == hypotheses and progress
     assert all(row[0]["ids"] == [tokenizer.bos_id, tokenizer.eos_id] for row in hypotheses)
     assert all(row[0]["eos"] and not row[0]["length_exhausted"] for row in hypotheses)
     with torch.no_grad():

@@ -61,7 +61,11 @@ def polar_checks(text, eos):
             "reason": getattr(exc, "reason", "polar_boundary_invalid"),
         }
     try:
-        result["canonical_polar"] = canonical_polar(text)
+        graph = canonical_polar(text)
+        # Serialization can expose an RDKit aromaticity round-trip failure.
+        # Reject that candidate before it reaches formula counting or assembly.
+        parse_molecule(graph)
+        result["canonical_polar"] = graph
         result["polar_valid"] = True
         return result
     except ValueError as exc:
