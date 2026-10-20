@@ -1,0 +1,36 @@
+experiment: polar-formula-constrained-inference-v0.4
+base_commit: 2914c9b6fdce273ae2677637b9618a98a1fd064b
+checkpoint_steps: 3000
+encoders: [fingerprint, graph]
+beam_sizes: [5, 20, 50]
+optional_reference_beam_size: 128
+modes: [raw, elements, elements_grammar]
+post_filter: same_raw_beams_strict_polar_and_full_neutral_formula_including_H
+cohort: diagnostic_512.npy
+cohort_rows_sha256: 694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd
+max_length: 84
+length_penalty: 1
+renormalize_after_constraints: false
+constrain_H_during_search: false
+attention_backend: math
+precision: fp32
+cpu_threads: 4
+targets_per_job: 256
+jobs_per_case: 2
+expected_completed_gpu_jobs: 36
+per_job_timeout_seconds: 1200
+no_progress_timeout_seconds: 20
+new_watchdog_stops_all_jobs: true
+training_started: false
+python: /home/administrator/miniconda3/envs/torch-rocm721/bin/python
+cpu_gate_command: scripts/check_formula_beam_v04.py
+gpu_supervisor: scripts/supervise_formula_beam_v04.ps1
+aggregation_command: scripts/report_formula_beam_v04.py
+output_root: outputs/formula_constrained_v04_20261020
+checkpoints:
+  fingerprint:
+    path: outputs/pretraining_v04/runs/fp_smoke_3000/checkpoint/step_003000.pt
+    sha256: daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd
+  graph:
+    path: outputs/pretraining_v04/runs/gine_smoke_3000/checkpoint/step_003000.pt
+    sha256: c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5

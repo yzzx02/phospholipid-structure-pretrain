@@ -1,0 +1,3789 @@
+{
+  "experiment": "v0.4-formula-constrained-beam-inference",
+  "created_utc": "2026-10-20T02:55:33.318972+00:00",
+  "status": "stopped_gpu_fault",
+  "base_commit": "2914c9b6fdce273ae2677637b9618a98a1fd064b",
+  "training_started": false,
+  "validation_heads": 512,
+  "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd",
+  "beam_sizes": [
+    5,
+    20,
+    50
+  ],
+  "beam_sizes_with_complete_two_encoder_comparison": [
+    5
+  ],
+  "formal_beam_50_targets_evaluated": 0,
+  "optional_beam_128_run": false,
+  "methods": [
+    "original_beam",
+    "same_beams_posterior_filter",
+    "elements",
+    "elements_grammar"
+  ],
+  "cpu_gate": {
+    "passed": true,
+    "utc": "2026-10-20T02:21:04.141750+00:00",
+    "tests_passed": 353,
+    "pip_check": "passed",
+    "cpu_checkpoint_audits": [
+      {
+        "passed": true,
+        "encoder": "fingerprint",
+        "checked_targets": 512,
+        "real_decoder_prefix_modes": 2,
+        "errors": [],
+        "inputs": {
+          "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+          "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+          "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+          "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+          "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+          "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+          "step": 3000
+        },
+        "device": "cpu",
+        "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd"
+      },
+      {
+        "passed": true,
+        "encoder": "graph",
+        "checked_targets": 512,
+        "real_decoder_prefix_modes": 2,
+        "errors": [],
+        "inputs": {
+          "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+          "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+          "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+          "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+          "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+          "checkpoint_sha256": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5",
+          "step": 3000
+        },
+        "device": "cpu",
+        "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd"
+      }
+    ],
+    "powershell_supervisor_parse": "passed",
+    "training_started": false,
+    "evidence_sha256": {
+      "all_tests_cpu.log": "11f8b41fc5d1f16ba387631ebf949c373319edce06d336483fe5e5a43f379650",
+      "pip_check_cpu.log": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    }
+  },
+  "baseline_Beam5_regression": {
+    "fingerprint": {
+      "targets": 512,
+      "same_ordered_beam_chemistry_and_exact_flags": 512,
+      "prior_polar_top5_exact_count": 3,
+      "current_polar_top5_exact_count": 3
+    },
+    "graph": {
+      "targets": 512,
+      "same_ordered_beam_chemistry_and_exact_flags": 512,
+      "prior_polar_top5_exact_count": 1,
+      "current_polar_top5_exact_count": 1
+    }
+  },
+  "stop_latch": {
+    "reason": "new_windows_gpu_fault_dump",
+    "utc": "2026-10-20T02:44:17.0169950Z",
+    "run": "fingerprint_elements_b20_s0"
+  },
+  "gpu_safety": {
+    "display_reset_events": [],
+    "automatic_retry": false,
+    "dependencies_changed": false,
+    "gpu_jobs_stopped": true,
+    "display_reset_event_count": 0,
+    "driver_changed": false,
+    "new_dump_count": 1,
+    "user_report": "black_screen_occurred_then_recovered",
+    "remaining_gpu_work": "not_run_due_to_watchdog",
+    "monitor_epoch_utc": "2026-10-20T02:21:09.5878995Z",
+    "new_dumps": [
+      {
+        "name": "WATCHDOG-20261020-1044.dmp",
+        "sha256": "2d8d22c898d6255c7239082a2f4c20a4e547ef175db72235688b74b6c6996333",
+        "bytes": 611625,
+        "last_write_utc": "2026-10-20T02:44:12.8898355Z"
+      }
+    ],
+    "status": "stopped_gpu_fault",
+    "matching_dump_WER_event_count": 2,
+    "matching_dump_WER_codes": [
+      "141"
+    ],
+    "interpretation": "LiveKernelEvent 141, display engine timeout; precise root cause unresolved",
+    "reference": "https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x141---video-engine-timeout-detected"
+  },
+  "execution_summary": {
+    "planned_gpu_jobs": 36,
+    "completed_gpu_jobs": 14,
+    "failed_gpu_jobs": 1,
+    "not_run_gpu_jobs": 21,
+    "complete_cases": 7,
+    "required_cases": 18,
+    "warmup_gpu_jobs_not_in_comparison": 2
+  },
+  "warmups_not_in_comparison": [
+    {
+      "run": "warmup_fp_b5_grammar",
+      "metrics": {
+        "status": "completed",
+        "encoder": "fingerprint",
+        "mode": "elements_grammar",
+        "beam_size": 5,
+        "start": 0,
+        "count": 2,
+        "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd",
+        "inputs": {
+          "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+          "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+          "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+          "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+          "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+          "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+          "step": 3000
+        },
+        "raw": {
+          "targets": 2,
+          "returned_candidates": 5,
+          "polar_topk_exact_over_all_targets": {
+            "1": 0.0,
+            "5": 0.0,
+            "10": null
+          },
+          "raw_candidate_count": 5,
+          "raw_chemical_valid_polar_fraction": 0.2,
+          "returned_chemical_valid_polar_fraction": 0.2,
+          "raw_top1_chemical_valid_polar_rate": 0.5,
+          "strict_formula_coverage": 0.5,
+          "no_qualified_candidate_rate": 0.5,
+          "accepted_unique_candidates": 1,
+          "accepted_unique_per_target": {
+            "mean": 0.5,
+            "min": 0,
+            "max": 1,
+            "median": 0.5,
+            "histogram": {
+              "0": 1,
+              "1": 1
+            }
+          },
+          "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+          "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+          "formula_correct_wrong_top1_rate_over_all_targets": 0.5,
+          "accepted_novel_to_train_candidates": 1,
+          "raw_failure_categories": {
+            "formula_matches_wrong_structure": 1,
+            "polar_or_builder_chemistry": 4
+          },
+          "raw_failure_reasons": {
+            "formula_matches_wrong_structure": 1,
+            "invalid_valence": 1,
+            "sanitize_failed": 3
+          },
+          "decode_seconds": 1.7906219400000225,
+          "validation_seconds": 0.011049137000014753
+        },
+        "strict_post_filter": {
+          "targets": 2,
+          "returned_candidates": 1,
+          "polar_topk_exact_over_all_targets": {
+            "1": 0.0,
+            "5": 0.0,
+            "10": null
+          },
+          "raw_candidate_count": 5,
+          "raw_chemical_valid_polar_fraction": 0.2,
+          "returned_chemical_valid_polar_fraction": 1.0,
+          "raw_top1_chemical_valid_polar_rate": 0.5,
+          "strict_formula_coverage": 0.5,
+          "no_qualified_candidate_rate": 0.5,
+          "accepted_unique_candidates": 1,
+          "accepted_unique_per_target": {
+            "mean": 0.5,
+            "min": 0,
+            "max": 1,
+            "median": 0.5,
+            "histogram": {
+              "0": 1,
+              "1": 1
+            }
+          },
+          "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+          "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+          "formula_correct_wrong_top1_rate_over_all_targets": 0.5,
+          "accepted_novel_to_train_candidates": 1,
+          "raw_failure_categories": {
+            "formula_matches_wrong_structure": 1,
+            "polar_or_builder_chemistry": 4
+          },
+          "raw_failure_reasons": {
+            "formula_matches_wrong_structure": 1,
+            "invalid_valence": 1,
+            "sanitize_failed": 3
+          },
+          "decode_seconds": 1.7906219400000225,
+          "validation_seconds": 0.011049137000014753
+        },
+        "elapsed_seconds": 1.8795771590000072,
+        "peak_VRAM_allocated_bytes": 151015424,
+        "peak_RAM_kib": 1996432,
+        "device": "cuda",
+        "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+        "hip": "7.2.53211-e1a6bc5663",
+        "attention_backend": "math",
+        "precision": "fp32",
+        "training_started": false
+      },
+      "host_monitor": {
+        "start": 0,
+        "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+        "training_started": false,
+        "encoder": "fingerprint",
+        "new_windows_gpu_dump_count": 0,
+        "beam_size": 5,
+        "attention_backend": "math",
+        "stop_reason": null,
+        "no_progress_timeout_seconds": 20,
+        "display_reset_count": 0,
+        "per_job_timeout_seconds": 180,
+        "precision": "fp32",
+        "elapsed_seconds": 17.6812862,
+        "count": 2,
+        "child_exit_code": 0,
+        "mode": "elements_grammar"
+      }
+    },
+    {
+      "run": "warmup_gine_b50_grammar",
+      "metrics": {
+        "status": "completed",
+        "encoder": "graph",
+        "mode": "elements_grammar",
+        "beam_size": 50,
+        "start": 0,
+        "count": 2,
+        "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd",
+        "inputs": {
+          "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+          "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+          "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+          "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+          "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+          "checkpoint_sha256": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5",
+          "step": 3000
+        },
+        "raw": {
+          "targets": 2,
+          "returned_candidates": 47,
+          "polar_topk_exact_over_all_targets": {
+            "1": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "raw_candidate_count": 47,
+          "raw_chemical_valid_polar_fraction": 0.5319148936170213,
+          "returned_chemical_valid_polar_fraction": 0.5319148936170213,
+          "raw_top1_chemical_valid_polar_rate": 0.5,
+          "strict_formula_coverage": 1.0,
+          "no_qualified_candidate_rate": 0.0,
+          "accepted_unique_candidates": 8,
+          "accepted_unique_per_target": {
+            "mean": 4.0,
+            "min": 3,
+            "max": 5,
+            "median": 4.0,
+            "histogram": {
+              "3": 1,
+              "5": 1
+            }
+          },
+          "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+          "formula_correct_wrong_top1_fraction_among_formula_correct_top1": null,
+          "formula_correct_wrong_top1_rate_over_all_targets": 0.0,
+          "accepted_novel_to_train_candidates": 8,
+          "raw_failure_categories": {
+            "formula_mismatch": 12,
+            "polar_or_builder_chemistry": 22,
+            "formula_matches_wrong_structure": 13
+          },
+          "raw_failure_reasons": {
+            "formula_mismatch": 12,
+            "invalid_valence": 6,
+            "formula_matches_wrong_structure": 13,
+            "sanitize_failed": 16
+          },
+          "decode_seconds": 3.5027875080000115,
+          "validation_seconds": 0.08581424199999788
+        },
+        "strict_post_filter": {
+          "targets": 2,
+          "returned_candidates": 8,
+          "polar_topk_exact_over_all_targets": {
+            "1": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "raw_candidate_count": 47,
+          "raw_chemical_valid_polar_fraction": 0.5319148936170213,
+          "returned_chemical_valid_polar_fraction": 1.0,
+          "raw_top1_chemical_valid_polar_rate": 0.5,
+          "strict_formula_coverage": 1.0,
+          "no_qualified_candidate_rate": 0.0,
+          "accepted_unique_candidates": 8,
+          "accepted_unique_per_target": {
+            "mean": 4.0,
+            "min": 3,
+            "max": 5,
+            "median": 4.0,
+            "histogram": {
+              "3": 1,
+              "5": 1
+            }
+          },
+          "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+          "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+          "formula_correct_wrong_top1_rate_over_all_targets": 1.0,
+          "accepted_novel_to_train_candidates": 8,
+          "raw_failure_categories": {
+            "formula_mismatch": 12,
+            "polar_or_builder_chemistry": 22,
+            "formula_matches_wrong_structure": 13
+          },
+          "raw_failure_reasons": {
+            "formula_mismatch": 12,
+            "invalid_valence": 6,
+            "formula_matches_wrong_structure": 13,
+            "sanitize_failed": 16
+          },
+          "decode_seconds": 3.5027875080000115,
+          "validation_seconds": 0.08581424199999788
+        },
+        "elapsed_seconds": 3.6216036109999834,
+        "peak_VRAM_allocated_bytes": 180780544,
+        "peak_RAM_kib": 2037648,
+        "device": "cuda",
+        "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+        "hip": "7.2.53211-e1a6bc5663",
+        "attention_backend": "math",
+        "precision": "fp32",
+        "training_started": false
+      },
+      "host_monitor": {
+        "per_job_timeout_seconds": 180,
+        "training_started": false,
+        "count": 2,
+        "stop_reason": null,
+        "beam_size": 50,
+        "new_windows_gpu_dump_count": 0,
+        "encoder": "graph",
+        "display_reset_count": 0,
+        "child_exit_code": 0,
+        "mode": "elements_grammar",
+        "no_progress_timeout_seconds": 20,
+        "start": 0,
+        "precision": "fp32",
+        "elapsed_seconds": 11.5028687,
+        "attention_backend": "math",
+        "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z"
+      }
+    }
+  ],
+  "environment": {
+    "gpu": "AMD Radeon RX 9070 XT (required by every GPU runner)",
+    "windows_driver": [
+      {
+        "Name": "AMD Radeon RX 9070 XT",
+        "DriverVersion": "32.0.31041.1004"
+      }
+    ],
+    "monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+    "attention_backend": "math",
+    "precision": "fp32",
+    "interpreter": "/home/administrator/miniconda3/envs/torch-rocm721/bin/python",
+    "dependencies_changed": false,
+    "driver_changed": false
+  },
+  "inference_source_sha256": {
+    "src/structure_pretrain/polar_only_v04/constrained_decode.py": "f169b205b4e4d5dd97a48d0f56d7697f345226c03fd4d4af54ac78480f5ac359",
+    "src/structure_pretrain/polar_only_v04/formula_beam_eval.py": "adf0e34dfb6ca7fb275895be236eca8fb391d65a84b1695b80b61b2fe8b47291",
+    "scripts/supervise_formula_beam_v04.ps1": "3e733c0cab8a06b017b8e49838d9a5f16be5e4e119140dcd8d59046fe5858cdf",
+    "configs/polar_formula_beam_v04.yaml": "5b398ea38337a3d3095fbe50b828c5e574b0bce63794bf2c6b32e55aa0c82f39"
+  },
+  "executed_inference_source_sha256": {
+    "src/structure_pretrain/polar_only_v04/constrained_decode.py": "f169b205b4e4d5dd97a48d0f56d7697f345226c03fd4d4af54ac78480f5ac359",
+    "src/structure_pretrain/polar_only_v04/formula_beam_eval.py": "adf0e34dfb6ca7fb275895be236eca8fb391d65a84b1695b80b61b2fe8b47291",
+    "scripts/supervise_formula_beam_v04.ps1": "6c3b4590565d83faa9cf85e87283bf3723b3765d499df0ae1a6332def0ed8721"
+  },
+  "post_stop_supervisor_change": "System 4101 query now converts UTC epoch to local time and explicitly rechecks UTC; decoder/evaluation modules unchanged",
+  "cases": [
+    {
+      "encoder": "fingerprint",
+      "mode": "raw",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "fingerprint_raw_b5_s0",
+          "host_monitor": {
+            "no_progress_timeout_seconds": 20,
+            "training_started": false,
+            "new_windows_gpu_dump_count": 0,
+            "per_job_timeout_seconds": 1200,
+            "encoder": "fingerprint",
+            "count": 256,
+            "mode": "raw",
+            "precision": "fp32",
+            "beam_size": 5,
+            "start": 0,
+            "elapsed_seconds": 66.0712025,
+            "attention_backend": "math",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "display_reset_count": 0,
+            "child_exit_code": 0,
+            "stop_reason": null
+          },
+          "inference_seconds": 50.281280479999964,
+          "peak_VRAM_allocated_bytes": 154241024,
+          "peak_RAM_kib": 2104048,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "6277651396ca48a2dd1dad6335bbe788cc93a8ec50e950aa7aaa23f84ff76a6b",
+          "metrics_sha256": "12f4ee47ee1e2804122849831d949484b3dacec85fdbf52855c74ed6dfd81dbf"
+        },
+        {
+          "name": "fingerprint_raw_b5_s256",
+          "host_monitor": {
+            "start": 256,
+            "elapsed_seconds": 57.7634352,
+            "mode": "raw",
+            "beam_size": 5,
+            "per_job_timeout_seconds": 1200,
+            "count": 256,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "precision": "fp32",
+            "display_reset_count": 0,
+            "new_windows_gpu_dump_count": 0,
+            "training_started": false,
+            "encoder": "fingerprint",
+            "stop_reason": null,
+            "child_exit_code": 0,
+            "attention_backend": "math",
+            "no_progress_timeout_seconds": 20
+          },
+          "inference_seconds": 50.15942504399999,
+          "peak_VRAM_allocated_bytes": 154363904,
+          "peak_RAM_kib": 2101944,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "67393be055cb3da53555cbb5b5178ad9aab1f8822de7447733b22840ca23b993",
+          "metrics_sha256": "6bf9cfe033d3e88c970c8076aab8b67ea5105b35cc3a68f20ea69142ca6c20b2"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 2560,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.00390625,
+          "5": 0.005859375,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.424609375,
+        "returned_chemical_valid_polar_fraction": 0.424609375,
+        "raw_top1_chemical_valid_polar_rate": 0.49609375,
+        "strict_formula_coverage": 0.1171875,
+        "no_qualified_candidate_rate": 0.8828125,
+        "accepted_unique_candidates": 85,
+        "accepted_unique_per_target": {
+          "mean": 0.166015625,
+          "min": 0,
+          "max": 3,
+          "median": 0.0,
+          "histogram": {
+            "0": 452,
+            "1": 38,
+            "2": 19,
+            "3": 3
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9647058823529412,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.92,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.044921875,
+        "accepted_novel_to_train_candidates": 53,
+        "raw_failure_categories": {
+          "formula_mismatch": 999,
+          "polar_or_builder_chemistry": 278,
+          "smiles_syntax": 1141,
+          "formula_matches_wrong_structure": 85,
+          "attachment": 45,
+          "no_eos": 9,
+          "correct_structure": 3
+        },
+        "raw_failure_reasons": {
+          "formula_mismatch": 999,
+          "sanitize_failed": 265,
+          "invalid_smiles": 1141,
+          "formula_matches_wrong_structure": 85,
+          "attachment_invalid": 19,
+          "length_exhausted": 9,
+          "polar_boundary_invalid": 26,
+          "invalid_valence": 12,
+          "correct_structure": 3,
+          "nonneutral_structure": 1
+        },
+        "decode_seconds": 94.74861068500039,
+        "validation_seconds": 4.507563066000529
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 85,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.005859375,
+          "5": 0.005859375,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.424609375,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.49609375,
+        "strict_formula_coverage": 0.1171875,
+        "no_qualified_candidate_rate": 0.8828125,
+        "accepted_unique_candidates": 85,
+        "accepted_unique_per_target": {
+          "mean": 0.166015625,
+          "min": 0,
+          "max": 3,
+          "median": 0.0,
+          "histogram": {
+            "0": 452,
+            "1": 38,
+            "2": 19,
+            "3": 3
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9647058823529412,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.95,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.111328125,
+        "accepted_novel_to_train_candidates": 53,
+        "raw_failure_categories": {
+          "formula_mismatch": 999,
+          "polar_or_builder_chemistry": 278,
+          "smiles_syntax": 1141,
+          "formula_matches_wrong_structure": 85,
+          "attachment": 45,
+          "no_eos": 9,
+          "correct_structure": 3
+        },
+        "raw_failure_reasons": {
+          "formula_mismatch": 999,
+          "sanitize_failed": 265,
+          "invalid_smiles": 1141,
+          "formula_matches_wrong_structure": 85,
+          "attachment_invalid": 19,
+          "length_exhausted": 9,
+          "polar_boundary_invalid": 26,
+          "invalid_valence": 12,
+          "correct_structure": 3,
+          "nonneutral_structure": 1
+        },
+        "decode_seconds": 94.74861068500039,
+        "validation_seconds": 4.507563066000529
+      },
+      "target_failure_stages": {
+        "no_exact_Polar_formula_including_H": 298,
+        "no_chemically_valid_Polar": 154
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 1087,
+        "heavy_formula_exact": 109,
+        "H_only_mismatch": 21,
+        "all_elements_exact_including_H": 88,
+        "element_mismatch_counts": {
+          "C": 851,
+          "H": 853,
+          "O": 567,
+          "S": 94,
+          "N": 347,
+          "F": 64,
+          "Cl": 57,
+          "P": 152,
+          "Br": 16
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 123.8346377,
+        "inference_seconds": 100.44070552399995,
+        "peak_VRAM_allocated_bytes": 154363904,
+        "peak_RAM_kib": 2104048
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 2140,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.004672897196261682,
+              "5": 0.004672897196261682,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.4177570093457944,
+            "returned_chemical_valid_polar_fraction": 0.4177570093457944,
+            "raw_top1_chemical_valid_polar_rate": 0.48598130841121495,
+            "strict_formula_coverage": 0.1191588785046729,
+            "no_qualified_candidate_rate": 0.8808411214953271,
+            "accepted_unique_candidates": 73,
+            "accepted_unique_per_target": {
+              "mean": 0.1705607476635514,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 377,
+                "1": 32,
+                "2": 16,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9726027397260274,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9047619047619048,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.04439252336448598,
+            "accepted_novel_to_train_candidates": 44,
+            "raw_failure_categories": {
+              "formula_mismatch": 820,
+              "polar_or_builder_chemistry": 231,
+              "smiles_syntax": 967,
+              "formula_matches_wrong_structure": 72,
+              "attachment": 39,
+              "no_eos": 9,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 820,
+              "sanitize_failed": 225,
+              "invalid_smiles": 967,
+              "formula_matches_wrong_structure": 72,
+              "attachment_invalid": 14,
+              "length_exhausted": 9,
+              "polar_boundary_invalid": 25,
+              "invalid_valence": 5,
+              "correct_structure": 2,
+              "nonneutral_structure": 1
+            },
+            "decode_seconds": 79.51512743500061,
+            "validation_seconds": 3.7223369630002026
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 73,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.004672897196261682,
+              "5": 0.004672897196261682,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.4177570093457944,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.48598130841121495,
+            "strict_formula_coverage": 0.1191588785046729,
+            "no_qualified_candidate_rate": 0.8808411214953271,
+            "accepted_unique_candidates": 73,
+            "accepted_unique_per_target": {
+              "mean": 0.1705607476635514,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 377,
+                "1": 32,
+                "2": 16,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9726027397260274,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9607843137254902,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.11448598130841121,
+            "accepted_novel_to_train_candidates": 44,
+            "raw_failure_categories": {
+              "formula_mismatch": 820,
+              "polar_or_builder_chemistry": 231,
+              "smiles_syntax": 967,
+              "formula_matches_wrong_structure": 72,
+              "attachment": 39,
+              "no_eos": 9,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 820,
+              "sanitize_failed": 225,
+              "invalid_smiles": 967,
+              "formula_matches_wrong_structure": 72,
+              "attachment_invalid": 14,
+              "length_exhausted": 9,
+              "polar_boundary_invalid": 25,
+              "invalid_valence": 5,
+              "correct_structure": 2,
+              "nonneutral_structure": 1
+            },
+            "decode_seconds": 79.51512743500061,
+            "validation_seconds": 3.7223369630002026
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 420,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.011904761904761904,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.4595238095238095,
+            "returned_chemical_valid_polar_fraction": 0.4595238095238095,
+            "raw_top1_chemical_valid_polar_rate": 0.5476190476190477,
+            "strict_formula_coverage": 0.10714285714285714,
+            "no_qualified_candidate_rate": 0.8928571428571429,
+            "accepted_unique_candidates": 12,
+            "accepted_unique_per_target": {
+              "mean": 0.14285714285714285,
+              "min": 0,
+              "max": 2,
+              "median": 0.0,
+              "histogram": {
+                "0": 75,
+                "1": 6,
+                "2": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9166666666666666,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.047619047619047616,
+            "accepted_novel_to_train_candidates": 9,
+            "raw_failure_categories": {
+              "formula_mismatch": 179,
+              "smiles_syntax": 174,
+              "polar_or_builder_chemistry": 47,
+              "formula_matches_wrong_structure": 13,
+              "attachment": 6,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 179,
+              "invalid_smiles": 174,
+              "sanitize_failed": 40,
+              "invalid_valence": 7,
+              "formula_matches_wrong_structure": 13,
+              "polar_boundary_invalid": 1,
+              "correct_structure": 1,
+              "attachment_invalid": 5
+            },
+            "decode_seconds": 15.233483249999779,
+            "validation_seconds": 0.7852261030003262
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 12,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011904761904761904,
+              "5": 0.011904761904761904,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.4595238095238095,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.5476190476190477,
+            "strict_formula_coverage": 0.10714285714285714,
+            "no_qualified_candidate_rate": 0.8928571428571429,
+            "accepted_unique_candidates": 12,
+            "accepted_unique_per_target": {
+              "mean": 0.14285714285714285,
+              "min": 0,
+              "max": 2,
+              "median": 0.0,
+              "histogram": {
+                "0": 75,
+                "1": 6,
+                "2": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9166666666666666,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.8888888888888888,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.09523809523809523,
+            "accepted_novel_to_train_candidates": 9,
+            "raw_failure_categories": {
+              "formula_mismatch": 179,
+              "smiles_syntax": 174,
+              "polar_or_builder_chemistry": 47,
+              "formula_matches_wrong_structure": 13,
+              "attachment": 6,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 179,
+              "invalid_smiles": 174,
+              "sanitize_failed": 40,
+              "invalid_valence": 7,
+              "formula_matches_wrong_structure": 13,
+              "polar_boundary_invalid": 1,
+              "correct_structure": 1,
+              "attachment_invalid": 5
+            },
+            "decode_seconds": 15.233483249999779,
+            "validation_seconds": 0.7852261030003262
+          }
+        }
+      }
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "fingerprint_elements_b5_s0",
+          "host_monitor": {
+            "precision": "fp32",
+            "elapsed_seconds": 70.7494162,
+            "start": 0,
+            "per_job_timeout_seconds": 1200,
+            "no_progress_timeout_seconds": 20,
+            "attention_backend": "math",
+            "beam_size": 5,
+            "display_reset_count": 0,
+            "training_started": false,
+            "child_exit_code": 0,
+            "encoder": "fingerprint",
+            "stop_reason": null,
+            "new_windows_gpu_dump_count": 0,
+            "count": 256,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "mode": "elements"
+          },
+          "inference_seconds": 63.267647702999966,
+          "peak_VRAM_allocated_bytes": 158205952,
+          "peak_RAM_kib": 2110116,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "6fa7f003d0be769c603942460ab102938e14c457c7ac3518424529ec2875e6bc",
+          "metrics_sha256": "884c22b715b2f510633aee0fa4aa65f42df8aa2c613260acb9ce944f972b78d9"
+        },
+        {
+          "name": "fingerprint_elements_b5_s256",
+          "host_monitor": {
+            "training_started": false,
+            "mode": "elements",
+            "per_job_timeout_seconds": 1200,
+            "display_reset_count": 0,
+            "precision": "fp32",
+            "elapsed_seconds": 68.2195349,
+            "new_windows_gpu_dump_count": 0,
+            "start": 256,
+            "attention_backend": "math",
+            "encoder": "fingerprint",
+            "count": 256,
+            "stop_reason": null,
+            "no_progress_timeout_seconds": 20,
+            "beam_size": 5,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "child_exit_code": 0
+          },
+          "inference_seconds": 60.961254543999985,
+          "peak_VRAM_allocated_bytes": 158047744,
+          "peak_RAM_kib": 2089860,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "1a4d0a50097836fcbb8aff399562b44840f454a35eb6b5d5eb322d4d15df40cd",
+          "metrics_sha256": "56bd007da2c3a294b136a2806e10e1d3eea8944feda37492eea523b526992dd2"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 2560,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.013671875,
+          "5": 0.015625,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.15078125,
+        "returned_chemical_valid_polar_fraction": 0.15078125,
+        "raw_top1_chemical_valid_polar_rate": 0.291015625,
+        "strict_formula_coverage": 0.271484375,
+        "no_qualified_candidate_rate": 0.728515625,
+        "accepted_unique_candidates": 238,
+        "accepted_unique_per_target": {
+          "mean": 0.46484375,
+          "min": 0,
+          "max": 5,
+          "median": 0.0,
+          "histogram": {
+            "0": 373,
+            "1": 71,
+            "2": 44,
+            "3": 18,
+            "4": 5,
+            "5": 1
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9663865546218487,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9263157894736842,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.171875,
+        "accepted_novel_to_train_candidates": 187,
+        "raw_failure_categories": {
+          "formula_matches_wrong_structure": 246,
+          "smiles_syntax": 1964,
+          "polar_or_builder_chemistry": 137,
+          "attachment": 46,
+          "formula_mismatch": 132,
+          "no_eos": 27,
+          "correct_structure": 8
+        },
+        "raw_failure_reasons": {
+          "formula_matches_wrong_structure": 246,
+          "invalid_smiles": 1964,
+          "sanitize_failed": 101,
+          "polar_boundary_invalid": 24,
+          "formula_mismatch": 132,
+          "invalid_valence": 33,
+          "attachment_invalid": 22,
+          "length_exhausted": 27,
+          "nonneutral_structure": 3,
+          "correct_structure": 8
+        },
+        "decode_seconds": 121.46846311300004,
+        "validation_seconds": 1.8391463259994794
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 238,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.013671875,
+          "5": 0.015625,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.15078125,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.291015625,
+        "strict_formula_coverage": 0.271484375,
+        "no_qualified_candidate_rate": 0.728515625,
+        "accepted_unique_candidates": 238,
+        "accepted_unique_per_target": {
+          "mean": 0.46484375,
+          "min": 0,
+          "max": 5,
+          "median": 0.0,
+          "histogram": {
+            "0": 373,
+            "1": 71,
+            "2": 44,
+            "3": 18,
+            "4": 5,
+            "5": 1
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9663865546218487,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9496402877697842,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.2578125,
+        "accepted_novel_to_train_candidates": 187,
+        "raw_failure_categories": {
+          "formula_matches_wrong_structure": 246,
+          "smiles_syntax": 1964,
+          "polar_or_builder_chemistry": 137,
+          "attachment": 46,
+          "formula_mismatch": 132,
+          "no_eos": 27,
+          "correct_structure": 8
+        },
+        "raw_failure_reasons": {
+          "formula_matches_wrong_structure": 246,
+          "invalid_smiles": 1964,
+          "sanitize_failed": 101,
+          "polar_boundary_invalid": 24,
+          "formula_mismatch": 132,
+          "invalid_valence": 33,
+          "attachment_invalid": 22,
+          "length_exhausted": 27,
+          "nonneutral_structure": 3,
+          "correct_structure": 8
+        },
+        "decode_seconds": 121.46846311300004,
+        "validation_seconds": 1.8391463259994794
+      },
+      "target_failure_stages": {
+        "no_chemically_valid_Polar": 303,
+        "no_exact_Polar_formula_including_H": 69,
+        "no_EOS": 1
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 386,
+        "heavy_formula_exact": 386,
+        "H_only_mismatch": 132,
+        "all_elements_exact_including_H": 254,
+        "element_mismatch_counts": {
+          "H": 132
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 138.9689511,
+        "inference_seconds": 124.22890224699995,
+        "peak_VRAM_allocated_bytes": 158205952,
+        "peak_RAM_kib": 2110116
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 2140,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011682242990654205,
+              "5": 0.011682242990654205,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.15140186915887852,
+            "returned_chemical_valid_polar_fraction": 0.15140186915887852,
+            "raw_top1_chemical_valid_polar_rate": 0.29205607476635514,
+            "strict_formula_coverage": 0.2757009345794392,
+            "no_qualified_candidate_rate": 0.7242990654205608,
+            "accepted_unique_candidates": 204,
+            "accepted_unique_per_target": {
+              "mean": 0.4766355140186916,
+              "min": 0,
+              "max": 5,
+              "median": 0.0,
+              "histogram": {
+                "0": 310,
+                "1": 60,
+                "2": 37,
+                "3": 15,
+                "4": 5,
+                "5": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9754901960784313,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9390243902439024,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.17990654205607476,
+            "accepted_novel_to_train_candidates": 157,
+            "raw_failure_categories": {
+              "formula_matches_wrong_structure": 212,
+              "smiles_syntax": 1651,
+              "polar_or_builder_chemistry": 109,
+              "attachment": 36,
+              "formula_mismatch": 107,
+              "no_eos": 20,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "formula_matches_wrong_structure": 212,
+              "invalid_smiles": 1651,
+              "sanitize_failed": 84,
+              "polar_boundary_invalid": 20,
+              "formula_mismatch": 107,
+              "invalid_valence": 22,
+              "attachment_invalid": 16,
+              "length_exhausted": 20,
+              "nonneutral_structure": 3,
+              "correct_structure": 5
+            },
+            "decode_seconds": 101.61952531100002,
+            "validation_seconds": 1.5390557019997573
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 204,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011682242990654205,
+              "5": 0.011682242990654205,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.15140186915887852,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.29205607476635514,
+            "strict_formula_coverage": 0.2757009345794392,
+            "no_qualified_candidate_rate": 0.7242990654205608,
+            "accepted_unique_candidates": 204,
+            "accepted_unique_per_target": {
+              "mean": 0.4766355140186916,
+              "min": 0,
+              "max": 5,
+              "median": 0.0,
+              "histogram": {
+                "0": 310,
+                "1": 60,
+                "2": 37,
+                "3": 15,
+                "4": 5,
+                "5": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9754901960784313,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9576271186440678,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.26401869158878505,
+            "accepted_novel_to_train_candidates": 157,
+            "raw_failure_categories": {
+              "formula_matches_wrong_structure": 212,
+              "smiles_syntax": 1651,
+              "polar_or_builder_chemistry": 109,
+              "attachment": 36,
+              "formula_mismatch": 107,
+              "no_eos": 20,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "formula_matches_wrong_structure": 212,
+              "invalid_smiles": 1651,
+              "sanitize_failed": 84,
+              "polar_boundary_invalid": 20,
+              "formula_mismatch": 107,
+              "invalid_valence": 22,
+              "attachment_invalid": 16,
+              "length_exhausted": 20,
+              "nonneutral_structure": 3,
+              "correct_structure": 5
+            },
+            "decode_seconds": 101.61952531100002,
+            "validation_seconds": 1.5390557019997573
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 420,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.03571428571428571,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.14761904761904762,
+            "returned_chemical_valid_polar_fraction": 0.14761904761904762,
+            "raw_top1_chemical_valid_polar_rate": 0.2857142857142857,
+            "strict_formula_coverage": 0.25,
+            "no_qualified_candidate_rate": 0.75,
+            "accepted_unique_candidates": 34,
+            "accepted_unique_per_target": {
+              "mean": 0.40476190476190477,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 63,
+                "1": 11,
+                "2": 7,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9117647058823529,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.8461538461538461,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.13095238095238096,
+            "accepted_novel_to_train_candidates": 30,
+            "raw_failure_categories": {
+              "smiles_syntax": 313,
+              "formula_mismatch": 25,
+              "formula_matches_wrong_structure": 34,
+              "attachment": 10,
+              "no_eos": 7,
+              "polar_or_builder_chemistry": 28,
+              "correct_structure": 3
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 313,
+              "formula_mismatch": 25,
+              "formula_matches_wrong_structure": 34,
+              "attachment_invalid": 6,
+              "polar_boundary_invalid": 4,
+              "length_exhausted": 7,
+              "invalid_valence": 11,
+              "sanitize_failed": 17,
+              "correct_structure": 3
+            },
+            "decode_seconds": 19.848937802000023,
+            "validation_seconds": 0.3000906239997221
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 34,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.03571428571428571,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.14761904761904762,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.2857142857142857,
+            "strict_formula_coverage": 0.25,
+            "no_qualified_candidate_rate": 0.75,
+            "accepted_unique_candidates": 34,
+            "accepted_unique_per_target": {
+              "mean": 0.40476190476190477,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 63,
+                "1": 11,
+                "2": 7,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9117647058823529,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9047619047619048,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.2261904761904762,
+            "accepted_novel_to_train_candidates": 30,
+            "raw_failure_categories": {
+              "smiles_syntax": 313,
+              "formula_mismatch": 25,
+              "formula_matches_wrong_structure": 34,
+              "attachment": 10,
+              "no_eos": 7,
+              "polar_or_builder_chemistry": 28,
+              "correct_structure": 3
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 313,
+              "formula_mismatch": 25,
+              "formula_matches_wrong_structure": 34,
+              "attachment_invalid": 6,
+              "polar_boundary_invalid": 4,
+              "length_exhausted": 7,
+              "invalid_valence": 11,
+              "sanitize_failed": 17,
+              "correct_structure": 3
+            },
+            "decode_seconds": 19.848937802000023,
+            "validation_seconds": 0.3000906239997221
+          }
+        }
+      }
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements_grammar",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "fingerprint_elements_grammar_b5_s0",
+          "host_monitor": {
+            "new_windows_gpu_dump_count": 0,
+            "precision": "fp32",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "elapsed_seconds": 91.1797482,
+            "attention_backend": "math",
+            "child_exit_code": 0,
+            "display_reset_count": 0,
+            "beam_size": 5,
+            "per_job_timeout_seconds": 1200,
+            "stop_reason": null,
+            "count": 256,
+            "start": 0,
+            "encoder": "fingerprint",
+            "mode": "elements_grammar",
+            "no_progress_timeout_seconds": 20,
+            "training_started": false
+          },
+          "inference_seconds": 83.16496658799997,
+          "peak_VRAM_allocated_bytes": 158205952,
+          "peak_RAM_kib": 2166408,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "90efc40d934d37ac513b2f90d093f5e9cf1b1037ca1f08e95982c7d7dd0f55d3",
+          "metrics_sha256": "77d200c98bacb2c77ff6a8ff19f4cefc8ba65c1fb3a1bc3b994368a97d4daf45"
+        },
+        {
+          "name": "fingerprint_elements_grammar_b5_s256",
+          "host_monitor": {
+            "count": 256,
+            "stop_reason": null,
+            "beam_size": 5,
+            "new_windows_gpu_dump_count": 0,
+            "start": 256,
+            "elapsed_seconds": 92.0514784,
+            "precision": "fp32",
+            "per_job_timeout_seconds": 1200,
+            "display_reset_count": 0,
+            "mode": "elements_grammar",
+            "training_started": false,
+            "attention_backend": "math",
+            "no_progress_timeout_seconds": 20,
+            "child_exit_code": 0,
+            "encoder": "fingerprint",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z"
+          },
+          "inference_seconds": 83.77415485299991,
+          "peak_VRAM_allocated_bytes": 158205952,
+          "peak_RAM_kib": 2140720,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "c647f7d47c23c8ccca1434ce974fe80fdcc9f500d6c39813c254b702ad5e8454",
+          "metrics_sha256": "e16612050aeadc8939572f809d9da1b1d8062de335e25f50b544ace6f48c57fe"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 1087,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.013671875,
+          "5": 0.015625,
+          "10": null
+        },
+        "raw_candidate_count": 1087,
+        "raw_chemical_valid_polar_fraction": 0.5906163753449862,
+        "returned_chemical_valid_polar_fraction": 0.5906163753449862,
+        "raw_top1_chemical_valid_polar_rate": 0.515625,
+        "strict_formula_coverage": 0.380859375,
+        "no_qualified_candidate_rate": 0.619140625,
+        "accepted_unique_candidates": 338,
+        "accepted_unique_per_target": {
+          "mean": 0.66015625,
+          "min": 0,
+          "max": 5,
+          "median": 0.0,
+          "histogram": {
+            "0": 317,
+            "1": 97,
+            "2": 63,
+            "3": 26,
+            "4": 8,
+            "5": 1
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9763313609467456,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9530201342281879,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.27734375,
+        "accepted_novel_to_train_candidates": 284,
+        "raw_failure_categories": {
+          "formula_matches_wrong_structure": 387,
+          "polar_or_builder_chemistry": 375,
+          "formula_mismatch": 247,
+          "no_eos": 70,
+          "correct_structure": 8
+        },
+        "raw_failure_reasons": {
+          "formula_matches_wrong_structure": 387,
+          "invalid_valence": 148,
+          "sanitize_failed": 215,
+          "formula_mismatch": 247,
+          "length_exhausted": 70,
+          "nonneutral_structure": 10,
+          "unsupported_radical": 2,
+          "correct_structure": 8
+        },
+        "decode_seconds": 163.5499728849992,
+        "validation_seconds": 2.47224523199975
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 338,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.013671875,
+          "5": 0.015625,
+          "10": null
+        },
+        "raw_candidate_count": 1087,
+        "raw_chemical_valid_polar_fraction": 0.5906163753449862,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.515625,
+        "strict_formula_coverage": 0.380859375,
+        "no_qualified_candidate_rate": 0.619140625,
+        "accepted_unique_candidates": 338,
+        "accepted_unique_per_target": {
+          "mean": 0.66015625,
+          "min": 0,
+          "max": 5,
+          "median": 0.0,
+          "histogram": {
+            "0": 317,
+            "1": 97,
+            "2": 63,
+            "3": 26,
+            "4": 8,
+            "5": 1
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9763313609467456,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9641025641025641,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.3671875,
+        "accepted_novel_to_train_candidates": 284,
+        "raw_failure_categories": {
+          "formula_matches_wrong_structure": 387,
+          "polar_or_builder_chemistry": 375,
+          "formula_mismatch": 247,
+          "no_eos": 70,
+          "correct_structure": 8
+        },
+        "raw_failure_reasons": {
+          "formula_matches_wrong_structure": 387,
+          "invalid_valence": 148,
+          "sanitize_failed": 215,
+          "formula_mismatch": 247,
+          "length_exhausted": 70,
+          "nonneutral_structure": 10,
+          "unsupported_radical": 2,
+          "correct_structure": 8
+        },
+        "decode_seconds": 163.5499728849992,
+        "validation_seconds": 2.47224523199975
+      },
+      "target_failure_stages": {
+        "no_chemically_valid_Polar": 105,
+        "no_exact_Polar_formula_including_H": 104,
+        "search_has_no_surviving_beam": 99,
+        "no_EOS": 9
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 642,
+        "heavy_formula_exact": 642,
+        "H_only_mismatch": 247,
+        "all_elements_exact_including_H": 395,
+        "element_mismatch_counts": {
+          "H": 247
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 183.2312266,
+        "inference_seconds": 166.93912144099988,
+        "peak_VRAM_allocated_bytes": 158205952,
+        "peak_RAM_kib": 2166408
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 892,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011682242990654205,
+              "5": 0.011682242990654205,
+              "10": null
+            },
+            "raw_candidate_count": 892,
+            "raw_chemical_valid_polar_fraction": 0.594170403587444,
+            "returned_chemical_valid_polar_fraction": 0.594170403587444,
+            "raw_top1_chemical_valid_polar_rate": 0.5186915887850467,
+            "strict_formula_coverage": 0.37149532710280375,
+            "no_qualified_candidate_rate": 0.6285046728971962,
+            "accepted_unique_candidates": 277,
+            "accepted_unique_per_target": {
+              "mean": 0.647196261682243,
+              "min": 0,
+              "max": 5,
+              "median": 0.0,
+              "histogram": {
+                "0": 269,
+                "1": 80,
+                "2": 50,
+                "3": 20,
+                "4": 8,
+                "5": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9819494584837545,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9606299212598425,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.2850467289719626,
+            "accepted_novel_to_train_candidates": 228,
+            "raw_failure_categories": {
+              "formula_matches_wrong_structure": 319,
+              "polar_or_builder_chemistry": 301,
+              "formula_mismatch": 206,
+              "no_eos": 61,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "formula_matches_wrong_structure": 319,
+              "invalid_valence": 117,
+              "sanitize_failed": 174,
+              "formula_mismatch": 206,
+              "length_exhausted": 61,
+              "nonneutral_structure": 8,
+              "unsupported_radical": 2,
+              "correct_structure": 5
+            },
+            "decode_seconds": 136.9706345959994,
+            "validation_seconds": 2.0203979210001535
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 277,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011682242990654205,
+              "5": 0.011682242990654205,
+              "10": null
+            },
+            "raw_candidate_count": 892,
+            "raw_chemical_valid_polar_fraction": 0.594170403587444,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.5186915887850467,
+            "strict_formula_coverage": 0.37149532710280375,
+            "no_qualified_candidate_rate": 0.6285046728971962,
+            "accepted_unique_candidates": 277,
+            "accepted_unique_per_target": {
+              "mean": 0.647196261682243,
+              "min": 0,
+              "max": 5,
+              "median": 0.0,
+              "histogram": {
+                "0": 269,
+                "1": 80,
+                "2": 50,
+                "3": 20,
+                "4": 8,
+                "5": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9819494584837545,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9685534591194969,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.3598130841121495,
+            "accepted_novel_to_train_candidates": 228,
+            "raw_failure_categories": {
+              "formula_matches_wrong_structure": 319,
+              "polar_or_builder_chemistry": 301,
+              "formula_mismatch": 206,
+              "no_eos": 61,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "formula_matches_wrong_structure": 319,
+              "invalid_valence": 117,
+              "sanitize_failed": 174,
+              "formula_mismatch": 206,
+              "length_exhausted": 61,
+              "nonneutral_structure": 8,
+              "unsupported_radical": 2,
+              "correct_structure": 5
+            },
+            "decode_seconds": 136.9706345959994,
+            "validation_seconds": 2.0203979210001535
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 195,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.03571428571428571,
+              "10": null
+            },
+            "raw_candidate_count": 195,
+            "raw_chemical_valid_polar_fraction": 0.5743589743589743,
+            "returned_chemical_valid_polar_fraction": 0.5743589743589743,
+            "raw_top1_chemical_valid_polar_rate": 0.5,
+            "strict_formula_coverage": 0.42857142857142855,
+            "no_qualified_candidate_rate": 0.5714285714285714,
+            "accepted_unique_candidates": 61,
+            "accepted_unique_per_target": {
+              "mean": 0.7261904761904762,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 48,
+                "1": 17,
+                "2": 13,
+                "3": 6
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9508196721311475,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9090909090909091,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.23809523809523808,
+            "accepted_novel_to_train_candidates": 56,
+            "raw_failure_categories": {
+              "formula_mismatch": 41,
+              "formula_matches_wrong_structure": 68,
+              "polar_or_builder_chemistry": 74,
+              "no_eos": 9,
+              "correct_structure": 3
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 41,
+              "formula_matches_wrong_structure": 68,
+              "invalid_valence": 31,
+              "sanitize_failed": 41,
+              "length_exhausted": 9,
+              "nonneutral_structure": 2,
+              "correct_structure": 3
+            },
+            "decode_seconds": 26.579338288999793,
+            "validation_seconds": 0.45184731099959663
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 61,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.03571428571428571,
+              "10": null
+            },
+            "raw_candidate_count": 195,
+            "raw_chemical_valid_polar_fraction": 0.5743589743589743,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.5,
+            "strict_formula_coverage": 0.42857142857142855,
+            "no_qualified_candidate_rate": 0.5714285714285714,
+            "accepted_unique_candidates": 61,
+            "accepted_unique_per_target": {
+              "mean": 0.7261904761904762,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 48,
+                "1": 17,
+                "2": 13,
+                "3": 6
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9508196721311475,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9444444444444444,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.40476190476190477,
+            "accepted_novel_to_train_candidates": 56,
+            "raw_failure_categories": {
+              "formula_mismatch": 41,
+              "formula_matches_wrong_structure": 68,
+              "polar_or_builder_chemistry": 74,
+              "no_eos": 9,
+              "correct_structure": 3
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 41,
+              "formula_matches_wrong_structure": 68,
+              "invalid_valence": 31,
+              "sanitize_failed": 41,
+              "length_exhausted": 9,
+              "nonneutral_structure": 2,
+              "correct_structure": 3
+            },
+            "decode_seconds": 26.579338288999793,
+            "validation_seconds": 0.45184731099959663
+          }
+        }
+      }
+    },
+    {
+      "encoder": "graph",
+      "mode": "raw",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "graph_raw_b5_s0",
+          "host_monitor": {
+            "attention_backend": "math",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "mode": "raw",
+            "count": 256,
+            "per_job_timeout_seconds": 1200,
+            "precision": "fp32",
+            "beam_size": 5,
+            "start": 0,
+            "encoder": "graph",
+            "display_reset_count": 0,
+            "no_progress_timeout_seconds": 20,
+            "child_exit_code": 0,
+            "training_started": false,
+            "new_windows_gpu_dump_count": 0,
+            "stop_reason": null,
+            "elapsed_seconds": 61.972578
+          },
+          "inference_seconds": 54.62484671499999,
+          "peak_VRAM_allocated_bytes": 150724608,
+          "peak_RAM_kib": 2070424,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "9ed9676fbd1d40a3a129a3fbb4c780bd3145e730d1149805cbfefb3d17cbb84a",
+          "metrics_sha256": "edd77e66b812361571b41686c80a3fb7057ce55215f79f68d29bc7743b778f23"
+        },
+        {
+          "name": "graph_raw_b5_s256",
+          "host_monitor": {
+            "stop_reason": null,
+            "start": 256,
+            "per_job_timeout_seconds": 1200,
+            "training_started": false,
+            "new_windows_gpu_dump_count": 0,
+            "child_exit_code": 0,
+            "encoder": "graph",
+            "precision": "fp32",
+            "elapsed_seconds": 60.4223509,
+            "display_reset_count": 0,
+            "no_progress_timeout_seconds": 20,
+            "count": 256,
+            "attention_backend": "math",
+            "beam_size": 5,
+            "mode": "raw",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z"
+          },
+          "inference_seconds": 52.778051729000026,
+          "peak_VRAM_allocated_bytes": 150642688,
+          "peak_RAM_kib": 2056712,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "890dbdf9239c3fdbb94aaa942a12f92424908e26635a5f9ac9ca5c77ec80e65b",
+          "metrics_sha256": "48f4a47225e19c8f13eb478ee1f7ba0ee9bc4463b7bdf10364a16d32f9f697af"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 2560,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.0,
+          "5": 0.001953125,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.41015625,
+        "returned_chemical_valid_polar_fraction": 0.41015625,
+        "raw_top1_chemical_valid_polar_rate": 0.466796875,
+        "strict_formula_coverage": 0.09375,
+        "no_qualified_candidate_rate": 0.90625,
+        "accepted_unique_candidates": 65,
+        "accepted_unique_per_target": {
+          "mean": 0.126953125,
+          "min": 0,
+          "max": 3,
+          "median": 0.0,
+          "histogram": {
+            "0": 464,
+            "1": 33,
+            "2": 13,
+            "3": 2
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9846153846153847,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.029296875,
+        "accepted_novel_to_train_candidates": 43,
+        "raw_failure_categories": {
+          "smiles_syntax": 1241,
+          "formula_mismatch": 985,
+          "polar_or_builder_chemistry": 221,
+          "attachment": 41,
+          "formula_matches_wrong_structure": 64,
+          "no_eos": 7,
+          "correct_structure": 1
+        },
+        "raw_failure_reasons": {
+          "invalid_smiles": 1241,
+          "formula_mismatch": 985,
+          "nonneutral_structure": 5,
+          "polar_boundary_invalid": 33,
+          "formula_matches_wrong_structure": 64,
+          "sanitize_failed": 206,
+          "invalid_valence": 10,
+          "length_exhausted": 7,
+          "attachment_invalid": 8,
+          "correct_structure": 1
+        },
+        "decode_seconds": 100.73852863600098,
+        "validation_seconds": 3.6980011660014043
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 65,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.001953125,
+          "5": 0.001953125,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.41015625,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.466796875,
+        "strict_formula_coverage": 0.09375,
+        "no_qualified_candidate_rate": 0.90625,
+        "accepted_unique_candidates": 65,
+        "accepted_unique_per_target": {
+          "mean": 0.126953125,
+          "min": 0,
+          "max": 3,
+          "median": 0.0,
+          "histogram": {
+            "0": 464,
+            "1": 33,
+            "2": 13,
+            "3": 2
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9846153846153847,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9791666666666666,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.091796875,
+        "accepted_novel_to_train_candidates": 43,
+        "raw_failure_categories": {
+          "smiles_syntax": 1241,
+          "formula_mismatch": 985,
+          "polar_or_builder_chemistry": 221,
+          "attachment": 41,
+          "formula_matches_wrong_structure": 64,
+          "no_eos": 7,
+          "correct_structure": 1
+        },
+        "raw_failure_reasons": {
+          "invalid_smiles": 1241,
+          "formula_mismatch": 985,
+          "nonneutral_structure": 5,
+          "polar_boundary_invalid": 33,
+          "formula_matches_wrong_structure": 64,
+          "sanitize_failed": 206,
+          "invalid_valence": 10,
+          "length_exhausted": 7,
+          "attachment_invalid": 8,
+          "correct_structure": 1
+        },
+        "decode_seconds": 100.73852863600098,
+        "validation_seconds": 3.6980011660014043
+      },
+      "target_failure_stages": {
+        "no_exact_Polar_formula_including_H": 305,
+        "no_chemically_valid_Polar": 159
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 1050,
+        "heavy_formula_exact": 93,
+        "H_only_mismatch": 28,
+        "all_elements_exact_including_H": 65,
+        "element_mismatch_counts": {
+          "C": 809,
+          "H": 864,
+          "N": 315,
+          "O": 546,
+          "S": 55,
+          "F": 79,
+          "P": 37,
+          "Br": 13,
+          "Cl": 57
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 122.3949289,
+        "inference_seconds": 107.40289844400002,
+        "peak_VRAM_allocated_bytes": 150724608,
+        "peak_RAM_kib": 2070424
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 2140,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.41495327102803736,
+            "returned_chemical_valid_polar_fraction": 0.41495327102803736,
+            "raw_top1_chemical_valid_polar_rate": 0.4696261682242991,
+            "strict_formula_coverage": 0.09579439252336448,
+            "no_qualified_candidate_rate": 0.9042056074766355,
+            "accepted_unique_candidates": 57,
+            "accepted_unique_per_target": {
+              "mean": 0.13317757009345793,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 387,
+                "1": 27,
+                "2": 12,
+                "3": 2
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.03271028037383177,
+            "accepted_novel_to_train_candidates": 36,
+            "raw_failure_categories": {
+              "smiles_syntax": 1032,
+              "formula_mismatch": 831,
+              "polar_or_builder_chemistry": 178,
+              "attachment": 37,
+              "formula_matches_wrong_structure": 57,
+              "no_eos": 5
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 1032,
+              "formula_mismatch": 831,
+              "nonneutral_structure": 4,
+              "polar_boundary_invalid": 30,
+              "formula_matches_wrong_structure": 57,
+              "sanitize_failed": 170,
+              "invalid_valence": 4,
+              "length_exhausted": 5,
+              "attachment_invalid": 7
+            },
+            "decode_seconds": 84.05899413500083,
+            "validation_seconds": 3.1237057680009457
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 57,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.0,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.41495327102803736,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.4696261682242991,
+            "strict_formula_coverage": 0.09579439252336448,
+            "no_qualified_candidate_rate": 0.9042056074766355,
+            "accepted_unique_candidates": 57,
+            "accepted_unique_per_target": {
+              "mean": 0.13317757009345793,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 387,
+                "1": 27,
+                "2": 12,
+                "3": 2
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 1.0,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.09579439252336448,
+            "accepted_novel_to_train_candidates": 36,
+            "raw_failure_categories": {
+              "smiles_syntax": 1032,
+              "formula_mismatch": 831,
+              "polar_or_builder_chemistry": 178,
+              "attachment": 37,
+              "formula_matches_wrong_structure": 57,
+              "no_eos": 5
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 1032,
+              "formula_mismatch": 831,
+              "nonneutral_structure": 4,
+              "polar_boundary_invalid": 30,
+              "formula_matches_wrong_structure": 57,
+              "sanitize_failed": 170,
+              "invalid_valence": 4,
+              "length_exhausted": 5,
+              "attachment_invalid": 7
+            },
+            "decode_seconds": 84.05899413500083,
+            "validation_seconds": 3.1237057680009457
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 420,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.011904761904761904,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.38571428571428573,
+            "returned_chemical_valid_polar_fraction": 0.38571428571428573,
+            "raw_top1_chemical_valid_polar_rate": 0.4523809523809524,
+            "strict_formula_coverage": 0.08333333333333333,
+            "no_qualified_candidate_rate": 0.9166666666666666,
+            "accepted_unique_candidates": 8,
+            "accepted_unique_per_target": {
+              "mean": 0.09523809523809523,
+              "min": 0,
+              "max": 2,
+              "median": 0.0,
+              "histogram": {
+                "0": 77,
+                "1": 6,
+                "2": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.875,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.011904761904761904,
+            "accepted_novel_to_train_candidates": 7,
+            "raw_failure_categories": {
+              "smiles_syntax": 209,
+              "polar_or_builder_chemistry": 43,
+              "formula_mismatch": 154,
+              "no_eos": 2,
+              "formula_matches_wrong_structure": 7,
+              "attachment": 4,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 209,
+              "sanitize_failed": 36,
+              "formula_mismatch": 154,
+              "length_exhausted": 2,
+              "invalid_valence": 6,
+              "nonneutral_structure": 1,
+              "formula_matches_wrong_structure": 7,
+              "attachment_invalid": 1,
+              "polar_boundary_invalid": 3,
+              "correct_structure": 1
+            },
+            "decode_seconds": 16.67953450100015,
+            "validation_seconds": 0.5742953980004586
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 8,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011904761904761904,
+              "5": 0.011904761904761904,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.38571428571428573,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.4523809523809524,
+            "strict_formula_coverage": 0.08333333333333333,
+            "no_qualified_candidate_rate": 0.9166666666666666,
+            "accepted_unique_candidates": 8,
+            "accepted_unique_per_target": {
+              "mean": 0.09523809523809523,
+              "min": 0,
+              "max": 2,
+              "median": 0.0,
+              "histogram": {
+                "0": 77,
+                "1": 6,
+                "2": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.875,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.8571428571428571,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.07142857142857142,
+            "accepted_novel_to_train_candidates": 7,
+            "raw_failure_categories": {
+              "smiles_syntax": 209,
+              "polar_or_builder_chemistry": 43,
+              "formula_mismatch": 154,
+              "no_eos": 2,
+              "formula_matches_wrong_structure": 7,
+              "attachment": 4,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 209,
+              "sanitize_failed": 36,
+              "formula_mismatch": 154,
+              "length_exhausted": 2,
+              "invalid_valence": 6,
+              "nonneutral_structure": 1,
+              "formula_matches_wrong_structure": 7,
+              "attachment_invalid": 1,
+              "polar_boundary_invalid": 3,
+              "correct_structure": 1
+            },
+            "decode_seconds": 16.67953450100015,
+            "validation_seconds": 0.5742953980004586
+          }
+        }
+      }
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "graph_elements_b5_s0",
+          "host_monitor": {
+            "start": 0,
+            "attention_backend": "math",
+            "child_exit_code": 0,
+            "training_started": false,
+            "per_job_timeout_seconds": 1200,
+            "no_progress_timeout_seconds": 20,
+            "new_windows_gpu_dump_count": 0,
+            "precision": "fp32",
+            "stop_reason": null,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "count": 256,
+            "mode": "elements",
+            "elapsed_seconds": 70.8496033,
+            "display_reset_count": 0,
+            "beam_size": 5,
+            "encoder": "graph"
+          },
+          "inference_seconds": 63.22049526500007,
+          "peak_VRAM_allocated_bytes": 153191424,
+          "peak_RAM_kib": 2060696,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "7ac974d557b9b7ece584b639d05c434e8ebcde371fe57a88f73a3755fc42c4f8",
+          "metrics_sha256": "737f15efb29eb438d6907ac2c950d0ebb3f6e6bf899361761588fd6b1f3e3307"
+        },
+        {
+          "name": "graph_elements_b5_s256",
+          "host_monitor": {
+            "mode": "elements",
+            "stop_reason": null,
+            "display_reset_count": 0,
+            "training_started": false,
+            "new_windows_gpu_dump_count": 0,
+            "precision": "fp32",
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "no_progress_timeout_seconds": 20,
+            "attention_backend": "math",
+            "child_exit_code": 0,
+            "elapsed_seconds": 73.2068917,
+            "beam_size": 5,
+            "per_job_timeout_seconds": 1200,
+            "encoder": "graph",
+            "start": 256,
+            "count": 256
+          },
+          "inference_seconds": 65.4182740519999,
+          "peak_VRAM_allocated_bytes": 153188352,
+          "peak_RAM_kib": 2079804,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "e37e2199ba50f520f65580733a67e9ea092bfcbac531a123725071ef8fd738ae",
+          "metrics_sha256": "b7b6f5c85433473c8bf0b089e7e08054500656cf4288683f848598fe5123be7f"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 2560,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.00390625,
+          "5": 0.0078125,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.13125,
+        "returned_chemical_valid_polar_fraction": 0.13125,
+        "raw_top1_chemical_valid_polar_rate": 0.2578125,
+        "strict_formula_coverage": 0.232421875,
+        "no_qualified_candidate_rate": 0.767578125,
+        "accepted_unique_candidates": 191,
+        "accepted_unique_per_target": {
+          "mean": 0.373046875,
+          "min": 0,
+          "max": 4,
+          "median": 0.0,
+          "histogram": {
+            "0": 393,
+            "1": 71,
+            "2": 28,
+            "3": 16,
+            "4": 4
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9790575916230366,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9736842105263158,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.14453125,
+        "accepted_novel_to_train_candidates": 153,
+        "raw_failure_categories": {
+          "smiles_syntax": 1988,
+          "formula_mismatch": 134,
+          "polar_or_builder_chemistry": 122,
+          "formula_matches_wrong_structure": 198,
+          "attachment": 66,
+          "no_eos": 48,
+          "correct_structure": 4
+        },
+        "raw_failure_reasons": {
+          "invalid_smiles": 1988,
+          "formula_mismatch": 134,
+          "nonneutral_structure": 9,
+          "formula_matches_wrong_structure": 198,
+          "polar_boundary_invalid": 36,
+          "sanitize_failed": 97,
+          "invalid_valence": 16,
+          "attachment_invalid": 30,
+          "length_exhausted": 48,
+          "correct_structure": 4
+        },
+        "decode_seconds": 124.58001593899894,
+        "validation_seconds": 1.7161431809996657
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 191,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.005859375,
+          "5": 0.0078125,
+          "10": null
+        },
+        "raw_candidate_count": 2560,
+        "raw_chemical_valid_polar_fraction": 0.13125,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.2578125,
+        "strict_formula_coverage": 0.232421875,
+        "no_qualified_candidate_rate": 0.767578125,
+        "accepted_unique_candidates": 191,
+        "accepted_unique_per_target": {
+          "mean": 0.373046875,
+          "min": 0,
+          "max": 4,
+          "median": 0.0,
+          "histogram": {
+            "0": 393,
+            "1": 71,
+            "2": 28,
+            "3": 16,
+            "4": 4
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9790575916230366,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9747899159663865,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.2265625,
+        "accepted_novel_to_train_candidates": 153,
+        "raw_failure_categories": {
+          "smiles_syntax": 1988,
+          "formula_mismatch": 134,
+          "polar_or_builder_chemistry": 122,
+          "formula_matches_wrong_structure": 198,
+          "attachment": 66,
+          "no_eos": 48,
+          "correct_structure": 4
+        },
+        "raw_failure_reasons": {
+          "invalid_smiles": 1988,
+          "formula_mismatch": 134,
+          "nonneutral_structure": 9,
+          "formula_matches_wrong_structure": 198,
+          "polar_boundary_invalid": 36,
+          "sanitize_failed": 97,
+          "invalid_valence": 16,
+          "attachment_invalid": 30,
+          "length_exhausted": 48,
+          "correct_structure": 4
+        },
+        "decode_seconds": 124.58001593899894,
+        "validation_seconds": 1.7161431809996657
+      },
+      "target_failure_stages": {
+        "no_chemically_valid_Polar": 314,
+        "no_exact_Polar_formula_including_H": 75,
+        "no_EOS": 4
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 336,
+        "heavy_formula_exact": 336,
+        "H_only_mismatch": 134,
+        "all_elements_exact_including_H": 202,
+        "element_mismatch_counts": {
+          "H": 134
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 144.05649499999998,
+        "inference_seconds": 128.63876931699997,
+        "peak_VRAM_allocated_bytes": 153191424,
+        "peak_RAM_kib": 2079804
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 2140,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.004672897196261682,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.13037383177570094,
+            "returned_chemical_valid_polar_fraction": 0.13037383177570094,
+            "raw_top1_chemical_valid_polar_rate": 0.2546728971962617,
+            "strict_formula_coverage": 0.21728971962616822,
+            "no_qualified_candidate_rate": 0.7827102803738317,
+            "accepted_unique_candidates": 158,
+            "accepted_unique_per_target": {
+              "mean": 0.3691588785046729,
+              "min": 0,
+              "max": 4,
+              "median": 0.0,
+              "histogram": {
+                "0": 335,
+                "1": 51,
+                "2": 23,
+                "3": 15,
+                "4": 4
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9873417721518988,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.15186915887850466,
+            "accepted_novel_to_train_candidates": 123,
+            "raw_failure_categories": {
+              "smiles_syntax": 1664,
+              "formula_mismatch": 111,
+              "polar_or_builder_chemistry": 104,
+              "formula_matches_wrong_structure": 166,
+              "attachment": 62,
+              "no_eos": 31,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 1664,
+              "formula_mismatch": 111,
+              "nonneutral_structure": 8,
+              "formula_matches_wrong_structure": 166,
+              "polar_boundary_invalid": 34,
+              "sanitize_failed": 84,
+              "invalid_valence": 12,
+              "attachment_invalid": 28,
+              "length_exhausted": 31,
+              "correct_structure": 2
+            },
+            "decode_seconds": 104.45142217399939,
+            "validation_seconds": 1.424687498000253
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 158,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.002336448598130841,
+              "5": 0.004672897196261682,
+              "10": null
+            },
+            "raw_candidate_count": 2140,
+            "raw_chemical_valid_polar_fraction": 0.13037383177570094,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.2546728971962617,
+            "strict_formula_coverage": 0.21728971962616822,
+            "no_qualified_candidate_rate": 0.7827102803738317,
+            "accepted_unique_candidates": 158,
+            "accepted_unique_per_target": {
+              "mean": 0.3691588785046729,
+              "min": 0,
+              "max": 4,
+              "median": 0.0,
+              "histogram": {
+                "0": 335,
+                "1": 51,
+                "2": 23,
+                "3": 15,
+                "4": 4
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9873417721518988,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.989247311827957,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.21495327102803738,
+            "accepted_novel_to_train_candidates": 123,
+            "raw_failure_categories": {
+              "smiles_syntax": 1664,
+              "formula_mismatch": 111,
+              "polar_or_builder_chemistry": 104,
+              "formula_matches_wrong_structure": 166,
+              "attachment": 62,
+              "no_eos": 31,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 1664,
+              "formula_mismatch": 111,
+              "nonneutral_structure": 8,
+              "formula_matches_wrong_structure": 166,
+              "polar_boundary_invalid": 34,
+              "sanitize_failed": 84,
+              "invalid_valence": 12,
+              "attachment_invalid": 28,
+              "length_exhausted": 31,
+              "correct_structure": 2
+            },
+            "decode_seconds": 104.45142217399939,
+            "validation_seconds": 1.424687498000253
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 420,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.023809523809523808,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.1357142857142857,
+            "returned_chemical_valid_polar_fraction": 0.1357142857142857,
+            "raw_top1_chemical_valid_polar_rate": 0.27380952380952384,
+            "strict_formula_coverage": 0.30952380952380953,
+            "no_qualified_candidate_rate": 0.6904761904761905,
+            "accepted_unique_candidates": 33,
+            "accepted_unique_per_target": {
+              "mean": 0.39285714285714285,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 58,
+                "1": 20,
+                "2": 5,
+                "3": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9393939393939394,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.8181818181818182,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.10714285714285714,
+            "accepted_novel_to_train_candidates": 30,
+            "raw_failure_categories": {
+              "smiles_syntax": 324,
+              "polar_or_builder_chemistry": 18,
+              "formula_mismatch": 23,
+              "no_eos": 17,
+              "formula_matches_wrong_structure": 32,
+              "correct_structure": 2,
+              "attachment": 4
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 324,
+              "sanitize_failed": 13,
+              "formula_mismatch": 23,
+              "length_exhausted": 17,
+              "formula_matches_wrong_structure": 32,
+              "invalid_valence": 4,
+              "correct_structure": 2,
+              "attachment_invalid": 2,
+              "polar_boundary_invalid": 2,
+              "nonneutral_structure": 1
+            },
+            "decode_seconds": 20.12859376499955,
+            "validation_seconds": 0.2914556829994126
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 33,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.023809523809523808,
+              "10": null
+            },
+            "raw_candidate_count": 420,
+            "raw_chemical_valid_polar_fraction": 0.1357142857142857,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.27380952380952384,
+            "strict_formula_coverage": 0.30952380952380953,
+            "no_qualified_candidate_rate": 0.6904761904761905,
+            "accepted_unique_candidates": 33,
+            "accepted_unique_per_target": {
+              "mean": 0.39285714285714285,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 58,
+                "1": 20,
+                "2": 5,
+                "3": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9393939393939394,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9230769230769231,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.2857142857142857,
+            "accepted_novel_to_train_candidates": 30,
+            "raw_failure_categories": {
+              "smiles_syntax": 324,
+              "polar_or_builder_chemistry": 18,
+              "formula_mismatch": 23,
+              "no_eos": 17,
+              "formula_matches_wrong_structure": 32,
+              "correct_structure": 2,
+              "attachment": 4
+            },
+            "raw_failure_reasons": {
+              "invalid_smiles": 324,
+              "sanitize_failed": 13,
+              "formula_mismatch": 23,
+              "length_exhausted": 17,
+              "formula_matches_wrong_structure": 32,
+              "invalid_valence": 4,
+              "correct_structure": 2,
+              "attachment_invalid": 2,
+              "polar_boundary_invalid": 2,
+              "nonneutral_structure": 1
+            },
+            "decode_seconds": 20.12859376499955,
+            "validation_seconds": 0.2914556829994126
+          }
+        }
+      }
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements_grammar",
+      "beam_size": 5,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "graph_elements_grammar_b5_s0",
+          "host_monitor": {
+            "child_exit_code": 0,
+            "no_progress_timeout_seconds": 20,
+            "training_started": false,
+            "encoder": "graph",
+            "count": 256,
+            "new_windows_gpu_dump_count": 0,
+            "attention_backend": "math",
+            "mode": "elements_grammar",
+            "beam_size": 5,
+            "stop_reason": null,
+            "elapsed_seconds": 100.434062,
+            "start": 0,
+            "precision": "fp32",
+            "display_reset_count": 0,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "per_job_timeout_seconds": 1200
+          },
+          "inference_seconds": 89.73372845499989,
+          "peak_VRAM_allocated_bytes": 153195008,
+          "peak_RAM_kib": 2140524,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "2fa2cb3463d71e562d1d5c8b59049f93db01c3977d29d423d3b8b96b45befe06",
+          "metrics_sha256": "b36a59c9384f04b3eb5bedfa7d3d7f59498c040d7f35220c0429df493e7fe9c1"
+        },
+        {
+          "name": "graph_elements_grammar_b5_s256",
+          "host_monitor": {
+            "stop_reason": null,
+            "mode": "elements_grammar",
+            "no_progress_timeout_seconds": 20,
+            "child_exit_code": 0,
+            "precision": "fp32",
+            "per_job_timeout_seconds": 1200,
+            "new_windows_gpu_dump_count": 0,
+            "attention_backend": "math",
+            "encoder": "graph",
+            "count": 256,
+            "training_started": false,
+            "display_reset_count": 0,
+            "start": 256,
+            "beam_size": 5,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "elapsed_seconds": 95.1374015
+          },
+          "inference_seconds": 87.21891085599987,
+          "peak_VRAM_allocated_bytes": 153195008,
+          "peak_RAM_kib": 2135240,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "9a4384b39b266b6f726b13b5fa2ab677ab2abe8665e0c18e96d8eaca3055f892",
+          "metrics_sha256": "5972a085dea50a97fe787f714ee0dfbca7f5f2372615e67935bc1d958623242d"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 980,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.00390625,
+          "5": 0.009765625,
+          "10": null
+        },
+        "raw_candidate_count": 980,
+        "raw_chemical_valid_polar_fraction": 0.5316326530612245,
+        "returned_chemical_valid_polar_fraction": 0.5316326530612245,
+        "raw_top1_chemical_valid_polar_rate": 0.453125,
+        "strict_formula_coverage": 0.302734375,
+        "no_qualified_candidate_rate": 0.697265625,
+        "accepted_unique_candidates": 257,
+        "accepted_unique_per_target": {
+          "mean": 0.501953125,
+          "min": 0,
+          "max": 4,
+          "median": 0.0,
+          "histogram": {
+            "0": 357,
+            "1": 87,
+            "2": 38,
+            "3": 26,
+            "4": 4
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.980544747081712,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9831932773109243,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.228515625,
+        "accepted_novel_to_train_candidates": 214,
+        "raw_failure_categories": {
+          "polar_or_builder_chemistry": 311,
+          "formula_mismatch": 232,
+          "formula_matches_wrong_structure": 282,
+          "no_eos": 148,
+          "correct_structure": 7
+        },
+        "raw_failure_reasons": {
+          "sanitize_failed": 189,
+          "invalid_valence": 104,
+          "formula_mismatch": 232,
+          "nonneutral_structure": 18,
+          "formula_matches_wrong_structure": 282,
+          "length_exhausted": 148,
+          "correct_structure": 7
+        },
+        "decode_seconds": 172.54881335900086,
+        "validation_seconds": 2.105191011999409
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 257,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.005859375,
+          "5": 0.009765625,
+          "10": null
+        },
+        "raw_candidate_count": 980,
+        "raw_chemical_valid_polar_fraction": 0.5316326530612245,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.453125,
+        "strict_formula_coverage": 0.302734375,
+        "no_qualified_candidate_rate": 0.697265625,
+        "accepted_unique_candidates": 257,
+        "accepted_unique_per_target": {
+          "mean": 0.501953125,
+          "min": 0,
+          "max": 4,
+          "median": 0.0,
+          "histogram": {
+            "0": 357,
+            "1": 87,
+            "2": 38,
+            "3": 26,
+            "4": 4
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.980544747081712,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9806451612903225,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.296875,
+        "accepted_novel_to_train_candidates": 214,
+        "raw_failure_categories": {
+          "polar_or_builder_chemistry": 311,
+          "formula_mismatch": 232,
+          "formula_matches_wrong_structure": 282,
+          "no_eos": 148,
+          "correct_structure": 7
+        },
+        "raw_failure_reasons": {
+          "sanitize_failed": 189,
+          "invalid_valence": 104,
+          "formula_mismatch": 232,
+          "nonneutral_structure": 18,
+          "formula_matches_wrong_structure": 282,
+          "length_exhausted": 148,
+          "correct_structure": 7
+        },
+        "decode_seconds": 172.54881335900086,
+        "validation_seconds": 2.105191011999409
+      },
+      "target_failure_stages": {
+        "search_has_no_surviving_beam": 120,
+        "no_chemically_valid_Polar": 109,
+        "no_exact_Polar_formula_including_H": 104,
+        "no_EOS": 24
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 521,
+        "heavy_formula_exact": 521,
+        "H_only_mismatch": 232,
+        "all_elements_exact_including_H": 289,
+        "element_mismatch_counts": {
+          "H": 232
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 195.5714635,
+        "inference_seconds": 176.95263931099976,
+        "peak_VRAM_allocated_bytes": 153195008,
+        "peak_RAM_kib": 2140524
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 811,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.007009345794392523,
+              "10": null
+            },
+            "raw_candidate_count": 811,
+            "raw_chemical_valid_polar_fraction": 0.5277435265104808,
+            "returned_chemical_valid_polar_fraction": 0.5277435265104808,
+            "raw_top1_chemical_valid_polar_rate": 0.4532710280373832,
+            "strict_formula_coverage": 0.2897196261682243,
+            "no_qualified_candidate_rate": 0.7102803738317757,
+            "accepted_unique_candidates": 212,
+            "accepted_unique_per_target": {
+              "mean": 0.4953271028037383,
+              "min": 0,
+              "max": 4,
+              "median": 0.0,
+              "histogram": {
+                "0": 304,
+                "1": 67,
+                "2": 30,
+                "3": 23,
+                "4": 4
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9858490566037735,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.2336448598130841,
+            "accepted_novel_to_train_candidates": 173,
+            "raw_failure_categories": {
+              "polar_or_builder_chemistry": 261,
+              "formula_mismatch": 189,
+              "formula_matches_wrong_structure": 234,
+              "no_eos": 122,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "sanitize_failed": 159,
+              "invalid_valence": 88,
+              "formula_mismatch": 189,
+              "nonneutral_structure": 14,
+              "formula_matches_wrong_structure": 234,
+              "length_exhausted": 122,
+              "correct_structure": 5
+            },
+            "decode_seconds": 144.69563445400115,
+            "validation_seconds": 1.731983258997957
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 212,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.002336448598130841,
+              "5": 0.007009345794392523,
+              "10": null
+            },
+            "raw_candidate_count": 811,
+            "raw_chemical_valid_polar_fraction": 0.5277435265104808,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.4532710280373832,
+            "strict_formula_coverage": 0.2897196261682243,
+            "no_qualified_candidate_rate": 0.7102803738317757,
+            "accepted_unique_candidates": 212,
+            "accepted_unique_per_target": {
+              "mean": 0.4953271028037383,
+              "min": 0,
+              "max": 4,
+              "median": 0.0,
+              "histogram": {
+                "0": 304,
+                "1": 67,
+                "2": 30,
+                "3": 23,
+                "4": 4
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9858490566037735,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9919354838709677,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.28738317757009346,
+            "accepted_novel_to_train_candidates": 173,
+            "raw_failure_categories": {
+              "polar_or_builder_chemistry": 261,
+              "formula_mismatch": 189,
+              "formula_matches_wrong_structure": 234,
+              "no_eos": 122,
+              "correct_structure": 5
+            },
+            "raw_failure_reasons": {
+              "sanitize_failed": 159,
+              "invalid_valence": 88,
+              "formula_mismatch": 189,
+              "nonneutral_structure": 14,
+              "formula_matches_wrong_structure": 234,
+              "length_exhausted": 122,
+              "correct_structure": 5
+            },
+            "decode_seconds": 144.69563445400115,
+            "validation_seconds": 1.731983258997957
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 169,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.023809523809523808,
+              "10": null
+            },
+            "raw_candidate_count": 169,
+            "raw_chemical_valid_polar_fraction": 0.5502958579881657,
+            "returned_chemical_valid_polar_fraction": 0.5502958579881657,
+            "raw_top1_chemical_valid_polar_rate": 0.4523809523809524,
+            "strict_formula_coverage": 0.36904761904761907,
+            "no_qualified_candidate_rate": 0.6309523809523809,
+            "accepted_unique_candidates": 45,
+            "accepted_unique_per_target": {
+              "mean": 0.5357142857142857,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 53,
+                "1": 20,
+                "2": 8,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9555555555555556,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.8947368421052632,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.20238095238095238,
+            "accepted_novel_to_train_candidates": 41,
+            "raw_failure_categories": {
+              "polar_or_builder_chemistry": 50,
+              "formula_mismatch": 43,
+              "no_eos": 26,
+              "formula_matches_wrong_structure": 48,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "sanitize_failed": 30,
+              "formula_mismatch": 43,
+              "invalid_valence": 16,
+              "length_exhausted": 26,
+              "formula_matches_wrong_structure": 48,
+              "nonneutral_structure": 4,
+              "correct_structure": 2
+            },
+            "decode_seconds": 27.85317890499971,
+            "validation_seconds": 0.37320775300145215
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 45,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.023809523809523808,
+              "5": 0.023809523809523808,
+              "10": null
+            },
+            "raw_candidate_count": 169,
+            "raw_chemical_valid_polar_fraction": 0.5502958579881657,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.4523809523809524,
+            "strict_formula_coverage": 0.36904761904761907,
+            "no_qualified_candidate_rate": 0.6309523809523809,
+            "accepted_unique_candidates": 45,
+            "accepted_unique_per_target": {
+              "mean": 0.5357142857142857,
+              "min": 0,
+              "max": 3,
+              "median": 0.0,
+              "histogram": {
+                "0": 53,
+                "1": 20,
+                "2": 8,
+                "3": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9555555555555556,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9354838709677419,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.34523809523809523,
+            "accepted_novel_to_train_candidates": 41,
+            "raw_failure_categories": {
+              "polar_or_builder_chemistry": 50,
+              "formula_mismatch": 43,
+              "no_eos": 26,
+              "formula_matches_wrong_structure": 48,
+              "correct_structure": 2
+            },
+            "raw_failure_reasons": {
+              "sanitize_failed": 30,
+              "formula_mismatch": 43,
+              "invalid_valence": 16,
+              "length_exhausted": 26,
+              "formula_matches_wrong_structure": 48,
+              "nonneutral_structure": 4,
+              "correct_structure": 2
+            },
+            "decode_seconds": 27.85317890499971,
+            "validation_seconds": 0.37320775300145215
+          }
+        }
+      }
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "raw",
+      "beam_size": 20,
+      "status": "complete",
+      "evaluated_targets": 512,
+      "required_targets": 512,
+      "inputs": {
+        "source_labels_sha256": "67381f34ddff5f89239e68769b0e198ddde6c3986bdbcc3efc02104d9a96eee4",
+        "tokenizer_sha256": "909fe0b9f3227b921f46192da3fc1e2bd99cac9c3fa497b09594a6655969a05f",
+        "features_sha256": "e3cca9fdb080ad04aeae996157cf68f6bd374bc84d96b1bdf5daf10a4fe0d542",
+        "retrieval_sha256": "aa4ffc425f41c1cb1ca08d0880d60abbac8454e42db5743ef40e2c8082b3a4ad",
+        "formula_stats_sha256": "3cbede41b00d1fb4d00acd20f7e48fa1e6bf29e58ce9df198f22927684f206ed",
+        "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+        "step": 3000
+      },
+      "jobs": [
+        {
+          "name": "fingerprint_raw_b20_s0",
+          "host_monitor": {
+            "per_job_timeout_seconds": 1200,
+            "elapsed_seconds": 114.9530276,
+            "no_progress_timeout_seconds": 20,
+            "child_exit_code": 0,
+            "beam_size": 20,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "stop_reason": null,
+            "attention_backend": "math",
+            "new_windows_gpu_dump_count": 0,
+            "training_started": false,
+            "encoder": "fingerprint",
+            "mode": "raw",
+            "precision": "fp32",
+            "display_reset_count": 0,
+            "count": 256,
+            "start": 0
+          },
+          "inference_seconds": 107.35485570000014,
+          "peak_VRAM_allocated_bytes": 179575296,
+          "peak_RAM_kib": 2138508,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "8eca19d802de6fcaae4e36262dfd977699947219de54e10e206a6ef8be278b6d",
+          "metrics_sha256": "bfad57303e65c7b06e87bf92c798092723d87aa9cf706bb649f6182d938dac43"
+        },
+        {
+          "name": "fingerprint_raw_b20_s256",
+          "host_monitor": {
+            "display_reset_count": 0,
+            "encoder": "fingerprint",
+            "start": 256,
+            "mode": "raw",
+            "attention_backend": "math",
+            "child_exit_code": 0,
+            "new_windows_gpu_dump_count": 0,
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "training_started": false,
+            "count": 256,
+            "no_progress_timeout_seconds": 20,
+            "beam_size": 20,
+            "stop_reason": null,
+            "per_job_timeout_seconds": 1200,
+            "precision": "fp32",
+            "elapsed_seconds": 118.0282781
+          },
+          "inference_seconds": 110.80373840399989,
+          "peak_VRAM_allocated_bytes": 178099712,
+          "peak_RAM_kib": 2132552,
+          "torch": "2.9.1+rocm7.2.1.gitff65f5bc",
+          "hip": "7.2.53211-e1a6bc5663",
+          "private_predictions_sha256": "763d879183178791983957a867fa7829ca3d5bf1b2b6b4bb4a48abcd99978df3",
+          "metrics_sha256": "2bfefd860998914953bc7e8f3bcc3fa76c7d1ac9c468e2576256665a659d2a55"
+        }
+      ],
+      "failed_jobs": [],
+      "raw": {
+        "targets": 512,
+        "returned_candidates": 10240,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.00390625,
+          "5": 0.0078125,
+          "10": 0.01171875
+        },
+        "raw_candidate_count": 10240,
+        "raw_chemical_valid_polar_fraction": 0.436328125,
+        "returned_chemical_valid_polar_fraction": 0.436328125,
+        "raw_top1_chemical_valid_polar_rate": 0.55859375,
+        "strict_formula_coverage": 0.197265625,
+        "no_qualified_candidate_rate": 0.802734375,
+        "accepted_unique_candidates": 258,
+        "accepted_unique_per_target": {
+          "mean": 0.50390625,
+          "min": 0,
+          "max": 7,
+          "median": 0.0,
+          "histogram": {
+            "0": 411,
+            "1": 33,
+            "2": 28,
+            "3": 18,
+            "4": 7,
+            "5": 6,
+            "6": 6,
+            "7": 3
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9728682170542635,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9130434782608695,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.041015625,
+        "accepted_novel_to_train_candidates": 178,
+        "raw_failure_categories": {
+          "formula_mismatch": 4199,
+          "smiles_syntax": 4219,
+          "polar_or_builder_chemistry": 1317,
+          "formula_matches_wrong_structure": 262,
+          "attachment": 208,
+          "correct_structure": 7,
+          "no_eos": 28
+        },
+        "raw_failure_reasons": {
+          "formula_mismatch": 4199,
+          "invalid_smiles": 4219,
+          "sanitize_failed": 1282,
+          "formula_matches_wrong_structure": 262,
+          "attachment_invalid": 78,
+          "polar_boundary_invalid": 130,
+          "correct_structure": 7,
+          "nonneutral_structure": 5,
+          "invalid_valence": 30,
+          "length_exhausted": 28
+        },
+        "decode_seconds": 203.0171598160009,
+        "validation_seconds": 14.10060821700199
+      },
+      "strict_post_filter": {
+        "targets": 512,
+        "returned_candidates": 258,
+        "polar_topk_exact_over_all_targets": {
+          "1": 0.009765625,
+          "5": 0.013671875,
+          "10": 0.013671875
+        },
+        "raw_candidate_count": 10240,
+        "raw_chemical_valid_polar_fraction": 0.436328125,
+        "returned_chemical_valid_polar_fraction": 1.0,
+        "raw_top1_chemical_valid_polar_rate": 0.55859375,
+        "strict_formula_coverage": 0.197265625,
+        "no_qualified_candidate_rate": 0.802734375,
+        "accepted_unique_candidates": 258,
+        "accepted_unique_per_target": {
+          "mean": 0.50390625,
+          "min": 0,
+          "max": 7,
+          "median": 0.0,
+          "histogram": {
+            "0": 411,
+            "1": 33,
+            "2": 28,
+            "3": 18,
+            "4": 7,
+            "5": 6,
+            "6": 6,
+            "7": 3
+          }
+        },
+        "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.9728682170542635,
+        "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9504950495049505,
+        "formula_correct_wrong_top1_rate_over_all_targets": 0.1875,
+        "accepted_novel_to_train_candidates": 178,
+        "raw_failure_categories": {
+          "formula_mismatch": 4199,
+          "smiles_syntax": 4219,
+          "polar_or_builder_chemistry": 1317,
+          "formula_matches_wrong_structure": 262,
+          "attachment": 208,
+          "correct_structure": 7,
+          "no_eos": 28
+        },
+        "raw_failure_reasons": {
+          "formula_mismatch": 4199,
+          "invalid_smiles": 4219,
+          "sanitize_failed": 1282,
+          "formula_matches_wrong_structure": 262,
+          "attachment_invalid": 78,
+          "polar_boundary_invalid": 130,
+          "correct_structure": 7,
+          "nonneutral_structure": 5,
+          "invalid_valence": 30,
+          "length_exhausted": 28
+        },
+        "decode_seconds": 203.0171598160009,
+        "validation_seconds": 14.10060821700199
+      },
+      "target_failure_stages": {
+        "no_exact_Polar_formula_including_H": 353,
+        "no_chemically_valid_Polar": 58
+      },
+      "raw_formula_error_profile_among_valid_Polar": {
+        "chemically_valid_Polar_candidates": 4468,
+        "heavy_formula_exact": 356,
+        "H_only_mismatch": 87,
+        "all_elements_exact_including_H": 269,
+        "element_mismatch_counts": {
+          "C": 3454,
+          "H": 3586,
+          "O": 2435,
+          "S": 373,
+          "N": 1403,
+          "P": 672,
+          "F": 276,
+          "Br": 64,
+          "Cl": 210
+        }
+      },
+      "resources": {
+        "host_wall_seconds": 232.9813057,
+        "inference_seconds": 218.15859410400003,
+        "peak_VRAM_allocated_bytes": 179575296,
+        "peak_RAM_kib": 2138508
+      },
+      "retrieval_mode_strata": {
+        "H": {
+          "raw": {
+            "targets": 428,
+            "returned_candidates": 8560,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.004672897196261682,
+              "5": 0.007009345794392523,
+              "10": 0.011682242990654205
+            },
+            "raw_candidate_count": 8560,
+            "raw_chemical_valid_polar_fraction": 0.43644859813084114,
+            "returned_chemical_valid_polar_fraction": 0.43644859813084114,
+            "raw_top1_chemical_valid_polar_rate": 0.5584112149532711,
+            "strict_formula_coverage": 0.21261682242990654,
+            "no_qualified_candidate_rate": 0.7873831775700935,
+            "accepted_unique_candidates": 227,
+            "accepted_unique_per_target": {
+              "mean": 0.530373831775701,
+              "min": 0,
+              "max": 7,
+              "median": 0.0,
+              "histogram": {
+                "0": 337,
+                "1": 33,
+                "2": 24,
+                "3": 14,
+                "4": 7,
+                "5": 5,
+                "6": 5,
+                "7": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.973568281938326,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.04205607476635514,
+            "accepted_novel_to_train_candidates": 153,
+            "raw_failure_categories": {
+              "formula_mismatch": 3500,
+              "smiles_syntax": 3486,
+              "polar_or_builder_chemistry": 1134,
+              "formula_matches_wrong_structure": 230,
+              "attachment": 177,
+              "correct_structure": 6,
+              "no_eos": 27
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 3500,
+              "invalid_smiles": 3486,
+              "sanitize_failed": 1107,
+              "formula_matches_wrong_structure": 230,
+              "attachment_invalid": 60,
+              "polar_boundary_invalid": 117,
+              "correct_structure": 6,
+              "invalid_valence": 23,
+              "length_exhausted": 27,
+              "nonneutral_structure": 4
+            },
+            "decode_seconds": 169.6141197240006,
+            "validation_seconds": 11.830401240001265
+          },
+          "strict_post_filter": {
+            "targets": 428,
+            "returned_candidates": 227,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.009345794392523364,
+              "5": 0.014018691588785047,
+              "10": 0.014018691588785047
+            },
+            "raw_candidate_count": 8560,
+            "raw_chemical_valid_polar_fraction": 0.43644859813084114,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.5584112149532711,
+            "strict_formula_coverage": 0.21261682242990654,
+            "no_qualified_candidate_rate": 0.7873831775700935,
+            "accepted_unique_candidates": 227,
+            "accepted_unique_per_target": {
+              "mean": 0.530373831775701,
+              "min": 0,
+              "max": 7,
+              "median": 0.0,
+              "histogram": {
+                "0": 337,
+                "1": 33,
+                "2": 24,
+                "3": 14,
+                "4": 7,
+                "5": 5,
+                "6": 5,
+                "7": 3
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.973568281938326,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9560439560439561,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.20327102803738317,
+            "accepted_novel_to_train_candidates": 153,
+            "raw_failure_categories": {
+              "formula_mismatch": 3500,
+              "smiles_syntax": 3486,
+              "polar_or_builder_chemistry": 1134,
+              "formula_matches_wrong_structure": 230,
+              "attachment": 177,
+              "correct_structure": 6,
+              "no_eos": 27
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 3500,
+              "invalid_smiles": 3486,
+              "sanitize_failed": 1107,
+              "formula_matches_wrong_structure": 230,
+              "attachment_invalid": 60,
+              "polar_boundary_invalid": 117,
+              "correct_structure": 6,
+              "invalid_valence": 23,
+              "length_exhausted": 27,
+              "nonneutral_structure": 4
+            },
+            "decode_seconds": 169.6141197240006,
+            "validation_seconds": 11.830401240001265
+          }
+        },
+        "HC": {
+          "raw": {
+            "targets": 84,
+            "returned_candidates": 1680,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.0,
+              "5": 0.011904761904761904,
+              "10": 0.011904761904761904
+            },
+            "raw_candidate_count": 1680,
+            "raw_chemical_valid_polar_fraction": 0.4357142857142857,
+            "returned_chemical_valid_polar_fraction": 0.4357142857142857,
+            "raw_top1_chemical_valid_polar_rate": 0.5595238095238095,
+            "strict_formula_coverage": 0.11904761904761904,
+            "no_qualified_candidate_rate": 0.8809523809523809,
+            "accepted_unique_candidates": 31,
+            "accepted_unique_per_target": {
+              "mean": 0.36904761904761907,
+              "min": 0,
+              "max": 6,
+              "median": 0.0,
+              "histogram": {
+                "0": 74,
+                "2": 4,
+                "3": 4,
+                "5": 1,
+                "6": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.967741935483871,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 1.0,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.03571428571428571,
+            "accepted_novel_to_train_candidates": 25,
+            "raw_failure_categories": {
+              "formula_mismatch": 699,
+              "smiles_syntax": 733,
+              "polar_or_builder_chemistry": 183,
+              "formula_matches_wrong_structure": 32,
+              "attachment": 31,
+              "no_eos": 1,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 699,
+              "invalid_smiles": 733,
+              "sanitize_failed": 175,
+              "formula_matches_wrong_structure": 32,
+              "nonneutral_structure": 1,
+              "attachment_invalid": 18,
+              "length_exhausted": 1,
+              "polar_boundary_invalid": 13,
+              "invalid_valence": 7,
+              "correct_structure": 1
+            },
+            "decode_seconds": 33.40304009200031,
+            "validation_seconds": 2.2702069770007256
+          },
+          "strict_post_filter": {
+            "targets": 84,
+            "returned_candidates": 31,
+            "polar_topk_exact_over_all_targets": {
+              "1": 0.011904761904761904,
+              "5": 0.011904761904761904,
+              "10": 0.011904761904761904
+            },
+            "raw_candidate_count": 1680,
+            "raw_chemical_valid_polar_fraction": 0.4357142857142857,
+            "returned_chemical_valid_polar_fraction": 1.0,
+            "raw_top1_chemical_valid_polar_rate": 0.5595238095238095,
+            "strict_formula_coverage": 0.11904761904761904,
+            "no_qualified_candidate_rate": 0.8809523809523809,
+            "accepted_unique_candidates": 31,
+            "accepted_unique_per_target": {
+              "mean": 0.36904761904761907,
+              "min": 0,
+              "max": 6,
+              "median": 0.0,
+              "histogram": {
+                "0": 74,
+                "2": 4,
+                "3": 4,
+                "5": 1,
+                "6": 1
+              }
+            },
+            "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.967741935483871,
+            "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9,
+            "formula_correct_wrong_top1_rate_over_all_targets": 0.10714285714285714,
+            "accepted_novel_to_train_candidates": 25,
+            "raw_failure_categories": {
+              "formula_mismatch": 699,
+              "smiles_syntax": 733,
+              "polar_or_builder_chemistry": 183,
+              "formula_matches_wrong_structure": 32,
+              "attachment": 31,
+              "no_eos": 1,
+              "correct_structure": 1
+            },
+            "raw_failure_reasons": {
+              "formula_mismatch": 699,
+              "invalid_smiles": 733,
+              "sanitize_failed": 175,
+              "formula_matches_wrong_structure": 32,
+              "nonneutral_structure": 1,
+              "attachment_invalid": 18,
+              "length_exhausted": 1,
+              "polar_boundary_invalid": 13,
+              "invalid_valence": 7,
+              "correct_structure": 1
+            },
+            "decode_seconds": 33.40304009200031,
+            "validation_seconds": 2.2702069770007256
+          }
+        }
+      }
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements",
+      "beam_size": 20,
+      "status": "stopped",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": [
+        {
+          "name": "fingerprint_elements_b20_s0",
+          "host_monitor": {
+            "experiment_monitor_start_utc": "2026-10-20T02:21:09.5878995Z",
+            "display_reset_count": 0,
+            "encoder": "fingerprint",
+            "count": 256,
+            "per_job_timeout_seconds": 1200,
+            "new_windows_gpu_dump_count": 1,
+            "training_started": false,
+            "mode": "elements",
+            "child_exit_code": 15,
+            "stop_reason": "new_windows_gpu_fault_dump",
+            "no_progress_timeout_seconds": 20,
+            "elapsed_seconds": 181.317122,
+            "beam_size": 20,
+            "attention_backend": "math",
+            "precision": "fp32",
+            "start": 0
+          },
+          "partial_completed_targets": 241,
+          "planned_targets": 256,
+          "included_in_main_comparison": false,
+          "private_predictions_sha256": "f2fdc95a01f9f0d4aa737bf2abbea2d9cb3aee3fa991f99b7716aee794cbf991",
+          "partial_diagnostics_not_a_512_target_result": {
+            "raw": {
+              "targets": 241,
+              "returned_candidates": 4820,
+              "polar_topk_exact_over_all_targets": {
+                "1": 0.012448132780082987,
+                "5": 0.029045643153526972,
+                "10": 0.04149377593360996
+              },
+              "raw_candidate_count": 4820,
+              "raw_chemical_valid_polar_fraction": 0.17136929460580913,
+              "returned_chemical_valid_polar_fraction": 0.17136929460580913,
+              "raw_top1_chemical_valid_polar_rate": 0.36929460580912865,
+              "strict_formula_coverage": 0.49377593360995853,
+              "no_qualified_candidate_rate": 0.5062240663900415,
+              "accepted_unique_candidates": 507,
+              "accepted_unique_per_target": {
+                "mean": 2.103734439834025,
+                "min": 0,
+                "max": 14,
+                "median": 0.0,
+                "histogram": {
+                  "0": 122,
+                  "1": 24,
+                  "2": 28,
+                  "3": 13,
+                  "4": 7,
+                  "5": 9,
+                  "6": 11,
+                  "7": 5,
+                  "8": 8,
+                  "9": 2,
+                  "10": 6,
+                  "11": 3,
+                  "12": 1,
+                  "13": 1,
+                  "14": 1
+                }
+              },
+              "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.980276134122288,
+              "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.9508196721311475,
+              "formula_correct_wrong_top1_rate_over_all_targets": 0.24066390041493776,
+              "accepted_novel_to_train_candidates": 414,
+              "raw_failure_categories": {
+                "formula_mismatch": 263,
+                "smiles_syntax": 3560,
+                "polar_or_builder_chemistry": 274,
+                "formula_matches_wrong_structure": 551,
+                "attachment": 84,
+                "correct_structure": 12,
+                "no_eos": 76
+              },
+              "raw_failure_reasons": {
+                "formula_mismatch": 263,
+                "invalid_smiles": 3560,
+                "sanitize_failed": 227,
+                "formula_matches_wrong_structure": 551,
+                "polar_boundary_invalid": 57,
+                "invalid_valence": 43,
+                "attachment_invalid": 27,
+                "correct_structure": 12,
+                "nonneutral_structure": 4,
+                "length_exhausted": 76
+              },
+              "decode_seconds": 121.01005039399956,
+              "validation_seconds": 3.1256999579998137
+            },
+            "strict_post_filter": {
+              "targets": 241,
+              "returned_candidates": 507,
+              "polar_topk_exact_over_all_targets": {
+                "1": 0.02074688796680498,
+                "5": 0.03319502074688797,
+                "10": 0.04149377593360996
+              },
+              "raw_candidate_count": 4820,
+              "raw_chemical_valid_polar_fraction": 0.17136929460580913,
+              "returned_chemical_valid_polar_fraction": 1.0,
+              "raw_top1_chemical_valid_polar_rate": 0.36929460580912865,
+              "strict_formula_coverage": 0.49377593360995853,
+              "no_qualified_candidate_rate": 0.5062240663900415,
+              "accepted_unique_candidates": 507,
+              "accepted_unique_per_target": {
+                "mean": 2.103734439834025,
+                "min": 0,
+                "max": 14,
+                "median": 0.0,
+                "histogram": {
+                  "0": 122,
+                  "1": 24,
+                  "2": 28,
+                  "3": 13,
+                  "4": 7,
+                  "5": 9,
+                  "6": 11,
+                  "7": 5,
+                  "8": 8,
+                  "9": 2,
+                  "10": 6,
+                  "11": 3,
+                  "12": 1,
+                  "13": 1,
+                  "14": 1
+                }
+              },
+              "formula_correct_wrong_polar_structure_fraction_among_accepted": 0.980276134122288,
+              "formula_correct_wrong_top1_fraction_among_formula_correct_top1": 0.957983193277311,
+              "formula_correct_wrong_top1_rate_over_all_targets": 0.4730290456431535,
+              "accepted_novel_to_train_candidates": 414,
+              "raw_failure_categories": {
+                "formula_mismatch": 263,
+                "smiles_syntax": 3560,
+                "polar_or_builder_chemistry": 274,
+                "formula_matches_wrong_structure": 551,
+                "attachment": 84,
+                "correct_structure": 12,
+                "no_eos": 76
+              },
+              "raw_failure_reasons": {
+                "formula_mismatch": 263,
+                "invalid_smiles": 3560,
+                "sanitize_failed": 227,
+                "formula_matches_wrong_structure": 551,
+                "polar_boundary_invalid": 57,
+                "invalid_valence": 43,
+                "attachment_invalid": 27,
+                "correct_structure": 12,
+                "nonneutral_structure": 4,
+                "length_exhausted": 76
+              },
+              "decode_seconds": 121.01005039399956,
+              "validation_seconds": 3.1256999579998137
+            },
+            "target_failure_stages": {
+              "no_exact_Polar_formula_including_H": 40,
+              "no_chemically_valid_Polar": 82
+            }
+          }
+        }
+      ]
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements_grammar",
+      "beam_size": 20,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "raw",
+      "beam_size": 20,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements",
+      "beam_size": 20,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements_grammar",
+      "beam_size": 20,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "raw",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "fingerprint",
+      "mode": "elements_grammar",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "raw",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    },
+    {
+      "encoder": "graph",
+      "mode": "elements_grammar",
+      "beam_size": 50,
+      "status": "not_run",
+      "evaluated_targets": 0,
+      "required_targets": 512,
+      "inputs": null,
+      "jobs": [],
+      "failed_jobs": []
+    }
+  ],
+  "preservation_audit": {
+    "status": "passed",
+    "protected_files": 1355,
+    "protected_checkpoints": 54,
+    "protected_bytes": 16817853722,
+    "missing_or_changed_files": 0,
+    "elapsed_seconds": 15.85350701099992,
+    "snapshot_sha256": "ea3538f85e8ee5c2d809697836cd314252b79fc66ec3186f94196aa4520242de",
+    "new_safety_latch_added": "outputs/pretraining_v04/GPU_STOP.json",
+    "old_file_contents_unchanged": true
+  },
+  "final_validation": {
+    "passed": true,
+    "pytest_passed": 358,
+    "ruff": "passed",
+    "PowerShell_parse": "passed",
+    "PowerShell_UTC_regression": "passed",
+    "checkpoint_precision": {
+      "fp": {
+        "step": 3000,
+        "floating_tensor_dtypes": [
+          "torch.float32"
+        ],
+        "floating_state_tensors": 93
+      },
+      "gine": {
+        "step": 3000,
+        "floating_tensor_dtypes": [
+          "torch.float32"
+        ],
+        "floating_state_tensors": 121
+      }
+    },
+    "CPU_tests_before_GPU": 353,
+    "post_stop_tests_CPU_only": true,
+    "PowerShell_event_query_regression": "passed",
+    "evidence_sha256": {
+      "all_tests_after_stop_cpu.log": "c7de2d6512819e94658a2bcb5c2986fb78d650f4c9d84e353684c4776cab7779",
+      "ruff_after_stop.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  },
+  "target_roundtrip_audit": {
+    "passed": true,
+    "device": "cpu",
+    "targets": 512,
+    "distinct_validation_Polar_groups": 512,
+    "complete_formula_and_graph_roundtrip_passed": 512,
+    "multi_P_targets": 188,
+    "mapped_P_differs_from_first_P_targets": 130,
+    "cohort_rows_sha256": "694d0d4c0c12330f4c555724c63dd8eeb026ff499f332108e6d4f6aae87c4fcd",
+    "errors": []
+  },
+  "candidate_acceptance_audit": {
+    "passed": true,
+    "complete_cases": 7,
+    "accepted_unique_instances_independently_rechecked": 1432,
+    "full_formula_including_H": true,
+    "neutral_full_graphs": true,
+    "connected_Polar_and_full_graphs": true,
+    "canonical_dedup_and_decoder_score_order": true,
+    "failed_partial_job_excluded_from_main_comparison": true
+  }
+}

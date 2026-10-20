@@ -1,5 +1,9 @@
 # Phospholipid structure pretraining
 
+**RTX 4070 接续：** 用户将使用另一台电脑的原生 Windows 与现有默认 CUDA 环境；本机停止 GPU 工作，精简迁移包仅保留 v0.4 必需数据、两份 3,000 步权重、固定样本及最新项目资料。见[迁移交接清单](docs/HANDOFF_RTX4070_WINDOWS.md)。旧测试输出与中间 checkpoints 不打包；NVIDIA 原生 Windows 入口尚待在目标机器验证。
+
+**2026-10-20 分子式约束推断：** 复用 v0.4 的 Morgan/GINE 3,000 步权重，未重新训练。358 项 CPU 测试通过；固定 512 头基的 Beam 5 四方法对照完整。元素计数＋基础语法将严格分子式覆盖率由 11.72%/9.38% 提高到 38.09%/30.27%，但 Polar Top-5 exact 仍仅 8/512、5/512。**10:44 出现新的 LiveKernelEvent 141 与用户确认的黑屏，已停止全部 GPU 作业并保留停止锁；Beam 20/50 正式比较未完成，不能宣称 Math/FP32 已解决黑屏。** 见[实验方法与复现](docs/experiments/POLAR_FORMULA_BEAM_V04.md)、[结果与故障结论](docs/results/POLAR_FORMULA_BEAM_V04_RESULTS.md)、[聚合 JSON](docs/results/POLAR_FORMULA_BEAM_V04_RESULTS.json)。旧代码、冻结数据、报告与 54 个 checkpoints 的保护哈希均通过。
+
 **最新 v0.4 Polar-only：** 独立实现已知链条件下的 Polar 生成：无链 glycerol–Polar 图、重新计算的 Morgan/GINE 特征、20D Polar 分子式条件、80% 同链异头基 H＋20% 异链异头基 HC。保留 TCLS＋全部模板 memory，不再预测链。见 [v0.4 方法与复现](docs/experiments/POLAR_ONLY_V04.md)、[实测结果与限制](docs/results/POLAR_ONLY_V04_RESULTS.md)、[聚合指标与哈希](docs/results/POLAR_ONLY_V04_RESULTS.json)，配置为 [FP](configs/polar_only_v04_fp.yaml) / [GINE](configs/polar_only_v04_gine.yaml)。下方 v0.3 记录与所有旧数据、报告和 checkpoints 保留。当前仍为离线 structure-oracle 预训练，不是 MS/MS 鉴定结果。
 
 **本机 v0.4 实测：** 311项测试、全库公式/检索审计通过；FP/GINE均通过32头基过拟合和真实checkpoint续训，分别完成20k目标池的3,000步Math/FP32训练，无新增GPU故障。最终512验证头基的greedy exact均0，beam Top5为3/512与1/512；暂缓全量预训练，未执行5,000步、50k池或MS/MS微调。v0.4使用给定链，不能与v0.3预测链的完整分子指标直接混比。

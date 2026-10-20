@@ -1,0 +1,21 @@
+{
+  "files": 774,
+  "bytes": 2709046870,
+  "checkpoints": 2,
+  "native_windows_multipart_restore_test": "passed",
+  "passed": true,
+  "both_checkpoint_512_formula_prefix_audits": "passed",
+  "real_full_CPU_inference_and_Builder": "passed",
+  "GPU_used": false,
+  "profile": "v0.4-essential-two-3000-step-checkpoints",
+  "target": "native Windows; existing default CUDA environment unchanged",
+  "data_source": "frozen library, v0.3 core labels/rows, v0.4 features and completed H/HC cache",
+  "excluded": "old training and test outputs, intermediate checkpoints, obsolete indexes/build intermediates, Git history",
+  "source_history_retained": true,
+  "all_54_original_checkpoints_retained_on_source": true,
+  "CUDA_on_target_not_yet_verified": true,
+  "checkpoint_sha256": {
+    "fingerprint": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+    "graph": "c89b44cd118b42e3ea793ff4d3f464ee7f60ae309c9f1bca3fdb4c543746f8b5"
+  }
+}
