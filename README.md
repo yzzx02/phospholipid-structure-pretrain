@@ -1,5 +1,11 @@
 # Phospholipid structure pretraining
 
+**已报道及数据库来源 Polar 参考库 v0.1：** 已收集182个不同位点化图，
+24个已核实头基文献、158个保留为数据库/规则来源未核实；63个通过现有Builder，30个存在于冻结库。
+提供名称/别名及ID双向查询、Excel同名多结构切换、来源映射和追加导入工具。
+完整结构与工作簿只留G盘；无训练或谱图生成。见[方法](docs/experiments/REPORTED_HEADGROUPS_V01.md)
+和[聚合报告](docs/results/REPORTED_HEADGROUPS_V01_SUMMARY.md)。
+
 **结构相似度与模板收益评价：** 三个FP模型、Beam20/50、固定512诊断目标已完成；未重新训练。
 50k/5,000 Beam50的Top1/5/10平均Polar Tanimoto为0.2736/0.3347/0.3499，
 最佳输入模板均值0.5470；Top10在146/512（28.52%）目标上获得正收益，但平均Delta为−0.1971。

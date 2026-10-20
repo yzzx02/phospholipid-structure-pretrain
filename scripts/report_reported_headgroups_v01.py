@@ -1,0 +1,189 @@
+"""Publish only aggregate collection results; complete structures remain private on G."""
+
+import hashlib
+import json
+from pathlib import Path
+
+ROOT = Path("outputs/reported_headgroups_v01_20261020")
+PUBLIC = Path("docs/results")
+
+
+def digest(path):
+    with path.open("rb") as f:
+        return hashlib.file_digest(f, "sha256").hexdigest()
+
+
+def main():
+    r = json.loads((ROOT / "collection_summary.json").read_text())
+    qa = json.loads((ROOT / "authoring/workbook_qa.json").read_text())
+    assert qa["PPA_matches"] == 2 and qa["distinct_selector_ids"]
+    assert "383 passed" in (ROOT / "test_results.txt").read_text(encoding="utf-8-sig")
+    for name, sha in r["sha256_files"].items():
+        assert digest(ROOT / name) == sha
+    for path, sha in r["source_code_sha256"].items():
+        assert digest(Path(path)) == sha
+    delivered = [
+        "reported_headgroups_v01.xlsx",
+        "reported_headgroups_v01.csv",
+        "headgroup_name_alias_mapping.csv",
+        "headgroup_sources.csv",
+        "headgroups_pending_review.csv",
+    ]
+    r["delivery_sha256"] = {name: digest(ROOT / name) for name in delivered}
+    r["tests_passed"] = 383
+    r["excel_sheets"] = 6
+    r["workbook_PPA_collision_and_PC_structure_verified"] = True
+    r["all_complete_structure_data_kept_private_on_G"] = True
+    r["literature_verified_is_not_all_collected_records"] = True
+    r["source_snapshots"] = {
+        "LMSD": {
+            "all_records": 50586,
+            "P_SMILES_records": 11453,
+            "date": "2026-10-20",
+            "url": "https://www.lipidmaps.org/resources/rest",
+        },
+        "LSG": {
+            "commit": "519d004ac2c182090b845d22863faf592baa6b52",
+            "url": "https://github.com/98104781/LSG",
+        },
+        "MSDIAL": {
+            "commit": "349d7ef6edbd09e34c0eb38b849bd9fd8af79e7e",
+            "workbook_record": "https://zenodo.org/records/10953284",
+            "coverage": (
+                "all P-containing native structural headers plus three stored representatives "
+                "per relevant fixed-headgroup LipidBlast class sheet; "
+                "not a complete scan of all MSP releases"
+            ),
+        },
+        "PubChem": {
+            "linked_CID_properties": 139,
+            "named_queries": 10,
+            "coverage": (
+                "named reported classes and LMSD-linked structures only; "
+                "no broad hypothetical/weak-evidence expansion"
+            ),
+        },
+    }
+    overlap = "\n".join(f"|{s}|{n}|" for s, n in r["source_overlap_graph_counts"].items())
+    lines = [
+        "# 已报道及数据库来源磷脂 Polar 参考库 v0.1",
+        "",
+        "本轮交付首版结构、名称和来源库；没有训练模型、生成谱图或扩展理论头基。",
+        f"共解析 {r['distinct_resolved_polar_graphs']} 个不同的位点化 Polar graph，"
+        f"其中 {r['literature_verified_graphs']} 个已核实具体头基文献，"
+        f"{r['source_database_only_or_literature_unverified_graphs']} 个仍明确标为数据库/源码结构、"
+        "文献未核实。"
+        "**不能将全部结构图称为已核实文献报道头基，也不声称文献检索已穷尽。**",
+        "",
+        "## 验收统计",
+        "",
+        "|指标|数量|",
+        "|---|---:|",
+        f"|不同、连接 P 明确且可解析的残余 Polar graph|{r['accurate_polar_smiles']}|",
+        f"|通过未经修改的 Builder 和独立含H元素守恒检查|{r['builder_compatible']}|",
+        f"|至少有来源简写|{r['graphs_with_abbreviation']}|",
+        f"|只有英文/系统/原数据库名称|{r['english_or_systematic_name_only']}|",
+        f"|与冻结195,306种Polar精确匹配|{r['in_frozen_195306']}|",
+        f"|名称/别名到结构映射|{r['name_mapping_rows']:,}|",
+        f"|结构-来源关联|{r['source_mapping_rows']:,}|",
+        f"|待审核行（不是不同头基数）|{r['pending_review_rows']}|",
+        f"|已定位图中需审核的图|{r['resolved_graphs_needing_review']}|",
+        f"|尚未能定位标准Polar的来源条目|{r['unresolved_source_rows_needing_review']}|",
+        "",
+        "|来源|可追溯的不同Polar图数（允许重叠）|",
+        "|---|---:|",
+        overlap,
+        "",
+        "各来源计数不能相加。总数按完整残余图去重，不等于同样数量的基础核心。"
+        "例如CL/BMP等单次O-P切割后保留另一磷脂酰臂，不同真实来源臂会形成不同残余图；"
+        "这些图按用户要求完整保留，并标记不兼容，未通过裁掉另一臂来凑成可训练头基。",
+        "",
+        "## 结构与名称保证",
+        "",
+        "- ID由带连接标记的非手性canonical graph的SHA256前20位稳定生成；不按分子式去重。",
+        "- 甘油O-P键由原图的骨架匹配定位；LSG按其源码实际开放端连接。多P结构不选第一个P。",
+        "- 保留原始立体SMILES、来源ID、URL和名称。模型非手性键会合并立体异构体；"
+        "原始差异仍在来源表。",
+        "- 每个已定位图均可从名称查询并从ID反查全部名称/来源。PPA与LPG均有两个明确不同的图，"
+        "Excel用匹配序号切换，CLI返回全部匹配，不默默只取第一项。",
+        "- LSG的PECM标签称carboxymethyl，而源码图是methyl-carbamate连接，已单列名称-结构待审；"
+        "未将它冒认作已报道CM-PE。PubChem名称命中但连接不符合目标的条目也保持待审核。",
+        "",
+        "## 校验及不兼容项",
+        "",
+        f"{r['distinct_resolved_polar_graphs'] - r['builder_compatible']}个图未通过当前Builder："
+        f"{r['builder_incompatible_by_reason'].get('intact_lipid_as_polar', 0)}个触发"
+        "现有intact_lipid_as_polar防护，"
+        f"{r['builder_incompatible_by_reason'].get('unsupported_element', 0)}个含不支持元素。"
+        "前者包括保留另一磷脂酰臂的CL/BMP/LBPA等，以及图示明确但酯化甘油头基触发防护的Ala-PG/Lys-PG。"
+        "后者为含As的来源结构。没有修改Builder或重原子图来绕过这些限制。",
+        "NAPE与PIM不能按类别一概判为不兼容：实际来源中有些NAPE/PIM图可由现有Builder组装，"
+        "另一些含额外磷脂酰骨架或尚无具体链结构。逐条结果及原因均保留。Builder通过也不等于"
+        "当前Decoder长度和词表已经支持该结构，本轮没有改变标签或词表。",
+        f"全部{r['builder_compatible']}个兼容图均以固定链完成组装和独立含H元素守恒检查；"
+        f"来源级有{r['source_roundtrip_formula_true']:,}条完整分子式往返成功、"
+        f"{r['source_roundtrip_graph_true']:,}条完整非手性图往返成功。"
+        "其余保留原始结果：现有Builder对链排序及lyso位置使用代表性sn分配，"
+        "不保证复现每条来源的sn位置、特殊链或非甘油骨架。未把公式相同冒称为来源全图一致。",
+        "",
+        "## 文献、谱图与覆盖边界",
+        "",
+        "LMSD来自2026-10-20官方全库导出（50,586条），同时保存GP/SP导出及extended SDF。"
+        "MS-DIAL覆盖其公开结构Header和LipidBlast VS12固定头基工作表的实际存储示例，"
+        "未声称遍历所有MSP版本。LSG引用候选原样保留，未核查的引用不会升级成文献已报道。",
+        "文献人工转录包括已直接查看的2025年PHS/PPA结构图和2016年氨基酰PG结构图；"
+        "文献链接核实的是头基图或类别，不表示每种数据库完整脂肪链组合均在论文中实测。"
+        "CE-PE虽有明确报道，但本轮未接受可确认的精确源结构，仍留在待审；没有按名称补画。",
+        "实验MS/MS、理论MS/MS及unknown分别记录。没有谱图不是排除条件；"
+        "unknown表示本轮未核验，不能解释成无谱图。没有生成、预测或检索谱图。",
+        "同位素标记的来源原样进入待审，不静默去标后作为当前模型兼容图。"
+        "仅有类别引用而无明确谱图证据的条目保守标为unknown。",
+        "",
+        "## 交付与后续",
+        "",
+        "完整Excel、四份CSV、来源下载、人工文献转录及私有详细报告均位于G盘独立输出目录，"
+        "不上传GitHub。Excel有名称查询、头基总表、名称映射、来源记录、待审核、说明六张表。",
+        "提供CSV/JSONL导入工具：输出到新目录，按图合并并保留所有旧来源和名称；"
+        "同时提供按名称/别名或ID查询的CLI。",
+        "383项测试通过，包括多P连接、PS头基不误识别为鞘氨醇骨架、CL原图保留、"
+        "异构体去重、同名多图查询和追加导入保护。Excel实际核验PC返回正确结构，PPA两图可切换，未命中为空。",
+        "下一步先逐条补齐数据库/规则图的具体文献和特殊骨架审核；本轮未启动PubChem弱证据泛扩充、"
+        "相似度覆盖分析、理论谱图、MS/MS训练或固定模板预训练。",
+        "",
+        "## 主要原始来源",
+        "",
+        "- [LMSD官方批量接口](https://www.lipidmaps.org/resources/rest)；[下载与许可说明](https://www.lipidmaps.org/databases/lmsd/download)。",
+        "- [LSG原始源码](https://github.com/98104781/LSG/blob/519d004ac2c182090b845d22863faf592baa6b52/Lipids/Classes.py)。",
+        "- [MS-DIAL结构规则](https://github.com/systemsomicslab/MsdialWorkbench/blob/349d7ef6edbd09e34c0eb38b849bd9fd8af79e7e/src/Common/CommonStandard/Lipidomics/SmilesInchikeyGenerator.cs)；[官方LipidBlast资源](https://zenodo.org/records/10953284)。",
+        "- [PHS和磷脂酰丙醇胺，原文Fig.3–4](https://doi.org/10.1016/j.jbc.2025.110255)。",
+        "- [氨基酰PG原文及结构图](https://doi.org/10.12688/f1000research.7842.2)。",
+        "- [CM-PE/CE-PE合成及检测](https://doi.org/10.1194/jlr.D004564)。",
+        "- [PIM合成](https://doi.org/10.1021/ja806283e)；[PIM2醚类似物](https://doi.org/10.1021/jo070639m)。",
+        "",
+    ]
+    text = "\n".join(lines)
+    (ROOT / "headgroup_collection_summary.md").write_text(text, encoding="utf-8", newline="\n")
+    PUBLIC.mkdir(exist_ok=True)
+    (PUBLIC / "REPORTED_HEADGROUPS_V01_SUMMARY.md").write_text(text, encoding="utf-8", newline="\n")
+    (PUBLIC / "REPORTED_HEADGROUPS_V01_SUMMARY.json").write_text(
+        json.dumps(r, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
+    r["delivery_sha256"]["headgroup_collection_summary.md"] = digest(
+        ROOT / "headgroup_collection_summary.md"
+    )
+    (ROOT / "delivery_manifest_private.json").write_text(
+        json.dumps(r, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "reports_written": True,
+                "private_graphs_published": False,
+                "graphs": r["distinct_resolved_polar_graphs"],
+            }
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

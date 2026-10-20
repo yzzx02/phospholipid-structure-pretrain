@@ -1,0 +1,112 @@
+{
+  "source_records": 11772,
+  "distinct_resolved_polar_graphs": 182,
+  "accurate_polar_smiles": 182,
+  "builder_compatible": 63,
+  "literature_verified_graphs": 24,
+  "source_database_only_or_literature_unverified_graphs": 158,
+  "graphs_with_abbreviation": 168,
+  "english_or_systematic_name_only": 14,
+  "in_frozen_195306": 30,
+  "frozen_polar_rows": 195306,
+  "pending_review_rows": 740,
+  "source_mapping_rows": 12653,
+  "name_mapping_rows": 34445,
+  "source_overlap_graph_counts": {
+    "LIPID MAPS": 162,
+    "LSG": 22,
+    "Literature": 24,
+    "MS-DIAL": 21,
+    "PubChem": 162
+  },
+  "all_source_record_outcomes": {
+    "resolved_source_records": 11152,
+    "unresolved_source_records": 620
+  },
+  "training_performed": false,
+  "spectra_generated": false,
+  "theoretical_headgroups_enumerated": false,
+  "identity": "rooted nonisomeric canonical graph; original stereochemistry retained in source records",
+  "ambiguous_normalized_names": 3233,
+  "pending_reason_counts": {
+    "dynamic_template_needs_actual_structure": 12,
+    "no_unambiguous_chain_bearing_glycerol_O_P_boundary": 548,
+    "isotope_label_requires_explicit_review": 56,
+    "invalid_source_SMILES": 3,
+    "invalid_source_polar": 1,
+    "unsupported_element": 1,
+    "LSG_PECM_source_label_says_carboxymethyl_but_graph_is_methyl_carbamate": 1,
+    "intact_lipid_as_polar": 118
+  },
+  "resolved_graphs_needing_review": 120,
+  "unresolved_source_rows_needing_review": 620,
+  "sources_by_record": {
+    "LSG": 45,
+    "MS-DIAL": 84,
+    "LIPID MAPS": 12270,
+    "Literature": 25,
+    "PubChem": 229
+  },
+  "builder_incompatible_by_reason": {
+    "unsupported_element": 1,
+    "intact_lipid_as_polar": 118
+  },
+  "source_roundtrip_graph_true": 5443,
+  "source_roundtrip_formula_true": 8670,
+  "all_compatible_heads_independent_H_balance_checked": true,
+  "frozen_polar_library_sha256": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+  "rdkit_version": "2026.03.3",
+  "sha256_files": {
+    "headgroups_pending_review.csv": "eada154331682a166b692b0d5847bb3d6f22d524af07334603bf9f83d567d9aa",
+    "headgroup_name_alias_mapping.csv": "464c6dca017675f59fe554b80834dd2ced1a7df4947b32719360116d80be7717",
+    "headgroup_sources.csv": "4ad5b53b2c3e39e45840b139ef54839348562833263a63917df6d5363de3cb18",
+    "reported_headgroups_v01.csv": "10237d344ff44eaea7e981cedeeb518a7a8429a5bc6f8ae82c47d32a80570a04"
+  },
+  "source_code_sha256": {
+    "src/structure_pretrain/reported_headgroups/chemistry.py": "9316e2f352958f9245d88c67dab2cd74af5a2690a8b11a0f2ab40ca8f424683d",
+    "src/structure_pretrain/reported_headgroups/__init__.py": "287ceadf03978745ae910afff2bbd42fb157173cf974c6d99deb9b6962665f5c",
+    "scripts/audit_reported_headgroups_v01.py": "aa8958b98b3dfc6ad2597756e3f1d52b5cc152afca25bcca210bd24f9526bc81",
+    "scripts/collect_reported_headgroups_v01.py": "94610d8755cd3a8cd4f90ce45ae00c42897de27d5dff1cdf89bd1901efcd5929",
+    "scripts/fetch_reported_headgroup_sources_v01.py": "2b832463974b1693618ecf1a6cfd041146ba75cff27b47b582bbf756a1f13423",
+    "scripts/import_reported_headgroups_v01.py": "fc603b59f753904c8fae8c588331cbe57733ce341d43242b8d970de7ce4ba089",
+    "scripts/prepare_reported_headgroup_inputs.py": "368603a0146a98ae67028c9dde49993c843e7861acf1cab7fbce041b46f9eccc",
+    "scripts/query_reported_headgroups_v01.py": "beb2a0afc47e31f6fac3f1c2ccc664042889afa253bb17ce59cd8bd33c47e2aa",
+    "scripts/report_reported_headgroups_v01.py": "110680c5805fa7cac541aa30d36ac3bd08311d85730acc4d6f3c0d6881c446f1",
+    "src/structure_pretrain/library_builder/assembly.py": "22ce3470455e8d4d4eb462221076a0e3d9f172a107c53afd80e44d25b624bf01",
+    "src/structure_pretrain/library_builder/validation.py": "f01b7264835f663feb30c8e1a805146c96cf0c6c47b3c103cb98176bcecfaa76"
+  },
+  "delivery_sha256": {
+    "reported_headgroups_v01.xlsx": "8dd9576d93c55fed450f486d9768ad776d77eca463c532d58a6e1699afcf3cb0",
+    "reported_headgroups_v01.csv": "10237d344ff44eaea7e981cedeeb518a7a8429a5bc6f8ae82c47d32a80570a04",
+    "headgroup_name_alias_mapping.csv": "464c6dca017675f59fe554b80834dd2ced1a7df4947b32719360116d80be7717",
+    "headgroup_sources.csv": "4ad5b53b2c3e39e45840b139ef54839348562833263a63917df6d5363de3cb18",
+    "headgroups_pending_review.csv": "eada154331682a166b692b0d5847bb3d6f22d524af07334603bf9f83d567d9aa"
+  },
+  "tests_passed": 383,
+  "excel_sheets": 6,
+  "workbook_PPA_collision_and_PC_structure_verified": true,
+  "all_complete_structure_data_kept_private_on_G": true,
+  "literature_verified_is_not_all_collected_records": true,
+  "source_snapshots": {
+    "LMSD": {
+      "all_records": 50586,
+      "P_SMILES_records": 11453,
+      "date": "2026-10-20",
+      "url": "https://www.lipidmaps.org/resources/rest"
+    },
+    "LSG": {
+      "commit": "519d004ac2c182090b845d22863faf592baa6b52",
+      "url": "https://github.com/98104781/LSG"
+    },
+    "MSDIAL": {
+      "commit": "349d7ef6edbd09e34c0eb38b849bd9fd8af79e7e",
+      "workbook_record": "https://zenodo.org/records/10953284",
+      "coverage": "all P-containing native structural headers plus three stored representatives per relevant fixed-headgroup LipidBlast class sheet; not a complete scan of all MSP releases"
+    },
+    "PubChem": {
+      "linked_CID_properties": 139,
+      "named_queries": 10,
+      "coverage": "named reported classes and LMSD-linked structures only; no broad hypothetical/weak-evidence expansion"
+    }
+  }
+}

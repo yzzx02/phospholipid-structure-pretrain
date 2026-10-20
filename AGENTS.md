@@ -52,3 +52,12 @@ only aggregate Figure A/B/C may be published. Storage cleanup is limited to the
 hashed dry-run of inactive Python/test caches and the verified incomplete pip
 wheel; all checkpoints, prediction inputs, restore/transfer assets and fault
 records remain protected. See `docs/experiments/POLAR_PRETRAIN_SIMILARITY_EVAL_V04.md`.
+
+The reported-headgroups v0.1 collection is an independent, CPU-only reference
+data task in `outputs/reported_headgroups_v01_20261020/`. Preserve original
+source structures and unresolved records; distinguish verified literature from
+database/rule-only evidence. Do not infer an attachment from the first P atom,
+enumerate hypothetical heads, alter frozen assets or train any model. Complete
+CSVs, workbook, source downloads and manual literature curation stay on G drive.
+Only collection/validation/import code and non-sensitive aggregate reports may
+be published. Import additions into a new directory, retaining prior provenance.
