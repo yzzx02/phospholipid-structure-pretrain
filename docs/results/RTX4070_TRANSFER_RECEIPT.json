@@ -1,0 +1,28 @@
+{
+  "status": "verified_ready",
+  "source_commit": "c5d56cf86040a54062b40fa9589994f98c754c00",
+  "file_count": 775,
+  "checkpoints": 2,
+  "uncompressed_bytes": 2709047929,
+  "zip_bytes": 1112407851,
+  "zip_sha256": "4414514aba55dc6beab251d720a7f2ba4f94e9a547d84c8ba796dcc5f2698de3",
+  "manifest_sha256": "c797d7b7d89ebb517fc03830377afdbd0744cee39c3a43dd8afd6a46dc9c156d",
+  "parts": [
+    {
+      "name": "phospholipid_v04_transfer.zip",
+      "bytes": 1112407851,
+      "sha256": "4414514aba55dc6beab251d720a7f2ba4f94e9a547d84c8ba796dcc5f2698de3"
+    }
+  ],
+  "full_ZIP_roundtrip_SHA256_verified": true,
+  "environment_changed": false,
+  "GPU_used_for_export": false,
+  "elapsed_seconds": 39.501652076,
+  "archive_format": "single standard ZIP; split not needed below 2 GiB",
+  "packaging_profile": "v0.4 essentials; two 3000-step checkpoints; no historical training/test outputs",
+  "ready_directory_basename": "phospholipid_rtx4070_transfer_20261020",
+  "Windows_default_CUDA_environment": "preserved; no environment recommendation or change",
+  "minimal_data_CPU_validation": "both checkpoints 512 formula/prefix audit and one full inference/Builder passed",
+  "native_Windows_restore_fixture": "passed on 4 parts, full per-file SHA256 verification",
+  "README_and_restore_script_provided": true
+}
