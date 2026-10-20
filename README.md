@@ -1,5 +1,13 @@
 # Phospholipid structure pretraining
 
+**结构相似度与模板收益评价：** 三个FP模型、Beam20/50、固定512诊断目标已完成；未重新训练。
+50k/5,000 Beam50的Top1/5/10平均Polar Tanimoto为0.2736/0.3347/0.3499，
+最佳输入模板均值0.5470；Top10在146/512（28.52%）目标上获得正收益，但平均Delta为−0.1971。
+低模板组平均收益接近0，尚不支持“稳定超过参考模板”的结论。优先检验模板利用和真实MS/MS条件，暂不盲目扩池。
+见[新评价报告](docs/results/POLAR_PRETRAIN_SIMILARITY_EVAL_V04_RESULTS.md)、
+[公开统计图](docs/results/POLAR_PRETRAIN_SIMILARITY_EVAL_V04_FIGURES/)、
+[磁盘整理审计](docs/results/EXPERIMENT_STORAGE_AUDIT.md)。具体结构案例仅留G盘，未上传。
+
 **50k/5,000-step 已完成（RTX4070 SUPER）：** 368项测试、真实CUDA反向与恢复、12个受监控作业通过。
 固定512诊断头基的最终Beam50严格式覆盖77.54%，Polar Top5/Top10为7.42%/9.18%
 （旧20k/3,000为73.83%、3.52%/4.30%）。未观察到新增GPU故障；WATCHDOG权限限制见报告。

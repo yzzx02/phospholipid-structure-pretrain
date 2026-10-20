@@ -1,0 +1,993 @@
+{
+  "before": {
+    "label": "before_cleanup",
+    "utc": "2026-10-20T08:19:48.900193+00:00",
+    "physical_tree_unique_regular_files": 36552,
+    "logical_bytes": 16506779577,
+    "drive_free_bytes": 1584736288768,
+    "category_bytes": {
+      "installed_runtime_retained": 4927626990,
+      "protected_frozen_restore_checkpoints_data_and_audits": 3821597179,
+      "retained_offline_install_wheel": 2862033275,
+      "checkpoint_keep_manual_review_only": 1978595819,
+      "temporary_download_or_export_review": 1142147728,
+      "protected_transfer_archive_and_receipts": 1112560810,
+      "prediction_keep_evaluation_or_manual_review": 290694687,
+      "ordinary_python_or_test_cache": 190062108,
+      "download_cache_retained_for_reproducibility": 126499836,
+      "experiment_output_retained": 46904342,
+      "source_or_version_history_retained": 7439472,
+      "protected_audit_contract_monitor_or_stop": 617331
+    },
+    "directory_bytes": {
+      "environments\\polar-v04-cu128\\Lib": 4946764888,
+      "cache\\wheels": 2862033275,
+      "restored_v04\\phospholipid-structure-pretrain\\data": 2323043294,
+      "phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020": 2046283009,
+      "cache\\tmp\\pip-unpack-vqt6ki24": 1134559232,
+      "phospholipid_rtx4070_transfer_20261020": 1112560810,
+      "restored_v04": 1112407851,
+      "restored_v04\\phospholipid-structure-pretrain\\outputs": 383604311,
+      "phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1": 161169433,
+      "environments\\polar-similarity-plots\\Lib": 132415335,
+      "cache\\pip\\http-v2": 126414365,
+      "phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020": 69480365,
+      "phospholipid-structure-pretrain\\outputs\\polar_similarity_eval_v04_20261020": 39501636,
+      "environments\\polar-v04-cu128\\Scripts": 34889526,
+      "cache\\tmp\\pytest-of-ACANE": 7172432,
+      "phospholipid-structure-pretrain\\docs\\results": 4899986,
+      "environments\\polar-similarity-plots\\Scripts": 1545351,
+      "phospholipid-structure-pretrain\\src\\structure_pretrain": 1518928,
+      "restored_v04\\phospholipid-structure-pretrain\\docs": 1269758,
+      "phospholipid-structure-pretrain\\.git\\objects": 995402,
+      "restored_v04\\phospholipid-structure-pretrain\\src": 607151,
+      "phospholipid-structure-pretrain\\scripts": 408899,
+      "cache\\tmp": 319788,
+      "cache\\tmp\\__pycache__": 298692,
+      "phospholipid-structure-pretrain\\tests\\__pycache__": 269106,
+      "restored_v04\\phospholipid-structure-pretrain\\scripts": 256174,
+      "restored_v04\\phospholipid-structure-pretrain": 197092,
+      "phospholipid-structure-pretrain\\scripts\\__pycache__": 196757,
+      "restored_v04\\phospholipid-structure-pretrain\\tests": 180846,
+      "phospholipid-structure-pretrain\\docs": 177171,
+      "phospholipid-structure-pretrain\\tests\\pubchem_polar": 157195,
+      "phospholipid-structure-pretrain\\tests\\library_builder": 124259,
+      "phospholipid-structure-pretrain\\tests\\polar_expansion": 108012,
+      "cache\\matplotlib-similarity": 85332,
+      "phospholipid-structure-pretrain": 72476,
+      "phospholipid-structure-pretrain\\tests": 69727,
+      "phospholipid-structure-pretrain\\tests\\chain_extraction": 62948,
+      "phospholipid-structure-pretrain\\docs\\experiments": 60974,
+      "phospholipid-structure-pretrain\\tests\\indexed_retrieval": 53095,
+      "phospholipid-structure-pretrain\\tests\\library_v02": 49581,
+      "phospholipid-structure-pretrain\\__pycache__": 38761,
+      "phospholipid-structure-pretrain\\.pytest_cache\\v": 37524,
+      "phospholipid-structure-pretrain\\tests\\incremental": 34230,
+      "phospholipid-structure-pretrain\\.git": 33138,
+      "phospholipid-structure-pretrain\\tests\\polar_plausibility": 30870,
+      "cache\\tmp\\pip-unpack-ix59ifv9": 29676,
+      "cache\\tmp\\pip-metadata-ai8m7mwg": 29676,
+      "phospholipid-structure-pretrain\\.git\\hooks": 26788,
+      "environments": 23587,
+      "phospholipid-structure-pretrain\\configs": 16304,
+      "restored_v04\\phospholipid-structure-pretrain\\configs": 14489,
+      "cache\\tmp\\pip-unpack-4fhg8mmc": 12816,
+      "cache\\tmp\\pip-metadata-hcxztqoq": 12816,
+      "cache\\tmp\\pip-unpack-xyxmice5": 10561,
+      "cache\\tmp\\pip-metadata-acgejiil": 10561,
+      "phospholipid-structure-pretrain\\.ruff_cache\\0.15.17": 10048,
+      "restored_v04\\phospholipid-structure-pretrain\\.github": 9192,
+      "phospholipid-structure-pretrain\\.github\\workflows": 9192,
+      "cache\\tmp\\pip-unpack-chcse6xy": 8630,
+      "cache\\tmp\\pip-metadata-2pymnx7_": 8630,
+      "restored_v04\\phospholipid-structure-pretrain\\examples": 7021,
+      "phospholipid-structure-pretrain\\examples\\library_builder": 7021,
+      "phospholipid-structure-pretrain\\src\\phospholipid_structure_pretrain.egg-info": 6966,
+      "cache\\tmp\\pip-unpack-ki1nek42": 6783,
+      "cache\\tmp\\pip-metadata-jf7uxr6g": 6783,
+      "environments\\polar-v04-cu128\\share": 6659,
+      "cache\\tmp\\pip-unpack-97sma8pr": 6599,
+      "cache\\tmp\\pip-metadata-o_vaqpph": 6599,
+      "environments\\polar-similarity-plots\\share": 5601,
+      "cache\\tmp\\pip-unpack-at5q6y9k": 3310,
+      "cache\\tmp\\pip-metadata-i7zd1joi": 3310,
+      "cache\\tmp\\pip-unpack-8qxf65zo": 2871,
+      "cache\\tmp\\pip-metadata-se0se5c5": 2871,
+      "cache\\tmp\\pip-unpack-_aosfih0": 2764,
+      "cache\\tmp\\pip-metadata-5qc6jjsy": 2764,
+      "phospholipid-structure-pretrain\\.git\\logs": 2394,
+      "cache\\tmp\\pip-unpack-erc8bfhg": 2028,
+      "cache\\tmp\\pip-metadata-cogpugdr": 2028,
+      ".": 1421,
+      "phospholipid-structure-pretrain\\.pytest_cache": 540,
+      "environments\\polar-v04-cu128": 385,
+      "environments\\polar-similarity-plots": 339,
+      "phospholipid-structure-pretrain\\.git\\info": 240,
+      "cache\\pip\\selfcheck": 139,
+      "phospholipid-structure-pretrain\\.git\\refs": 112,
+      "phospholipid-structure-pretrain\\.ruff_cache": 78
+    },
+    "junctions_not_double_counted": [
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\pretraining_v04",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04",
+        "reason": "not traversed; target counted through physical tree"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\data\\private",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private",
+        "reason": "not traversed; target counted through physical tree"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\data\\structure_library_v0.3",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\structure_library_v0.3",
+        "reason": "not traversed; target counted through physical tree"
+      }
+    ],
+    "hardlink_duplicates_skipped": [],
+    "largest_files": [
+      {
+        "path": "G:\\yzx\\linzhiyuce\\cache\\wheels\\torch-2.9.1+cu128-cp312-cp312-win_amd64.whl",
+        "bytes": 2862033275,
+        "mtime_ns": 1792469557989380200,
+        "category": "retained_offline_install_wheel"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\cache\\tmp\\pip-unpack-vqt6ki24\\torch-2.9.1+cu128-cp312-cp312-win_amd64.whl",
+        "bytes": 1134559232,
+        "mtime_ns": 1792468986856110900,
+        "category": "temporary_download_or_export_review"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid_v04_transfer.zip",
+        "bytes": 1112407851,
+        "mtime_ns": 1792468695865621600,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid_rtx4070_transfer_20261020\\phospholipid_v04_transfer.zip",
+        "bytes": 1112407851,
+        "mtime_ns": 1792466044947838500,
+        "category": "protected_transfer_archive_and_receipts"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\torch_cuda.dll",
+        "bytes": 902919680,
+        "mtime_ns": 1792469810231572900,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cublasLt64_12.dll",
+        "bytes": 674667520,
+        "mtime_ns": 1792469687549350100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_engines_precompiled64_9.dll",
+        "bytes": 513926688,
+        "mtime_ns": 1792469714892689600,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusparse64_12.dll",
+        "bytes": 379535872,
+        "mtime_ns": 1792469760357435700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_adv64_9.dll",
+        "bytes": 282445872,
+        "mtime_ns": 1792469697217873100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cufft64_11.dll",
+        "bytes": 276121600,
+        "mtime_ns": 1792469731758964200,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\torch_cpu.dll",
+        "bytes": 262806528,
+        "mtime_ns": 1792469778888903000,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\structure_library_v0.3\\structures.parquet",
+        "bytes": 241993023,
+        "mtime_ns": 1792372344000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusolver64_11.dll",
+        "bytes": 225683456,
+        "mtime_ns": 1792469742085754900,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_005000.pt",
+        "bytes": 198061471,
+        "mtime_ns": 1792479072318663700,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_004000.pt",
+        "bytes": 198003167,
+        "mtime_ns": 1792479027794445800,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_003000.pt",
+        "bytes": 197944735,
+        "mtime_ns": 1792478566578615900,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_002000.pt",
+        "bytes": 197886431,
+        "mtime_ns": 1792478523893177300,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\fp_smoke_3000\\checkpoint\\step_003000.pt",
+        "bytes": 197853599,
+        "mtime_ns": 1792427640000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_A_1000\\checkpoint\\step_001000.pt",
+        "bytes": 197827039,
+        "mtime_ns": 1792478289521893200,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_resume_25\\checkpoint\\step_000025.pt",
+        "bytes": 197771423,
+        "mtime_ns": 1792478229043116000,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_20\\checkpoint\\step_000020.pt",
+        "bytes": 197770143,
+        "mtime_ns": 1792478194554981500,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_resume_4\\checkpoint\\step_000004.pt",
+        "bytes": 197765021,
+        "mtime_ns": 1792478118842489200,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_continuous_4\\checkpoint\\step_000004.pt",
+        "bytes": 197764957,
+        "mtime_ns": 1792478084188439100,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_split_2\\checkpoint\\step_000002.pt",
+        "bytes": 197764829,
+        "mtime_ns": 1792478101553495500,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\gine_smoke_3000\\checkpoint\\step_003000.pt",
+        "bytes": 185567167,
+        "mtime_ns": 1792427982000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusolverMg64_11.dll",
+        "bytes": 157071360,
+        "mtime_ns": 1792469747422506400,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_ops64_9.dll",
+        "bytes": 126508576,
+        "mtime_ns": 1792469722552160400,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cublas64_12.dll",
+        "bytes": 113716224,
+        "mtime_ns": 1792469665466651100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\chainless_fingerprints.npy",
+        "bytes": 99996800,
+        "mtime_ns": 1792424938000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvrtc64_120_0.alt.dll",
+        "bytes": 86794240,
+        "mtime_ns": 1792469767253051100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvrtc64_120_0.dll",
+        "bytes": 86728192,
+        "mtime_ns": 1792469770164543700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\HC_rows.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425526000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\HC_scores.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425526000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\H_rows.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425488000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\H_scores.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425488000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvJitLink_120_0.dll",
+        "bytes": 77860352,
+        "mtime_ns": 1792469763436994700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\curand64_10.dll",
+        "bytes": 71955968,
+        "mtime_ns": 1792469734428360200,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_heuristic64_9.dll",
+        "bytes": 56823328,
+        "mtime_ns": 1792469717796415700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v03\\formulas.npy",
+        "bytes": 40300128,
+        "mtime_ns": 1792392280000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Scripts\\ruff.exe",
+        "bytes": 32693760,
+        "mtime_ns": 1792469128235693000,
+        "category": "installed_runtime_retained"
+      }
+    ]
+  },
+  "after": {
+    "label": "after_cleanup",
+    "utc": "2026-10-20T08:32:51.610820+00:00",
+    "physical_tree_unique_regular_files": 28853,
+    "logical_bytes": 15255281414,
+    "drive_free_bytes": 1586001154048,
+    "category_bytes": {
+      "installed_runtime_retained": 4927626990,
+      "protected_frozen_restore_checkpoints_data_and_audits": 3821597179,
+      "retained_offline_install_wheel": 2862033275,
+      "checkpoint_keep_manual_review_only": 1978595819,
+      "protected_transfer_archive_and_receipts": 1112560810,
+      "prediction_keep_evaluation_or_manual_review": 290694687,
+      "download_cache_retained_for_reproducibility": 126499836,
+      "experiment_output_retained": 68100842,
+      "ordinary_python_or_test_cache": 47077468,
+      "source_or_version_history_retained": 12233607,
+      "temporary_download_or_export_review": 7588496,
+      "protected_audit_contract_monitor_or_stop": 672405
+    },
+    "directory_bytes": {
+      "environments\\polar-v04-cu128\\Lib": 4840122537,
+      "cache\\wheels": 2862033275,
+      "restored_v04\\phospholipid-structure-pretrain\\data": 2323043294,
+      "phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020": 2046283009,
+      "phospholipid_rtx4070_transfer_20261020": 1112560810,
+      "restored_v04": 1112407851,
+      "restored_v04\\phospholipid-structure-pretrain\\outputs": 383604311,
+      "phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1": 161169433,
+      "cache\\pip\\http-v2": 126414365,
+      "environments\\polar-similarity-plots\\Lib": 97726560,
+      "phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020": 69480365,
+      "phospholipid-structure-pretrain\\outputs\\polar_similarity_eval_v04_20261020": 60698639,
+      "environments\\polar-v04-cu128\\Scripts": 34889526,
+      "phospholipid-structure-pretrain\\docs\\results": 9724095,
+      "cache\\tmp\\pytest-of-ACANE": 7172432,
+      "environments\\polar-similarity-plots\\Scripts": 1545351,
+      "restored_v04\\phospholipid-structure-pretrain\\docs": 1269758,
+      "phospholipid-structure-pretrain\\src\\structure_pretrain": 1086262,
+      "phospholipid-structure-pretrain\\.git\\objects": 995402,
+      "restored_v04\\phospholipid-structure-pretrain\\src": 607151,
+      "phospholipid-structure-pretrain\\scripts": 431735,
+      "cache\\tmp": 319788,
+      "restored_v04\\phospholipid-structure-pretrain\\scripts": 256174,
+      "restored_v04\\phospholipid-structure-pretrain": 197092,
+      "restored_v04\\phospholipid-structure-pretrain\\tests": 180846,
+      "phospholipid-structure-pretrain\\docs": 177171,
+      "phospholipid-structure-pretrain\\scripts\\__pycache__": 119200,
+      "cache\\matplotlib-similarity": 85332,
+      "phospholipid-structure-pretrain": 73841,
+      "phospholipid-structure-pretrain\\tests": 69727,
+      "phospholipid-structure-pretrain\\docs\\experiments": 60974,
+      "phospholipid-structure-pretrain\\.git": 33138,
+      "cache\\tmp\\pip-unpack-ix59ifv9": 29676,
+      "cache\\tmp\\pip-metadata-ai8m7mwg": 29676,
+      "phospholipid-structure-pretrain\\.git\\hooks": 26788,
+      "phospholipid-structure-pretrain\\tests\\pubchem_polar": 26786,
+      "phospholipid-structure-pretrain\\tests\\library_builder": 23601,
+      "environments": 23587,
+      "phospholipid-structure-pretrain\\tests\\polar_expansion": 22252,
+      "phospholipid-structure-pretrain\\configs": 16304,
+      "restored_v04\\phospholipid-structure-pretrain\\configs": 14489,
+      "phospholipid-structure-pretrain\\tests\\chain_extraction": 13541,
+      "cache\\tmp\\pip-unpack-4fhg8mmc": 12816,
+      "cache\\tmp\\pip-metadata-hcxztqoq": 12816,
+      "phospholipid-structure-pretrain\\tests\\library_v02": 10727,
+      "cache\\tmp\\pip-unpack-xyxmice5": 10561,
+      "cache\\tmp\\pip-metadata-acgejiil": 10561,
+      "phospholipid-structure-pretrain\\tests\\indexed_retrieval": 10132,
+      "phospholipid-structure-pretrain\\.ruff_cache\\0.15.17": 10099,
+      "restored_v04\\phospholipid-structure-pretrain\\.github": 9192,
+      "phospholipid-structure-pretrain\\.github\\workflows": 9192,
+      "cache\\tmp\\pip-unpack-chcse6xy": 8630,
+      "cache\\tmp\\pip-metadata-2pymnx7_": 8630,
+      "phospholipid-structure-pretrain\\tests\\incremental": 7839,
+      "restored_v04\\phospholipid-structure-pretrain\\examples": 7021,
+      "phospholipid-structure-pretrain\\examples\\library_builder": 7021,
+      "phospholipid-structure-pretrain\\src\\phospholipid_structure_pretrain.egg-info": 6966,
+      "cache\\tmp\\pip-unpack-ki1nek42": 6783,
+      "cache\\tmp\\pip-metadata-jf7uxr6g": 6783,
+      "environments\\polar-v04-cu128\\share": 6659,
+      "cache\\tmp\\pip-unpack-97sma8pr": 6599,
+      "cache\\tmp\\pip-metadata-o_vaqpph": 6599,
+      "phospholipid-structure-pretrain\\tests\\polar_plausibility": 6593,
+      "environments\\polar-similarity-plots\\share": 5601,
+      "cache\\tmp\\pip-unpack-at5q6y9k": 3310,
+      "cache\\tmp\\pip-metadata-i7zd1joi": 3310,
+      "cache\\tmp\\pip-unpack-8qxf65zo": 2871,
+      "cache\\tmp\\pip-metadata-se0se5c5": 2871,
+      "cache\\tmp\\pip-unpack-_aosfih0": 2764,
+      "cache\\tmp\\pip-metadata-5qc6jjsy": 2764,
+      "phospholipid-structure-pretrain\\.git\\logs": 2394,
+      "cache\\tmp\\pip-unpack-erc8bfhg": 2028,
+      "cache\\tmp\\pip-metadata-cogpugdr": 2028,
+      ".": 1817,
+      "environments\\polar-v04-cu128": 385,
+      "environments\\polar-similarity-plots": 339,
+      "phospholipid-structure-pretrain\\.git\\info": 240,
+      "cache\\pip\\selfcheck": 139,
+      "phospholipid-structure-pretrain\\.git\\refs": 112,
+      "phospholipid-structure-pretrain\\.ruff_cache": 78
+    },
+    "junctions_not_double_counted": [
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\pretraining_v04",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04",
+        "reason": "not traversed; target counted through physical tree"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\data\\private",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private",
+        "reason": "not traversed; target counted through physical tree"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\data\\structure_library_v0.3",
+        "target": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\structure_library_v0.3",
+        "reason": "not traversed; target counted through physical tree"
+      }
+    ],
+    "hardlink_duplicates_skipped": [],
+    "largest_files": [
+      {
+        "path": "G:\\yzx\\linzhiyuce\\cache\\wheels\\torch-2.9.1+cu128-cp312-cp312-win_amd64.whl",
+        "bytes": 2862033275,
+        "mtime_ns": 1792469557989380200,
+        "category": "retained_offline_install_wheel"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid_v04_transfer.zip",
+        "bytes": 1112407851,
+        "mtime_ns": 1792468695865621600,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid_rtx4070_transfer_20261020\\phospholipid_v04_transfer.zip",
+        "bytes": 1112407851,
+        "mtime_ns": 1792466044947838500,
+        "category": "protected_transfer_archive_and_receipts"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\torch_cuda.dll",
+        "bytes": 902919680,
+        "mtime_ns": 1792469810231572900,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cublasLt64_12.dll",
+        "bytes": 674667520,
+        "mtime_ns": 1792469687549350100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_engines_precompiled64_9.dll",
+        "bytes": 513926688,
+        "mtime_ns": 1792469714892689600,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusparse64_12.dll",
+        "bytes": 379535872,
+        "mtime_ns": 1792469760357435700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_adv64_9.dll",
+        "bytes": 282445872,
+        "mtime_ns": 1792469697217873100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cufft64_11.dll",
+        "bytes": 276121600,
+        "mtime_ns": 1792469731758964200,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\torch_cpu.dll",
+        "bytes": 262806528,
+        "mtime_ns": 1792469778888903000,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\structure_library_v0.3\\structures.parquet",
+        "bytes": 241993023,
+        "mtime_ns": 1792372344000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusolver64_11.dll",
+        "bytes": 225683456,
+        "mtime_ns": 1792469742085754900,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_005000.pt",
+        "bytes": 198061471,
+        "mtime_ns": 1792479072318663700,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_004000.pt",
+        "bytes": 198003167,
+        "mtime_ns": 1792479027794445800,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_003000.pt",
+        "bytes": 197944735,
+        "mtime_ns": 1792478566578615900,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_002000.pt",
+        "bytes": 197886431,
+        "mtime_ns": 1792478523893177300,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\fp_smoke_3000\\checkpoint\\step_003000.pt",
+        "bytes": 197853599,
+        "mtime_ns": 1792427640000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_A_1000\\checkpoint\\step_001000.pt",
+        "bytes": 197827039,
+        "mtime_ns": 1792478289521893200,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_resume_25\\checkpoint\\step_000025.pt",
+        "bytes": 197771423,
+        "mtime_ns": 1792478229043116000,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_20\\checkpoint\\step_000020.pt",
+        "bytes": 197770143,
+        "mtime_ns": 1792478194554981500,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_resume_4\\checkpoint\\step_000004.pt",
+        "bytes": 197765021,
+        "mtime_ns": 1792478118842489200,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_continuous_4\\checkpoint\\step_000004.pt",
+        "bytes": 197764957,
+        "mtime_ns": 1792478084188439100,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_split_2\\checkpoint\\step_000002.pt",
+        "bytes": 197764829,
+        "mtime_ns": 1792478101553495500,
+        "category": "checkpoint_keep_manual_review_only"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\gine_smoke_3000\\checkpoint\\step_003000.pt",
+        "bytes": 185567167,
+        "mtime_ns": 1792427982000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cusolverMg64_11.dll",
+        "bytes": 157071360,
+        "mtime_ns": 1792469747422506400,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_ops64_9.dll",
+        "bytes": 126508576,
+        "mtime_ns": 1792469722552160400,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cublas64_12.dll",
+        "bytes": 113716224,
+        "mtime_ns": 1792469665466651100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\chainless_fingerprints.npy",
+        "bytes": 99996800,
+        "mtime_ns": 1792424938000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvrtc64_120_0.alt.dll",
+        "bytes": 86794240,
+        "mtime_ns": 1792469767253051100,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvrtc64_120_0.dll",
+        "bytes": 86728192,
+        "mtime_ns": 1792469770164543700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\HC_rows.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425526000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\HC_scores.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425526000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\H_rows.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425488000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v04\\H_scores.npy",
+        "bytes": 80600128,
+        "mtime_ns": 1792425488000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\nvJitLink_120_0.dll",
+        "bytes": 77860352,
+        "mtime_ns": 1792469763436994700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\curand64_10.dll",
+        "bytes": 71955968,
+        "mtime_ns": 1792469734428360200,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\cudnn_heuristic64_9.dll",
+        "bytes": 56823328,
+        "mtime_ns": 1792469717796415700,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\data\\private\\pretraining_v03\\formulas.npy",
+        "bytes": 40300128,
+        "mtime_ns": 1792392280000000000,
+        "category": "protected_frozen_restore_checkpoints_data_and_audits"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Scripts\\ruff.exe",
+        "bytes": 32693760,
+        "mtime_ns": 1792469128235693000,
+        "category": "installed_runtime_retained"
+      },
+      {
+        "path": "G:\\yzx\\linzhiyuce\\environments\\polar-v04-cu128\\Lib\\site-packages\\torch\\lib\\torch_cpu.lib",
+        "bytes": 29438978,
+        "mtime_ns": 1792469779767387700,
+        "category": "installed_runtime_retained"
+      }
+    ]
+  },
+  "cleanup_receipt": {
+    "utc": "2026-10-20T08:27:20.1708568+00:00",
+    "dry_run_manifest_sha256": "2d4b1841c63d6e3f66133d5be7676232d3fea0ef375db0952263fb777cc4412a",
+    "deleted_files": 10173,
+    "deleted_logical_bytes": 1324621340,
+    "free_bytes_before": 1584722505728,
+    "free_bytes_after": 1586067841024,
+    "observed_drive_free_bytes_increase": 1345335296,
+    "no_active_workspace_python_processes": true,
+    "retained_full_torch_wheel_sha256": "3a01f0b64c10a82d444d9fd06b3e8c567b1158b76b2764b8f51bfd8f535064b0"
+  },
+  "dry_run_manifest_sha256": "2d4b1841c63d6e3f66133d5be7676232d3fea0ef375db0952263fb777cc4412a",
+  "removed_by_kind": {
+    "cache_directory": {
+      "files": 10172,
+      "logical_bytes": 190062108
+    },
+    "abandoned_partial_wheel": {
+      "files": 1,
+      "logical_bytes": 1134559232
+    }
+  },
+  "manual_confirmation_checkpoints_retained": [
+    {
+      "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\gine_smoke_3000\\checkpoint\\step_003000.pt",
+      "bytes": 185567167,
+      "mtime_ns": 1792427982000000000,
+      "category": "protected_frozen_restore_checkpoints_data_and_audits"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\restored_v04\\phospholipid-structure-pretrain\\outputs\\pretraining_v04\\runs\\fp_smoke_3000\\checkpoint\\step_003000.pt",
+      "bytes": 197853599,
+      "mtime_ns": 1792427640000000000,
+      "category": "protected_frozen_restore_checkpoints_data_and_audits"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_004000.pt",
+      "bytes": 198003167,
+      "mtime_ns": 1792479027794445800,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_C_5000\\checkpoint\\step_005000.pt",
+      "bytes": 198061471,
+      "mtime_ns": 1792479072318663700,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_002000.pt",
+      "bytes": 197886431,
+      "mtime_ns": 1792478523893177300,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_B_3000\\checkpoint\\step_003000.pt",
+      "bytes": 197944735,
+      "mtime_ns": 1792478566578615900,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\train_A_1000\\checkpoint\\step_001000.pt",
+      "bytes": 197827039,
+      "mtime_ns": 1792478289521893200,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_resume_25\\checkpoint\\step_000025.pt",
+      "bytes": 197771423,
+      "mtime_ns": 1792478229043116000,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\gpu_probe_20\\checkpoint\\step_000020.pt",
+      "bytes": 197770143,
+      "mtime_ns": 1792478194554981500,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_split_2\\checkpoint\\step_000002.pt",
+      "bytes": 197764829,
+      "mtime_ns": 1792478101553495500,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_resume_4\\checkpoint\\step_000004.pt",
+      "bytes": 197765021,
+      "mtime_ns": 1792478118842489200,
+      "category": "checkpoint_keep_manual_review_only"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\cpu_continuous_4\\checkpoint\\step_000004.pt",
+      "bytes": 197764957,
+      "mtime_ns": 1792478084188439100,
+      "category": "checkpoint_keep_manual_review_only"
+    }
+  ],
+  "large_predictions_retained": [
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\eval_similarity_3000_beam50_512\\predictions_private.jsonl",
+      "bytes": 15789712,
+      "mtime_ns": 1792483950965090700,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\eval_C_5000_beam50_512\\predictions_private.jsonl",
+      "bytes": 19982287,
+      "mtime_ns": 1792480063782568000,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\eval_C_5000_beam50_512\\raw_beams_private.jsonl",
+      "bytes": 5259302,
+      "mtime_ns": 1792480063723567900,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\eval_C_5000_beam20_512\\predictions_private.jsonl",
+      "bytes": 7305919,
+      "mtime_ns": 1792479445822837700,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\polar_fp_base_50k_20261020\\eval_B_3000_beam20_512\\predictions_private.jsonl",
+      "bytes": 5629335,
+      "mtime_ns": 1792478858218615700,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_raw_b50_s32\\predictions_private.jsonl",
+      "bytes": 9819438,
+      "mtime_ns": 1792472813854826500,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_raw_b50_s256\\predictions_private.jsonl",
+      "bytes": 11067929,
+      "mtime_ns": 1792474490029152700,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_elements_grammar_b50_s32\\predictions_private.jsonl",
+      "bytes": 7986702,
+      "mtime_ns": 1792473221278282200,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_elements_grammar_b50_s256\\predictions_private.jsonl",
+      "bytes": 8232181,
+      "mtime_ns": 1792474950706497000,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_elements_b50_s32\\predictions_private.jsonl",
+      "bytes": 10336719,
+      "mtime_ns": 1792472936810336200,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\graph_elements_b50_s256\\predictions_private.jsonl",
+      "bytes": 11487592,
+      "mtime_ns": 1792474625756772000,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\fingerprint_raw_b50_s256\\predictions_private.jsonl",
+      "bytes": 11092108,
+      "mtime_ns": 1792473929894429200,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\fingerprint_elements_grammar_b50_s32\\predictions_private.jsonl",
+      "bytes": 8413299,
+      "mtime_ns": 1792472710010958000,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\fingerprint_elements_grammar_b50_s256\\predictions_private.jsonl",
+      "bytes": 9037255,
+      "mtime_ns": 1792474375704486300,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020_r1\\fingerprint_elements_b50_s256\\predictions_private.jsonl",
+      "bytes": 11527878,
+      "mtime_ns": 1792474060293465200,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020\\fingerprint_raw_b50_s32\\predictions_private.jsonl",
+      "bytes": 9767039,
+      "mtime_ns": 1792471696880727600,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    },
+    {
+      "path": "G:\\yzx\\linzhiyuce\\phospholipid-structure-pretrain\\outputs\\formula_constrained_v04_rtx4070_20261020\\fingerprint_elements_b50_s32\\predictions_private.jsonl",
+      "bytes": 10368117,
+      "mtime_ns": 1792471812588971500,
+      "category": "prediction_keep_evaluation_or_manual_review"
+    }
+  ],
+  "all_three_models_and_AdamW_CPU_reloaded": {
+    "passed": true,
+    "models": {
+      "20k_3000": {
+        "checkpoint_sha256": "daaf2ab1b2a2cde1c4a11507d964087f8161f8643e9404f27a23962f4c5ac6dd",
+        "parameters": 16468671,
+        "strict_CPU_model_load": true,
+        "CPU_AdamW_state_load": true,
+        "optimizer_step_values": [
+          3000
+        ],
+        "consumed": 48000,
+        "CPU_RNG_bytes": 5056,
+        "GPU_RNG_state_bytes": [
+          16
+        ],
+        "all_required_RNG_fields_present": true,
+        "training_steps_executed": 0
+      },
+      "50k_3000": {
+        "checkpoint_sha256": "eca982dfa560c5d1d0c17f6ef26a6794bb48ddec2e602a4073224dcbb89da8db",
+        "parameters": 16468671,
+        "strict_CPU_model_load": true,
+        "CPU_AdamW_state_load": true,
+        "optimizer_step_values": [
+          3000
+        ],
+        "consumed": 48000,
+        "CPU_RNG_bytes": 5056,
+        "GPU_RNG_state_bytes": [
+          16
+        ],
+        "all_required_RNG_fields_present": true,
+        "training_steps_executed": 0
+      },
+      "50k_5000": {
+        "checkpoint_sha256": "57c2bd97d6b2b488ae07f377cbdab593c9ee3a5f20e15b9e4e863fa655aab739",
+        "parameters": 16468671,
+        "strict_CPU_model_load": true,
+        "CPU_AdamW_state_load": true,
+        "optimizer_step_values": [
+          5000
+        ],
+        "consumed": 80000,
+        "CPU_RNG_bytes": 5056,
+        "GPU_RNG_state_bytes": [
+          16
+        ],
+        "all_required_RNG_fields_present": true,
+        "training_steps_executed": 0
+      }
+    },
+    "training_started": false
+  },
+  "five_formal_checkpoint_hashes_unchanged": true,
+  "all_evaluation_prediction_hashes_unchanged": true,
+  "all_missing_preexisting_files_are_authorized_cache_or_temp": true,
+  "net_observed_drive_free_increase_after_model_reload": 1278648320,
+  "deleted_file_snapshot_count": 10173
+}

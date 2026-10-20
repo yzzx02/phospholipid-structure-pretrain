@@ -43,3 +43,12 @@ Greedy/Beam20/Beam50 on diagnostic512 and aggregate reports under
 `docs/results/POLAR_FP_BASE_50K_RESULTS.*`. Private outputs are in
 `outputs/polar_fp_base_50k_20261020/`; do not overwrite or resume beyond the cap.
 Further pool expansion, controls or MS/MS training require new user direction.
+
+The subsequent similarity-only evaluation uses
+`outputs/polar_similarity_eval_v04_20261020/`. It reuses five cases and adds only
+the missing 50k/3,000 Beam50 job under the original FP50k supervisor. No training.
+Private Figure D, target metrics, templates and predictions must stay on G drive;
+only aggregate Figure A/B/C may be published. Storage cleanup is limited to the
+hashed dry-run of inactive Python/test caches and the verified incomplete pip
+wheel; all checkpoints, prediction inputs, restore/transfer assets and fault
+records remain protected. See `docs/experiments/POLAR_PRETRAIN_SIMILARITY_EVAL_V04.md`.
