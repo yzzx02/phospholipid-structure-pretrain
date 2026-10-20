@@ -3,14 +3,18 @@
 import argparse
 import json
 import subprocess
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
+import pyarrow.parquet as pq
 
 from structure_pretrain.data.prepare_v03 import read_json
 from structure_pretrain.library_builder.pipeline import file_hash
-from structure_pretrain.polar_only_v04.fp50k_data import ROOT, get_contract
+from structure_pretrain.library_builder.schemas import ELEMENTS
+from structure_pretrain.polar_only_v04.fp50k_data import FEATURES, ROOT, get_contract
+from structure_pretrain.polar_only_v04.prepare import V03
 
 
 def pct(value):
@@ -35,11 +39,14 @@ def markdown(report):
         "phosphate21,305、phosphonate19,367、polyphosphate9,328。",
         "选择覆盖 family、长度和元素类别，并优先覆盖式；"
         "因此同时改变了 graph 覆盖及抽样分布，不能将差异只归因于池大小。",
+        "CORE 14,253、EXTENDED 35,747；包括冻结库已有的12,585个phosphate analog和1个keto-inositol。"
+        "本轮没有新增或伪造结构；这些库内生成衍生物不代表已经获得真实MS/MS验证。",
         "K3、阈值0.2，实际149,967个模板配对，H占80.1996%，5个目标合法fallback，零无模板目标。",
         "复用相同检索契约下的冻结全TRAIN公式统计；"
         "所有实际模板对重新检查 TRAIN-only、异头基、链型和相似度。",
         "",
-        f"正式运行前CPU测试 {report['cpu_tests_at_gate']} 项通过；最终回归见 JSON。"
+        f"正式运行前CPU测试 {report['cpu_tests_at_gate']} 项通过；"
+        f"最终回归 {report['final_validation']['tests_passed']} 项通过。"
         "真实CPU连续4步与2+2恢复权重、优化器、随机状态、消费位置和loss序列完全一致。",
         "CUDA实际20+5步探针通过，再从随机权重开始正式实验。"
         "子模块审计单独核对 FP、公式MLP、融合、TCLS、Set Encoder、Decoder "
@@ -92,6 +99,20 @@ def markdown(report):
         "",
         "Beam5 的64条前缀仅作阶段A快检，不与完整512条基线直接比较。"
         "Top-k分母包括无候选目标；Greedy的Top5/10与Beam5的Top10不适用。",
+        "",
+        "|最终5000步搜索|推断+验证秒|峰值显存MiB|主进程峰值RAM MiB|",
+        "|---|---:|---:|---:|",
+    ]
+    for key, case in report["generation"].items():
+        metric = case["metrics"]
+        if key.startswith("50k_step5000_"):
+            lines.append(
+                f"|{metric['mode']}/Beam{metric['beam_size']}|"
+                f"{metric['elapsed_seconds']:.2f}|"
+                f"{metric['peak_VRAM_allocated_bytes'] / 2**20:.1f}|"
+                f"{metric['peak_RAM_kib'] / 1024:.1f}|"
+            )
+    lines += [
         "",
         "## Polar图相似度和错误",
         "",
@@ -239,6 +260,25 @@ def main():
     assert f"50k_step{final_step}_raw_beam1_n512" in generation
     audit_files = sorted(root.glob("checkpoint_audit_*.json"))
     env = read_json(root / "environment.json")
+    groups = np.load(V03 / "polar_groups.npy", mmap_mode="r")
+    selected = groups[np.load(root / "pool/train_pool_50k.npy")]
+    formulas = np.load(FEATURES / "head_polar_formulas.npy", mmap_mode="r")[selected]
+    head_meta = pq.read_table(
+        V03 / "polar_groups.parquet", columns=["polar_plausibility_tier", "structure_origin"]
+    ).to_pydict()
+    extended = {
+        "element_presence": dict(
+            Counter(",".join(e for e, value in zip(ELEMENTS, row) if value) for row in formulas)
+        ),
+        "element_count_quantiles_0_25_50_75_100": {
+            e: np.quantile(formulas[:, i], [0, 0.25, 0.5, 0.75, 1]).tolist()
+            for i, e in enumerate(ELEMENTS)
+        },
+        "polar_plausibility_tier": dict(
+            Counter(head_meta["polar_plausibility_tier"][int(g)] for g in selected)
+        ),
+        "structure_origin": dict(Counter(head_meta["structure_origin"][int(g)] for g in selected)),
+    }
     report = {
         "schema": "polar_fp_base_50k_results_v1",
         "utc": datetime.now(timezone.utc).isoformat(),
@@ -249,6 +289,7 @@ def main():
         "config": contract["config"],
         "parameters": 16468671,
         "pool": read_json(root / "pool/manifest_private.json"),
+        "pool_extended_distributions": extended,
         "contract": contract,
         "environment": env,
         "requirements_lock_sha256": file_hash(root / "requirements.lock.txt"),
@@ -283,10 +324,12 @@ def main():
         assert actual == committed and file_hash(Path(name)) == expected
     out = Path("docs/results")
     j, md = out / "POLAR_FP_BASE_50K_RESULTS.json", out / "POLAR_FP_BASE_50K_RESULTS.md"
-    j.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    md.write_text(markdown(report), encoding="utf-8")
+    j.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
+    md.write_text(markdown(report), encoding="utf-8", newline="\n")
     hashes = {path.as_posix(): file_hash(path) for path in (j, md)}
-    (out / "POLAR_FP_BASE_50K_SHA256.json").write_text(json.dumps(hashes, indent=2) + "\n")
+    (out / "POLAR_FP_BASE_50K_SHA256.json").write_text(
+        json.dumps(hashes, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     print(json.dumps({"status": report["status"], "step": final_step, "reports_sha256": hashes}))
 
 

@@ -17,7 +17,9 @@
   tokenizer, internal `[*:1]`, Builder, data splits and retrieval caches.
   New labels, CL, full-library training and MS/MS work still require new direction.
 - Native CUDA work requires this interpreter's independent CPU gate and
-  `scripts/supervise_formula_beam_cuda_v04.py`. Keep Math Attention and FP32,
+  the matching supervisor: `scripts/supervise_formula_beam_cuda_v04.py` for
+  historical inference, `scripts/supervise_polar_fp50k.py` for FP50k stages.
+  Keep Math Attention and FP32,
   with TF32 disabled. Never silently fall back to CPU for a requested GPU run.
 - Preserve AMD stop latches and history. NVIDIA uses a separate experiment root
   and persistent monitoring epoch. Never delete a stop latch or automatically retry
@@ -35,3 +37,9 @@ See `docs/experiments/POLAR_FORMULA_BEAM_CUDA_V04.md` for commands and layout.
 The repaired continuation uses `outputs/formula_constrained_v04_rtx4070_20261020_r1`;
 the earlier native root retains the CPU-reproduced validation exception and stop latch.
 Completed native jobs are reused only through the immutable 69,190-candidate CPU audit.
+
+The authorized FP50k run is now complete at 5,000 steps, with all five checkpoints,
+Greedy/Beam20/Beam50 on diagnostic512 and aggregate reports under
+`docs/results/POLAR_FP_BASE_50K_RESULTS.*`. Private outputs are in
+`outputs/polar_fp_base_50k_20261020/`; do not overwrite or resume beyond the cap.
+Further pool expansion, controls or MS/MS training require new user direction.

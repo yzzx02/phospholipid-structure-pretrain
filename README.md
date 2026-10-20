@@ -1,5 +1,10 @@
 # Phospholipid structure pretraining
 
+**50k/5,000-step 已完成（RTX4070 SUPER）：** 368项测试、真实CUDA反向与恢复、12个受监控作业通过。
+固定512诊断头基的最终Beam50严格式覆盖77.54%，Polar Top5/Top10为7.42%/9.18%
+（旧20k/3,000为73.83%、3.52%/4.30%）。未观察到新增GPU故障；WATCHDOG权限限制见报告。
+同步数3,000的改善不一致，5,000步结果同时改变池和步数；保留全部权重，暂不扩至全库或开展MS/MS训练。
+
 **v0.4-FP 稳定训练入口：** [50k 分阶段实验](docs/experiments/POLAR_FP_BASE_50K.md)
 固定 Morgan r2/2048 → MLP 256D、Polar 式/差值 20D →128D、融合512D、
 2层/8头 Set Transformer＋TCLS、2层/8头 Polar Decoder（FFN2048、长度84），共16,468,671参数。
