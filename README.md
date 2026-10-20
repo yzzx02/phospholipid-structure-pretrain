@@ -1,5 +1,14 @@
 # Phospholipid structure pretraining
 
+**v0.4-FP 稳定训练入口：** [50k 分阶段实验](docs/experiments/POLAR_FP_BASE_50K.md)
+固定 Morgan r2/2048 → MLP 256D、Polar 式/差值 20D →128D、融合512D、
+2层/8头 Set Transformer＋TCLS、2层/8头 Polar Decoder（FFN2048、长度84），共16,468,671参数。
+随机初始化、TRAIN-only 50k不同头基、K3/H80%/HC20%、AdamW1e-4、有效batch16，
+原生RTX4070 SUPER使用Math/FP32并关闭TF32；按1,000/3,000/最多5,000步决策。
+入口为 `train_polar_fp50k.py` 和 `scripts/supervise_polar_fp50k.py`，先通过独立CPU及CUDA反向/恢复门槛。
+历史模型与冻结数据保留；实际完成阶段和指标见[结果](docs/results/POLAR_FP_BASE_50K_RESULTS.md)
+及[聚合JSON](docs/results/POLAR_FP_BASE_50K_RESULTS.json)。仍为给定链/式的structure-oracle诊断，未开展MS/MS微调。
+
 **RTX 4070 接续：** 使用另一台电脑的原生 Windows 与现有默认 CUDA 环境。精简迁移包已生成并逐文件校验：ZIP 约 1.11 GB，展开约 2.71 GB，775 个文件，只保留 v0.4 必需数据、两份 3,000 步权重、固定样本及最新项目资料。见[交接清单](docs/HANDOFF_RTX4070_WINDOWS.md)与[迁移回执/校验码](docs/results/RTX4070_TRANSFER_RECEIPT.json)。旧测试输出与中间 checkpoints 不打包；NVIDIA 原生 Windows 入口尚待在目标机器验证，本机 GPU 工作已停止。
 
 **2026-10-20 分子式约束推断：** 复用 v0.4 的 Morgan/GINE 3,000 步权重，未重新训练。358 项 CPU 测试通过；固定 512 头基的 Beam 5 四方法对照完整。元素计数＋基础语法将严格分子式覆盖率由 11.72%/9.38% 提高到 38.09%/30.27%，但 Polar Top-5 exact 仍仅 8/512、5/512。**10:44 出现新的 LiveKernelEvent 141 与用户确认的黑屏，已停止全部 GPU 作业并保留停止锁；Beam 20/50 正式比较未完成，不能宣称 Math/FP32 已解决黑屏。** 见[实验方法与复现](docs/experiments/POLAR_FORMULA_BEAM_V04.md)、[结果与故障结论](docs/results/POLAR_FORMULA_BEAM_V04_RESULTS.md)、[聚合 JSON](docs/results/POLAR_FORMULA_BEAM_V04_RESULTS.json)。旧代码、冻结数据、报告与 54 个 checkpoints 的保护哈希均通过。

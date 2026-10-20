@@ -8,10 +8,14 @@
 - `data/private`, `data/structure_library_v0.3` and `outputs/pretraining_v04` are
   junctions into `../restored_v04/phospholipid-structure-pretrain`. Preserve that
   verified restore tree and the original transfer archive.
-- Current scope is inference from the two frozen v0.4 3,000-step checkpoints.
+- The user's 2026-10-20 FP stable plan now authorizes a separate, randomly
+  initialized 50k / at most 5,000-step fingerprint experiment, with CPU and
+  native CUDA backward/resume gates and staged 1,000 / 3,000 / 5,000 decisions.
+  Use a new output root; never train into the restored historical directories.
+  The two frozen v0.4 3,000-step checkpoints remain protected comparison inputs.
   Preserve GINE, Morgan, Formula Encoder, Template Set Transformer, TCLS,
   tokenizer, internal `[*:1]`, Builder, data splits and retrieval caches.
-  Further training, new labels, CL, 50k pools and MS/MS work require new user direction.
+  New labels, CL, full-library training and MS/MS work still require new direction.
 - Native CUDA work requires this interpreter's independent CPU gate and
   `scripts/supervise_formula_beam_cuda_v04.py`. Keep Math Attention and FP32,
   with TF32 disabled. Never silently fall back to CPU for a requested GPU run.
