@@ -61,3 +61,11 @@ enumerate hypothetical heads, alter frozen assets or train any model. Complete
 CSVs, workbook, source downloads and manual literature curation stay on G drive.
 Only collection/validation/import code and non-sensitive aggregate reports may
 be published. Import additions into a new directory, retaining prior provenance.
+
+The 2026-10-21 single-anchor review is a derived, CPU-only selection in
+`outputs/reported_headgroups_single_anchor_review_20261021/`. Preserve v0.1 and
+all source graphs. Exclude obvious extra fatty-acyl/ether chains, multi-lipid
+anchors and sterol anchors from the default model selection; keep short-acyl,
+amino-acyl and uncertain cases visible for human review. Structure images,
+HTML, workbook and per-graph decisions remain private on G drive. Do not train
+or automatically write manual decisions into a formal template library.

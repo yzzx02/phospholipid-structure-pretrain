@@ -1,0 +1,56 @@
+{
+  "input_graphs": 182,
+  "counts": {
+    "retain": 44,
+    "review": 9,
+    "exclude": 129
+  },
+  "remaining_graphs": 53,
+  "remaining_builder_compatible": 49,
+  "retained_builder_compatible": 44,
+  "status_by_reason": {
+    "retain": {
+      "single_root_no_extra_lipid_anchor_detected": 44
+    },
+    "review": {
+      "borderline_hydrophobic_segment": 3,
+      "short_or_amino_acyl_substituent": 6,
+      "existing_builder_incompatible": 4,
+      "source_record_requires_review": 1
+    },
+    "exclude": {
+      "extra_hydrocarbon_chain_8C_or_more": 121,
+      "explicit_multi_lipid_anchor_class": 96,
+      "extra_sterol_lipid_anchor": 5,
+      "N_acyl_PE_PS": 4
+    }
+  },
+  "input_sha256": "10237d344ff44eaea7e981cedeeb518a7a8429a5bc6f8ae82c47d32a80570a04",
+  "source_library_unchanged": true,
+  "filter_version": "single-anchor-v01-20261021",
+  "rdkit_version": "2026.03.3",
+  "long_chain_rule": "at least 8 connected non-ring, non-aromatic C atoms bearing only C/H; explicit CL/BMP/LBPA/NAPE/NAPS classes and sterol anchors additionally excluded",
+  "review_rule": "5-7 carbon hydrophobic segments, short/amino acyl esters, existing Builder failures or v0.1 source naming review; multiple P and sugar rings alone are allowed",
+  "stereochemistry": "current model nonisomeric Polar; original stereochemistry remains in v0.1 source records",
+  "training_performed": false,
+  "validation": {
+    "all_source_graphs_unchanged": true,
+    "all_atom_indices_present_in_svg": true,
+    "unique_graphs": 182,
+    "partition": {
+      "retain": 44,
+      "review": 9,
+      "exclude": 129
+    },
+    "embedded_workbook_images": 182,
+    "saved_workbook_manual_inputs_unmarked": true,
+    "workbook_cached_counts_verified": true,
+    "individual_svg_png_pairs": 182,
+    "remaining_atlas_pages": 9,
+    "excluded_atlas_pages": 22,
+    "source_sha256": "10237d344ff44eaea7e981cedeeb518a7a8429a5bc6f8ae82c47d32a80570a04"
+  },
+  "related_tests_passed": 29,
+  "private_structures_and_images_published": false,
+  "rdkit_complex_glycans_layout": "CoordGen; simple structures use RDDepictor"
+}
