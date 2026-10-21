@@ -33,20 +33,26 @@ def main():
     assert dict(counts) == summary["counts"]
     assert {r["headgroup_id"] for r in rows} == source.keys()
     assert len(rows) == len(source) == summary["input_graphs"]
+    expansion = summary.get("expansion", False)
+    active_rows = [r for r in rows if r.get("is_new") == "True"] if expansion else rows
+    active_counts = Counter(r["auto_status"] for r in active_rows)
+    initial_decisions = summary.get("initial_decisions", {})
     for status, name in (
         ("retain", "headgroups_retained.csv"),
         ("exclude", "headgroups_excluded.csv"),
         ("review", "headgroups_manual_review.csv"),
     ):
         assert {r["headgroup_id"] for r in read_rows(root / name)} == {
-            r["headgroup_id"] for r in rows if r["auto_status"] == status
+            r["headgroup_id"] for r in active_rows if r["auto_status"] == status
         }
     html = (root / "index.html").read_text(encoding="utf-8")
     embedded = json.loads(html.split("const DATA=", 1)[1].split(";\nconst SUMMARY=", 1)[0])
     assert len(embedded) == len(rows)
     for row in rows:
         assert row["polar_smiles"] == source[row["headgroup_id"]]["polar_smiles"]
-        assert row["human_decision"] == row["human_note"] == ""
+        expected = initial_decisions.get(row["headgroup_id"], {})
+        assert row["human_decision"] == expected.get("decision", "")
+        assert row["human_note"] == expected.get("note", "")
         mol = Chem.MolFromSmiles(row["polar_smiles"])
         svg = (root / row["svg_path"]).read_text(encoding="utf-8")
         ET.fromstring(svg)
@@ -61,8 +67,15 @@ def main():
         strings = ET.fromstring(book.read("xl/sharedStrings.xml"))
         strings = ["".join(s.itertext()) for s in strings]
         media = [n for n in book.namelist() if n.startswith("xl/media/")]
-        assert len(media) == len(rows)
-        for i, expected in ((1, counts["retain"] + counts["review"]), (2, counts["exclude"])):
+        expected_groups = [
+            [r for r in active_rows if r["auto_status"] != "exclude"],
+            [r for r in active_rows if r["auto_status"] == "exclude"],
+        ]
+        if expansion:
+            expected_groups.append([r for r in rows if r["prior_approved"] == "True"])
+        assert len(media) == sum(map(len, expected_groups))
+        for i, group in enumerate(expected_groups, 1):
+            expected = len(group)
             xml = ET.fromstring(book.read(f"xl/worksheets/sheet{i}.xml"))
             cells = {c.get("r"): c for c in xml.findall(".//s:c", ns)}
             for row_index in range(7, expected + 7):
@@ -70,13 +83,27 @@ def main():
                 value = cell.find("s:v", ns).text
                 if cell.get("t") == "s":
                     value = strings[int(value)]
-                assert value == "未判断"
-            assert float(cells["I4"].find("s:v", ns).text) == 0
+                choice = group[row_index - 7]["human_decision"]
+                assert value == {"keep": "保留", "exclude": "排除", "review": "待判断"}.get(
+                    choice, "未判断"
+                )
+                id_cell = cells[f"H{row_index}"]
+                saved_id = id_cell.find("s:v", ns).text
+                if id_cell.get("t") == "s":
+                    saved_id = strings[int(saved_id)]
+                assert saved_id == group[row_index - 7]["headgroup_id"]
+            assert float(cells["I4"].find("s:v", ns).text) == sum(
+                bool(r["human_decision"]) for r in group
+            )
             if i == 1:
                 assert [int(cells[a].find("s:v", ns).text) for a in ("B4", "D4", "F4")] == [
-                    counts[k] for k in ("retain", "exclude", "review")
+                    active_counts[k] for k in ("retain", "exclude", "review")
                 ]
-    atlas_paths = summary["remaining_atlas_pages"] + summary["excluded_atlas_pages"]
+    atlas_paths = (
+        summary["remaining_atlas_pages"]
+        + summary["excluded_atlas_pages"]
+        + summary.get("approved_atlas_pages", [])
+    )
     for rel in atlas_paths:
         with Image.open(root / rel) as image:
             image.verify()
@@ -87,12 +114,15 @@ def main():
         "unique_graphs": len(rows),
         "partition": dict(counts),
         "embedded_workbook_images": len(media),
-        "saved_workbook_manual_inputs_unmarked": True,
+        "saved_workbook_human_decisions_preserved": True,
         "workbook_cached_counts_verified": True,
         "individual_svg_png_pairs": len(rows),
         "remaining_atlas_pages": len(summary["remaining_atlas_pages"]),
         "excluded_atlas_pages": len(summary["excluded_atlas_pages"]),
         "source_sha256": summary["input_sha256"],
+        "new_graphs": len(active_rows) if expansion else 0,
+        "new_partition": dict(active_counts) if expansion else {},
+        "previous_human_kept": sum(d.get("decision") == "keep" for d in initial_decisions.values()),
     }
     (root / "authoring/delivery_qa.json").write_text(
         json.dumps(qa, ensure_ascii=False, indent=2), encoding="utf-8"

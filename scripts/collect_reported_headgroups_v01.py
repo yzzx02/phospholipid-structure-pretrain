@@ -168,8 +168,10 @@ def read_jsonl(path):
     return []
 
 
-def collect(root, extra=None):
-    raw = root / "raw"
+def collect(root, extra=None, source_raw=None):
+    # A new collection can read an immutable previous snapshot without copying
+    # large downloads or writing new files into the previous raw directory.
+    raw = Path(source_raw) if source_raw is not None else root / "raw"
     sources = [*lsg_sources(raw), *msdial_sources(raw), *lmsd_sources(raw)]
     sources += read_jsonl(raw / "literature_structures.jsonl")
     sources += read_jsonl(raw / "pubchem_structures.jsonl")
@@ -299,7 +301,22 @@ def collect(root, extra=None):
     frozen = frozenset(frozen)
     heads = []
     for entry in groups.values():
-        preferred = {"PC", "PE", "PA", "PG", "PI", "PS", "PT", "MMPE", "DMPE", "PPA", "CDPDG"}
+        preferred = {
+            "PC",
+            "PE",
+            "PA",
+            "PG",
+            "PI",
+            "PS",
+            "PT",
+            "MMPE",
+            "DMPE",
+            "PPA",
+            "CDPDG",
+            "Am-PE",
+            "Am-PS",
+            "PtdGlc",
+        }
         refs = sorted(
             entry.pop("sources"),
             key=lambda x: (
@@ -319,7 +336,7 @@ def collect(root, extra=None):
         head_aliases = [
             alias
             for ref in refs
-            if ref["source"] in ("LSG", "Literature")
+            if ref["source"] in ("LSG", "Literature", "PubChem")
             for alias in ref.get("aliases", [])
         ]
         main_ab = next(

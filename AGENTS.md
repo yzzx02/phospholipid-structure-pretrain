@@ -69,3 +69,17 @@ anchors and sterol anchors from the default model selection; keep short-acyl,
 amino-acyl and uncertain cases visible for human review. Structure images,
 HTML, workbook and per-graph decisions remain private on G drive. Do not train
 or automatically write manual decisions into a formal template library.
+
+The 2026-10-21 v0.2 expansion explicitly admits structurally defined PubChem
+and other database glycerophospholipids without upgrading unverified literature
+status. The user's imported review retains 52 graphs and rejects one; preserve
+all decisions and notes. The expansion library and separate visual review are
+in `outputs/reported_headgroups_v02_20261021/` and
+`outputs/reported_headgroups_v02_review_20261021/`. Keep the v0.1 library and
+review intact. Default review shows only new candidates; explicit extra lipid
+anchors, including short-chain second diacylated glycerol arms, stay excluded.
+Special phosphorus bonds and uncertain attachment positions require review,
+not graph repair or guessed structures. This work does not authorize training,
+spectra generation or automatic promotion into the formal template library.
+Publish only processing code and aggregate reports, never full structures,
+source caches or per-graph human decisions.
