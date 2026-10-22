@@ -129,3 +129,30 @@ input templates; preserve historical splits and audit any warm-start's seen grap
 This revision records design only; no 5,000 pool or new training was completed.
 See `docs/experiments/TEMPLATE_GUIDED_PHOSPHOLIPID_GENERATION_V1.md` and
 `configs/template_guided_generation_v1_plan.json` for the current contract.
+
+The user's latest authorization now starts the independent fixed-5,000-template
+structure-conditioned training, initially K3/seed42, after real CPU/CUDA backward
+and checkpoint-resume gates. Prefer the paper's main-experiment batch32 after a
+bounded batch16/32 throughput and longest-sequence check. Keep the existing
+network, AdamW1e-4/weight_decay0.01, FP32/Math/TF32-off configuration; these are
+local settings, not a claim to reproduce the paper's optimizer parameters.
+Select the best checkpoint ONLY by minimum full-validation token cross entropy;
+early stop after five consecutive complete epochs without improvement, as in
+MetGenX (doi:10.1038/s41467-026-72149-6). Generation validity, Similarity@10,
+functional groups and gains over templates remain evaluation, not selectors.
+The new local budget is at most 50 epochs / 300,000 optimizer steps / 48 hours;
+50 is a local safety cap, not the paper's epoch setting. New data are independently
+derived from the unchanged frozen graph-level split, excluding extra lipid
+anchors, targets over the current label limit and self/equivalent references.
+The initial `outputs/template_guided_fp5000_20261022` GPU benchmark exited at
+the first loss due to a newly enabled strict deterministic flag unsupported by
+torch2.9 CUDA nll_loss2d. No driver reset/new dump was detected; 12 old checkpoint
+hashes were unchanged. Preserve this root, its data and GPU_STOP.json.
+The repaired runtime restores historical non-strict FP32 settings. Its independent
+CPU backward/exact-restart gate passed in `outputs/template_guided_fp5000_20261022_r1`,
+whose data junction points to the original verified preparation. Explicit user
+retry authorization is pending and enforced by GPU_RESTART_AUTHORIZATION.json;
+do not start a new GPU attempt until that authorization arrives. Use the matching
+`scripts/supervise_template_guided_fp5000.py`. A latched fault forbids automatic
+retries. Preserve every old checkpoint and monitor history. Other template/K
+ablations and final generation evaluation remain distinct subsequent jobs.

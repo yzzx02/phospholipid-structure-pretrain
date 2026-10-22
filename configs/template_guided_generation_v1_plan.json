@@ -8,17 +8,32 @@
   "schedule_PGCN_casework": false,
   "pretraining_template_pool": {
     "main_size": 5000,
-    "comparison_sizes": [500, 2000, 5000, 10000, 20000],
+    "comparison_sizes": [
+      500,
+      2000,
+      5000,
+      10000,
+      20000
+    ],
     "source": "training-permitted explicit structures with known seeds and curated algorithmic supplements",
     "previous_200_to_350_proposals_role": "known seed curation and small-pool diagnostic",
     "initial_K": 3,
-    "K_comparison": [1, 3, 5, 10],
+    "K_comparison": [
+      1,
+      3,
+      5,
+      10
+    ],
     "target_pool_is_larger_than_template_pool": true,
     "new_candidate_mass_limit_Da": 600,
     "exclude_extra_lipid_anchors": true
   },
   "application_template_pool": {
-    "sources": ["MS-DIAL", "LipidGate", "other explicit sourced spectral references"],
+    "sources": [
+      "MS-DIAL",
+      "LipidGate",
+      "other explicit sourced spectral references"
+    ],
     "require_traceable_spectrum": true,
     "require_unambiguous_rooted_structure": true,
     "report_experimental_and_theoretical_references_separately": true,
@@ -46,8 +61,20 @@
   },
   "execution_this_revision": {
     "new_training_launched": false,
-    "new_5000_template_pool_already_built": false,
+    "new_5000_template_pool_already_built": true,
     "restricted_candidate_scoring_already_implemented": false,
-    "preserve_existing_weights_splits_frozen_library_and_stop_latches": true
+    "preserve_existing_weights_splits_frozen_library_and_stop_latches": true,
+    "new_training_authorized": true,
+    "runnable_configuration": "configs/template_guided_fp5000.json",
+    "CPU_backward_exact_restart_passed": true,
+    "GPU_retry_pending_explicit_user_authorization": true,
+    "active_root": "outputs/template_guided_fp5000_20261022_r1"
+  },
+  "checkpoint_selection": {
+    "rule": "minimum_full_validation_token_cross_entropy",
+    "patience_complete_epochs": 5,
+    "min_delta": 0.0,
+    "generation_metrics_select_checkpoint": false,
+    "paper": "https://doi.org/10.1038/s41467-026-72149-6"
   }
 }

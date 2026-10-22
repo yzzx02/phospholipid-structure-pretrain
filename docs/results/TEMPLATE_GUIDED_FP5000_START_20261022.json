@@ -1,0 +1,416 @@
+{
+  "status": "awaiting_explicit_GPU_retry_authorization_after_CPU_repair",
+  "experiment": "fixed5000_K3_seed42",
+  "data_manifest_sha256": "de889a3250f007bf3b22bafcd4fa039692d2bb24f98e1f13173d6eda80485466",
+  "frozen_core_count": 195306,
+  "scope_core_count": 190553,
+  "split_counts": {
+    "train": 171478,
+    "validation": 9527,
+    "test": 9548
+  },
+  "approved_seed_templates": 118,
+  "main_bank_size": 5000,
+  "builder_H_formula_pass_count": 5000,
+  "no_self_or_equivalent_references": true,
+  "no_validation_or_test_reference_graphs": true,
+  "retrieval_audits": [
+    {
+      "exact_top1_score_matches": 63,
+      "exact_audit_targets": 64,
+      "fraction": 0.984375,
+      "candidate_count": 64,
+      "expansion_search": 256
+    },
+    {
+      "exact_top1_score_matches": 63,
+      "exact_audit_targets": 64,
+      "fraction": 0.984375,
+      "candidate_count": 64,
+      "expansion_search": 256
+    }
+  ],
+  "coverage": {
+    "500": {
+      "all_frozen_cores": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.42379841208457947,
+        "median_nearest_tanimoto": 0.3913043439388275,
+        "p10_nearest_tanimoto": 0.2708333432674408,
+        "fraction_at_least_0.3": 0.8123969565707146,
+        "fraction_at_least_0.4": 0.4812857771906649,
+        "fraction_at_least_0.5": 0.2650148996958619,
+        "fraction_at_least_0.6": 0.12628388272761717,
+        "fraction_at_least_0.7": 0.05159595711345274
+      },
+      "retrieval_exact_audit": {
+        "exact_top1_score_matches": 64,
+        "exact_audit_targets": 64,
+        "fraction": 1.0,
+        "candidate_count": 64,
+        "expansion_search": 256
+      },
+      "minimum_formula_L1_including_H_quantiles": {
+        "0": 0.0,
+        "0.1": 1.0,
+        "0.5": 3.0,
+        "0.9": 6.0,
+        "1": 18.0
+      },
+      "formula_exact_different_core_fraction": 0.04688028017572425,
+      "coverage_role": "post-selection diagnosis only; not checkpoint or template tuning on test"
+    },
+    "2000": {
+      "all_frozen_cores": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.4916243553161621,
+        "median_nearest_tanimoto": 0.460317462682724,
+        "p10_nearest_tanimoto": 0.3076923191547394,
+        "fraction_at_least_0.3": 0.9173655699261671,
+        "fraction_at_least_0.4": 0.6622940411456893,
+        "fraction_at_least_0.5": 0.42105721278404146,
+        "fraction_at_least_0.6": 0.243412900781338,
+        "fraction_at_least_0.7": 0.1266166938035698
+      },
+      "retrieval_exact_audit": {
+        "exact_top1_score_matches": 64,
+        "exact_audit_targets": 64,
+        "fraction": 1.0,
+        "candidate_count": 64,
+        "expansion_search": 256
+      },
+      "minimum_formula_L1_including_H_quantiles": {
+        "0": 0.0,
+        "0.1": 0.0,
+        "0.5": 2.0,
+        "0.9": 4.0,
+        "1": 15.0
+      },
+      "formula_exact_different_core_fraction": 0.12802986083376855,
+      "coverage_role": "post-selection diagnosis only; not checkpoint or template tuning on test"
+    },
+    "5000": {
+      "all_frozen_cores": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.5414533615112305,
+        "median_nearest_tanimoto": 0.5151515007019043,
+        "p10_nearest_tanimoto": 0.33870968222618103,
+        "fraction_at_least_0.3": 0.9567089592741647,
+        "fraction_at_least_0.4": 0.7759771845207009,
+        "fraction_at_least_0.5": 0.5458716066070679,
+        "fraction_at_least_0.6": 0.3450636437180629,
+        "fraction_at_least_0.7": 0.19957912199317993
+      },
+      "retrieval_exact_audit": {
+        "exact_top1_score_matches": 64,
+        "exact_audit_targets": 64,
+        "fraction": 1.0,
+        "candidate_count": 64,
+        "expansion_search": 256
+      },
+      "minimum_formula_L1_including_H_quantiles": {
+        "0": 0.0,
+        "0.1": 0.0,
+        "0.5": 2.0,
+        "0.9": 4.0,
+        "1": 15.0
+      },
+      "formula_exact_different_core_fraction": 0.22977788700807963,
+      "coverage_role": "post-selection diagnosis only; not checkpoint or template tuning on test"
+    },
+    "10000": {
+      "all_frozen_cores": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.5794098377227783,
+        "median_nearest_tanimoto": 0.5616438388824463,
+        "p10_nearest_tanimoto": 0.364705890417099,
+        "fraction_at_least_0.3": 0.9742813840844623,
+        "fraction_at_least_0.4": 0.8423448332360501,
+        "fraction_at_least_0.5": 0.6414805484726531,
+        "fraction_at_least_0.6": 0.4319682959048877,
+        "fraction_at_least_0.7": 0.26732409654593303
+      },
+      "retrieval_exact_audit": {
+        "exact_top1_score_matches": 63,
+        "exact_audit_targets": 64,
+        "fraction": 0.984375,
+        "candidate_count": 64,
+        "expansion_search": 256
+      },
+      "minimum_formula_L1_including_H_quantiles": {
+        "0": 0.0,
+        "0.1": 0.0,
+        "0.5": 1.0,
+        "0.9": 3.0,
+        "1": 13.0
+      },
+      "formula_exact_different_core_fraction": 0.3299796217218109,
+      "coverage_role": "post-selection diagnosis only; not checkpoint or template tuning on test"
+    },
+    "20000": {
+      "all_frozen_cores": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.6202491521835327,
+        "median_nearest_tanimoto": 0.6153846383094788,
+        "p10_nearest_tanimoto": 0.3962264060974121,
+        "fraction_at_least_0.3": 0.9868360419034745,
+        "fraction_at_least_0.4": 0.8980727678617144,
+        "fraction_at_least_0.5": 0.7363726664823406,
+        "fraction_at_least_0.6": 0.5337982448055871,
+        "fraction_at_least_0.7": 0.35059854791967476
+      },
+      "retrieval_exact_audit": {
+        "exact_top1_score_matches": 63,
+        "exact_audit_targets": 64,
+        "fraction": 0.984375,
+        "candidate_count": 64,
+        "expansion_search": 256
+      },
+      "minimum_formula_L1_including_H_quantiles": {
+        "0": 0.0,
+        "0.1": 0.0,
+        "0.5": 1.0,
+        "0.9": 2.0,
+        "1": 13.0
+      },
+      "formula_exact_different_core_fraction": 0.45141470308131854,
+      "coverage_role": "post-selection diagnosis only; not checkpoint or template tuning on test"
+    }
+  },
+  "functional_coverage": {
+    "500": {
+      "functional_counts": {
+        "amine": 209,
+        "quaternary_ammonium": 11,
+        "alcohol_or_phenol": 206,
+        "carboxyl_or_carboxylate": 26,
+        "amide": 56,
+        "ester": 44,
+        "ether": 244,
+        "nitrile": 2,
+        "heterocycle": 215,
+        "aromatic_heterocycle": 155,
+        "carbonyl_other": 69,
+        "sulfur": 122,
+        "halogen": 139,
+        "P_C_bond": 120,
+        "P_S_bond": 2,
+        "P_N_bond": 1
+      },
+      "uncovered_classes_present_in_frozen_pool": [],
+      "mass_Da_quantiles": {
+        "0": 80.987,
+        "0.1": 180.15959999999998,
+        "0.5": 376.172,
+        "0.9": 545.3722000000002,
+        "1": 1215.974000000001
+      },
+      "diagnostic_only_not_template_or_model_tuning_on_heldout": true
+    },
+    "2000": {
+      "functional_counts": {
+        "amine": 880,
+        "quaternary_ammonium": 26,
+        "alcohol_or_phenol": 861,
+        "carboxyl_or_carboxylate": 97,
+        "amide": 185,
+        "ester": 178,
+        "ether": 1167,
+        "nitrile": 12,
+        "heterocycle": 1067,
+        "aromatic_heterocycle": 889,
+        "carbonyl_other": 419,
+        "sulfur": 525,
+        "halogen": 642,
+        "P_C_bond": 511,
+        "P_S_bond": 2,
+        "P_N_bond": 1
+      },
+      "uncovered_classes_present_in_frozen_pool": [],
+      "mass_Da_quantiles": {
+        "0": 79.015,
+        "0.1": 198.031,
+        "0.5": 387.3860000000001,
+        "0.9": 541.3432000000001,
+        "1": 1215.974000000001
+      },
+      "diagnostic_only_not_template_or_model_tuning_on_heldout": true
+    },
+    "5000": {
+      "functional_counts": {
+        "amine": 2105,
+        "quaternary_ammonium": 42,
+        "alcohol_or_phenol": 2229,
+        "carboxyl_or_carboxylate": 244,
+        "amide": 526,
+        "ester": 412,
+        "ether": 2949,
+        "nitrile": 30,
+        "heterocycle": 2781,
+        "aromatic_heterocycle": 2360,
+        "carbonyl_other": 1167,
+        "sulfur": 1326,
+        "halogen": 1657,
+        "P_C_bond": 1381,
+        "P_S_bond": 2,
+        "P_N_bond": 1
+      },
+      "uncovered_classes_present_in_frozen_pool": [],
+      "mass_Da_quantiles": {
+        "0": 79.015,
+        "0.1": 211.221,
+        "0.5": 390.1160000000001,
+        "0.9": 540.3039000000003,
+        "1": 1215.974000000001
+      },
+      "diagnostic_only_not_template_or_model_tuning_on_heldout": true
+    },
+    "10000": {
+      "functional_counts": {
+        "amine": 4161,
+        "quaternary_ammonium": 58,
+        "alcohol_or_phenol": 4306,
+        "carboxyl_or_carboxylate": 559,
+        "amide": 1105,
+        "ester": 765,
+        "ether": 5749,
+        "nitrile": 78,
+        "heterocycle": 5586,
+        "aromatic_heterocycle": 4753,
+        "carbonyl_other": 2454,
+        "sulfur": 2660,
+        "halogen": 3342,
+        "P_C_bond": 3051,
+        "P_S_bond": 2,
+        "P_N_bond": 1
+      },
+      "uncovered_classes_present_in_frozen_pool": [],
+      "mass_Da_quantiles": {
+        "0": 76.999,
+        "0.1": 216.09,
+        "0.5": 389.3125000000001,
+        "0.9": 538.3167000000002,
+        "1": 1215.974000000001
+      },
+      "diagnostic_only_not_template_or_model_tuning_on_heldout": true
+    },
+    "20000": {
+      "functional_counts": {
+        "amine": 8173,
+        "quaternary_ammonium": 96,
+        "alcohol_or_phenol": 8300,
+        "carboxyl_or_carboxylate": 1232,
+        "amide": 2353,
+        "ester": 1511,
+        "ether": 11049,
+        "nitrile": 226,
+        "heterocycle": 11048,
+        "aromatic_heterocycle": 9430,
+        "carbonyl_other": 4947,
+        "sulfur": 5271,
+        "halogen": 6668,
+        "P_C_bond": 6643,
+        "P_S_bond": 2,
+        "P_N_bond": 1
+      },
+      "uncovered_classes_present_in_frozen_pool": [],
+      "mass_Da_quantiles": {
+        "0": 76.999,
+        "0.1": 217.1587,
+        "0.5": 388.49150000000003,
+        "0.9": 537.4669000000004,
+        "1": 1215.974000000001
+      },
+      "diagnostic_only_not_template_or_model_tuning_on_heldout": true
+    }
+  },
+  "frozen_pool_functional_counts": {
+    "amine": 86647,
+    "quaternary_ammonium": 1621,
+    "alcohol_or_phenol": 68966,
+    "carboxyl_or_carboxylate": 18680,
+    "amide": 36366,
+    "ester": 19099,
+    "ether": 98827,
+    "nitrile": 3744,
+    "heterocycle": 109594,
+    "aromatic_heterocycle": 85571,
+    "carbonyl_other": 47488,
+    "sulfur": 28270,
+    "halogen": 47525,
+    "P_C_bond": 73003,
+    "P_S_bond": 0,
+    "P_N_bond": 0
+  },
+  "paper": {
+    "url": "https://doi.org/10.1038/s41467-026-72149-6",
+    "main_batch_size": 32,
+    "selection": "minimum_validation_token_cross_entropy",
+    "patience_complete_epochs": 5
+  },
+  "generation_metrics_select_checkpoint": false,
+  "generation_evaluation_completed": false,
+  "other_pool_size_and_K_training_completed": false,
+  "cpu_gate": {
+    "passed": true,
+    "audits": [
+      {
+        "batch_size": 32,
+        "steps": 4,
+        "restart_after_step": 2,
+        "maximum_model_optimizer_logits_difference": 0.0,
+        "absolute_tolerance": 0.0,
+        "losses": [
+          [
+            4.360252857208252,
+            3.7551021575927734,
+            3.205670118331909,
+            2.9050793647766113
+          ],
+          [
+            4.360252857208252,
+            3.7551021575927734,
+            3.205670118331909,
+            2.9050793647766113
+          ]
+        ],
+        "all_module_gradients_finite_nonzero": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "all_modules_updated": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "real_disk_checkpoint_reload": true,
+        "same_next_batches_and_rng": true
+      }
+    ]
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.9.1+cu128",
+    "torch-geometric": "2.8.0.post1",
+    "numpy": "2.2.3",
+    "rdkit": "2026.3.3",
+    "scipy": "1.18.1",
+    "usearch": "2.26.4",
+    "omegaconf": "2.4.0"
+  },
+  "GPU_retry_authorized": false,
+  "initial_GPU_attempt": {
+    "child_exit_code": 1,
+    "stop_reason": "child_failed",
+    "display_reset_count": 0,
+    "new_gpu_dump_count": 0,
+    "protected_checkpoints_unchanged": true,
+    "unreadable_dump_directories": [
+      "C:\\Windows\\LiveKernelReports\\WATCHDOG"
+    ],
+    "failure": "Strict deterministic_algorithms conflicted with torch2.9 CUDA nll_loss2d; reverted to historical runtime"
+  }
+}
