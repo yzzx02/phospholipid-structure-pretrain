@@ -83,3 +83,12 @@ not graph repair or guessed structures. This work does not authorize training,
 spectra generation or automatic promotion into the formal template library.
 Publish only processing code and aggregate reports, never full structures,
 source caches or per-graph human decisions.
+
+The 2026-10-22 mass/formula/length assessment is read-only in
+`outputs/polar_size_scope_audit_20261022/`. Its 350/450/500/600 Da profiles and
+the suggested 500 Da, C25, P-distance15 scope are proposals, not an authorized
+replacement for the frozen library, splits or model labels. Keep every frozen
+graph and the complete known-headgroup reference. Do not apply a selection or
+train from this assessment without subsequent user direction. The v0.2 review
+can be opened directly in a system browser from its unchanged index.html;
+loopback port 8880 is only a temporary convenience and may stop after a restart.
