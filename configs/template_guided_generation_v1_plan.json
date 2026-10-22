@@ -1,0 +1,53 @@
+{
+  "schema": "template-guided-generation-plan-v1",
+  "status": "design_record_not_run_configuration",
+  "objective": "Final structure-template and formula conditioned phospholipid Polar generation",
+  "base_model_configuration": "configs/polar_fp_base_50k.yaml",
+  "change_network_hyperparameters_now": false,
+  "require_spectral_finetuning": false,
+  "schedule_PGCN_casework": false,
+  "pretraining_template_pool": {
+    "main_size": 5000,
+    "comparison_sizes": [500, 2000, 5000, 10000, 20000],
+    "source": "training-permitted explicit structures with known seeds and curated algorithmic supplements",
+    "previous_200_to_350_proposals_role": "known seed curation and small-pool diagnostic",
+    "initial_K": 3,
+    "K_comparison": [1, 3, 5, 10],
+    "target_pool_is_larger_than_template_pool": true,
+    "new_candidate_mass_limit_Da": 600,
+    "exclude_extra_lipid_anchors": true
+  },
+  "application_template_pool": {
+    "sources": ["MS-DIAL", "LipidGate", "other explicit sourced spectral references"],
+    "require_traceable_spectrum": true,
+    "require_unambiguous_rooted_structure": true,
+    "report_experimental_and_theoretical_references_separately": true,
+    "allow_unspectrummed_synthetic_training_templates_as_actual_spectral_hits": false
+  },
+  "output_modes": {
+    "Restricted": "formula-compatible canonical whitelist candidates ranked by conditional Decoder sequence probability",
+    "Free": "autoregressive formula-constrained generation, strict final chemistry and assembly validation",
+    "share_generator_weights": true,
+    "known_output_catalog_is_distinct_from_input_template_pool": true
+  },
+  "evaluation": {
+    "template_scale_coverage": true,
+    "generation_scale_comparison": true,
+    "formula_only_and_random_template_controls": true,
+    "full_core_and_variable_head_similarity": true,
+    "best_input_template_baseline_and_gain": true,
+    "spectrally_available_template_structure_proxy": true,
+    "real_spectral_retrieval_assessment": true,
+    "external_standard_spectra_known_catalog_ranking": true,
+    "unseen_head_free_generation_holdout": true,
+    "core_level_target_holdout_before_reference_target_pairing": true,
+    "exclude_self_and_equivalent_core_references_for_unseen_head_evaluation": true,
+    "formal_main_result_random_seeds_at_least": 3
+  },
+  "execution_this_revision": {
+    "new_training_launched": false,
+    "new_5000_template_pool_already_built": false,
+    "restricted_candidate_scoring_already_implemented": false,
+    "preserve_existing_weights_splits_frozen_library_and_stop_latches": true
+  }
+}

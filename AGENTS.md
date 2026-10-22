@@ -108,3 +108,24 @@ glycan heads may be valid fingerprint template inputs despite longer labels.
 Any future training needs an independent fixed-template cache and evaluation
 design; the old split results are not an independent test of this new bank.
 See `docs/results/HEADGROUP_TEMPLATE_PROPOSAL_20261022.md`.
+
+The user's subsequent 2026-10-22 V1.0 plan and direct amendments supersede the
+earlier provisional 250-template recommendation as the formal training design.
+The final first-version model is structure-template/formula conditioned Polar
+generation; structure training itself is final, with no required MS/MS supervised
+finetuning. Keep current architecture/optimization defaults; do not follow the
+attachment's broad neural hyperparameter search or schedule PGCN casework.
+Use 5,000 as the main structural training template pool, with 500/2,000/5,000/
+10,000/20,000 pool-size and K1/3/5/10 experiments plus coverage and generation
+evaluation. The 134-known/200-350 proposals remain curation seeds and diagnostics.
+Actual later spectral application templates must have traceable spectra and
+explicit structures from MS-DIAL, LipidGate or equivalent known sources; a
+synthetic training template without spectra is not an actual spectral hit.
+Keep the training reference pool, spectral reference pool and Restricted output
+whitelist distinct. Restricted and Free share a generator; neither external
+spectra independence nor closed-catalog accuracy alone proves unseen-head
+generation. Formal held-out target cores must not be training labels or equivalent
+input templates; preserve historical splits and audit any warm-start's seen graphs.
+This revision records design only; no 5,000 pool or new training was completed.
+See `docs/experiments/TEMPLATE_GUIDED_PHOSPHOLIPID_GENERATION_V1.md` and
+`configs/template_guided_generation_v1_plan.json` for the current contract.
