@@ -1,0 +1,5233 @@
+{
+  "summary": {
+    "human_decision_counts": {
+      "keep": 135,
+      "exclude": 3,
+      "review": 2
+    },
+    "source_graphs": 324,
+    "approved_catalog_graphs": 135,
+    "approved_builder_pass": 127,
+    "approved_original_split_counts": {
+      "external": 62,
+      "train": 64,
+      "test": 8,
+      "validation": 1
+    },
+    "approved_training_blockers": {
+      "intact_lipid_as_polar": 5,
+      "nonneutral_structure": 2,
+      "unsupported_radical": 1
+    },
+    "conceptual_human_approved_seed_graphs": 134,
+    "current_model_eligible_approved_graphs": 127,
+    "approved_similar_pairs_at_least_0.85": 26,
+    "protonation_alias_record_count": 4,
+    "candidate_pool": 190480,
+    "candidate_exclusion_first_reason_counts": {
+      "extra_lipid_anchor": 4752,
+      "already_in_reviewed_source_catalog": 74
+    },
+    "candidate_pool_scope": "complete original <=600 Da pool regardless of old split; no extra lipid anchor, current tokenizer; no new C/N/S or halogen bans",
+    "method": {
+      "algorithm": "coverage-aware facility-location coreset plus diversity and mass/P balance",
+      "coreset": {
+        "candidate_coreset": 4209,
+        "probe_targets": 4096,
+        "random_seed": 42,
+        "sampling": "uniform without replacement, plus diversity proposal",
+        "objective_weights": {
+          "probe_facility_gain": 0.6,
+          "Morgan_novelty": 0.25,
+          "formula_novelty": 0.1,
+          "new_functional_category": 0.05
+        },
+        "mass_P_stratum_max_bonus": 1.25,
+        "probe_random_seed": 20261022
+      },
+      "fingerprint": "Morgan radius2/2048/chirality false; attachment retained",
+      "formula_scales_C_H_N_O_P_S_F_Cl_Br_I": [
+        6,
+        12,
+        2,
+        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "balance": "mass150Da bins x P_count, square-root candidate-population targets, maximum 1.25 bonus",
+      "new_template_max_similarity_to_previous": 0.85,
+      "functional_SMARTS": {
+        "amine": "[NX3;!$(N-C=O);!$(N=P)]",
+        "quaternary_ammonium": "[N+X4]",
+        "alcohol_or_phenol": "[O;H1]-[#6;!$(C=O)]",
+        "carboxyl_or_carboxylate": "[CX3](=O)[O;H1,-1]",
+        "amide": "[NX3]-[CX3](=O)",
+        "ester": "[CX3](=O)-[OX2]-[#6]",
+        "ether": "[#6]-[OX2]-[#6]",
+        "nitrile": "[CX2]#[NX1]",
+        "heterocycle": "[!#6;!#1;!#0;R]",
+        "aromatic_heterocycle": "[n,o,s]",
+        "carbonyl_other": "[#6;!$(C(=O)[O,N])]=[OX1]",
+        "sulfur": "[#16]",
+        "halogen": "[F,Cl,Br,I]",
+        "P_C_bond": "[#15]~[#6]",
+        "P_S_bond": "[#15]~[#16]",
+        "P_N_bond": "[#15]~[#7]"
+      },
+      "historical_splits": "ignored for selection at user's direction; files preserved, future evaluation must be redesigned",
+      "normalization": "terminal phosphate-O protonation comparison only; no changed labels",
+      "self_match": "each target's own phosphate-protonation group excluded from all nearest distances"
+    },
+    "proposed_sizes": [
+      134,
+      200,
+      250,
+      300,
+      350
+    ],
+    "default_review_size": 250,
+    "new_proposals_for_250": 116,
+    "new_proposals_for_350": 216,
+    "proposals_origin_counts_250": {
+      "pubchem_multi_attachment_split": 32,
+      "pubchem_baseline": 51,
+      "generated_phosphate_analog": 33
+    },
+    "proposals_historical_split_counts_250": {
+      "train": 109,
+      "test": 4,
+      "validation": 3
+    },
+    "proposals_max_open_polar_mass_350": 590.5940000000003,
+    "all_selected_builder_and_independent_formula_H_balance_pass": true,
+    "no_new_proposal_human_approved": true,
+    "training_started": false,
+    "frozen_library_changed": false,
+    "rdkit": "2026.03.3",
+    "wall_seconds": 133.26721649999672,
+    "current_decoder_target_eligible_approved_graphs": 120,
+    "approved_target_label_blockers": {
+      "intact_lipid_as_polar": 5,
+      "target_label_length_above_84": 7,
+      "nonneutral_structure": 2,
+      "unsupported_radical": 1,
+      "target_label_vocabulary:[O]": 1
+    },
+    "source_sha256": {
+      "reported_headgroups_v02.csv": "deb98d31ac712149fc508fc3d6c61ee55754bb8f7c4dc4f502c5a4d703765944",
+      "headgroup_manual_review.json": "26bc7827099964b1bfd28b80a7033e797f19476a88219d32a289d1fae7dadefe",
+      "headgroup_manual_review.csv": "1bfa425153c8812625403acf5e8aba3f556ed4a708d4718dbf53dab8925a4045",
+      "polar_library.parquet": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+      "polar_groups.parquet": "a8ba86ea326c4d0e319d8c2025743d01880eb2930d844e7b647305ce44416fa8",
+      "per_graph_descriptors_private.parquet": "0779752a2ea3547707d5d2d40f4a3e2de50008cf0fc87ade17044db037fb57c6"
+    }
+  },
+  "coverage": {
+    "134": {
+      "all_frozen": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.3280025139718547,
+        "median_nearest_tanimoto": 0.3088235294117647,
+        "p10_nearest_tanimoto": 0.21739130434782608,
+        "fraction_at_least_0.3": 0.54220556460119,
+        "fraction_at_least_0.4": 0.20982970313252025,
+        "fraction_at_least_0.5": 0.07282418358882983,
+        "fraction_at_least_0.6": 0.0200147460907499,
+        "fraction_at_least_0.7": 0.0055041831792162045,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 89410,
+        "below_0.5_count": 181083,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.08888888888888889,
+          "0.1": 0.21739130434782608,
+          "0.25": 0.2537313432835821,
+          "0.5": 0.3088235294117647,
+          "0.75": 0.38095238095238093,
+          "0.9": 0.4666666666666667,
+          "0.95": 0.5263157894736842,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 2.0,
+            "0.25": 4.0,
+            "0.5": 6.0,
+            "0.75": 9.0,
+            "0.9": 12.0,
+            "0.95": 14.0,
+            "1": 37.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 3.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 9.0,
+            "1": 19.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.041666666666666664,
+            "0.25": 0.08333333333333333,
+            "0.5": 0.15833333333333333,
+            "0.75": 0.2583333333333333,
+            "0.9": 0.3666666666666667,
+            "0.95": 0.4416666666666666,
+            "1": 0.9416666666666667
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 6.0,
+            "0.25": 9.0,
+            "0.5": 15.0,
+            "0.75": 24.0,
+            "0.9": 34.0,
+            "0.95": 41.0,
+            "1": 82.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.015770124829754335,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86647,
+            "template_count": 56,
+            "target_fraction_with_similarity_at_least_0.5": 0.06273731346728681
+          },
+          "quaternary_ammonium": {
+            "target_count": 1621,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.08821714990746453
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68966,
+            "template_count": 78,
+            "target_fraction_with_similarity_at_least_0.5": 0.11262071165501841
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18680,
+            "template_count": 15,
+            "target_fraction_with_similarity_at_least_0.5": 0.05578158458244111
+          },
+          "amide": {
+            "target_count": 36366,
+            "template_count": 12,
+            "target_fraction_with_similarity_at_least_0.5": 0.03247538909970852
+          },
+          "ester": {
+            "target_count": 19099,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.04172993350437196
+          },
+          "ether": {
+            "target_count": 98827,
+            "template_count": 38,
+            "target_fraction_with_similarity_at_least_0.5": 0.08474404767927793
+          },
+          "nitrile": {
+            "target_count": 3744,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": 0.060363247863247864
+          },
+          "heterocycle": {
+            "target_count": 109594,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.06591601730021716
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85571,
+            "template_count": 9,
+            "target_fraction_with_similarity_at_least_0.5": 0.06871486835493333
+          },
+          "carbonyl_other": {
+            "target_count": 47488,
+            "template_count": 8,
+            "target_fraction_with_similarity_at_least_0.5": 0.1236522911051213
+          },
+          "sulfur": {
+            "target_count": 28270,
+            "template_count": 9,
+            "target_fraction_with_similarity_at_least_0.5": 0.034524230633180046
+          },
+          "halogen": {
+            "target_count": 47525,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.04079957916885849
+          },
+          "P_C_bond": {
+            "target_count": 73003,
+            "template_count": 6,
+            "target_fraction_with_similarity_at_least_0.5": 0.026848211717326684
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 195273,
+            "template_count": 132,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 195285,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 141123,
+            "template_count": 78,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195306,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195306,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28270,
+            "template_count": 9,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28943,
+            "template_count": 0,
+            "uncovered": true
+          },
+          "Cl": {
+            "target_count": 17099,
+            "template_count": 1,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6541,
+            "template_count": 0,
+            "uncovered": true
+          },
+          "I": {
+            "target_count": 1099,
+            "template_count": 1,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89440,
+            "template_count": 71,
+            "fraction_with_similarity_at_least_0.5": 0.0778175313059034
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1959,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.058703420112302195
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7677,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.032564803959880165
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 194,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.015463917525773196
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15558,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05097056176886489
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 801,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.003745318352059925
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.018656716417910446
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.04081632653061224
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 534,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.08239700374531835
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14736,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.04492399565689468
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.02287581699346405
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2650,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.004528301886792453
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3694,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.020303194369247428
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 600,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.047619047619047616
+          },
+          "C;H;O;P": {
+            "target_count": 39402,
+            "template_count": 50,
+            "fraction_with_similarity_at_least_0.5": 0.11265925587533628
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1288,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.08540372670807453
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2906,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.07192016517549897
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.029556650246305417
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3741,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.060144346431435444
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 412,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.010362694300518135
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10597826086956522
+          },
+          "C;H;O;P;S": {
+            "target_count": 4162,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.05165785679961557
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.011811023622047244
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 489,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 27,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 46,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 6,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.6666666666666666
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      },
+      "fixed_unseen_targets": {
+        "targets": 195017,
+        "mean_nearest_tanimoto": 0.32789426696876445,
+        "median_nearest_tanimoto": 0.3088235294117647,
+        "p10_nearest_tanimoto": 0.21739130434782608,
+        "fraction_at_least_0.3": 0.5420296692083254,
+        "fraction_at_least_0.4": 0.20960223980473497,
+        "fraction_at_least_0.5": 0.07254752149812581,
+        "fraction_at_least_0.6": 0.01976750744806863,
+        "fraction_at_least_0.7": 0.005394401513714189,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 89312,
+        "below_0.5_count": 180869,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.08888888888888889,
+          "0.1": 0.21739130434782608,
+          "0.25": 0.2537313432835821,
+          "0.5": 0.3088235294117647,
+          "0.75": 0.38095238095238093,
+          "0.9": 0.4666666666666667,
+          "0.95": 0.525,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 2.0,
+            "0.25": 4.0,
+            "0.5": 6.0,
+            "0.75": 9.0,
+            "0.9": 12.0,
+            "0.95": 14.0,
+            "1": 37.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 3.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 9.0,
+            "1": 19.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.041666666666666664,
+            "0.25": 0.08333333333333333,
+            "0.5": 0.15833333333333333,
+            "0.75": 0.2583333333333333,
+            "0.9": 0.3666666666666667,
+            "0.95": 0.4416666666666666,
+            "1": 0.9416666666666667
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 6.0,
+            "0.25": 9.0,
+            "0.5": 15.0,
+            "0.75": 24.0,
+            "0.9": 34.0,
+            "0.95": 41.0,
+            "1": 82.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.015634534425203957,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86520,
+            "template_count": 56,
+            "target_fraction_with_similarity_at_least_0.5": 0.0625288950531669
+          },
+          "quaternary_ammonium": {
+            "target_count": 1616,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.0853960396039604
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68856,
+            "template_count": 78,
+            "target_fraction_with_similarity_at_least_0.5": 0.11223422795399093
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18654,
+            "template_count": 15,
+            "target_fraction_with_similarity_at_least_0.5": 0.055537686287123404
+          },
+          "amide": {
+            "target_count": 36321,
+            "template_count": 12,
+            "target_fraction_with_similarity_at_least_0.5": 0.03243302772500757
+          },
+          "ester": {
+            "target_count": 19083,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.04160771367185453
+          },
+          "ether": {
+            "target_count": 98710,
+            "template_count": 38,
+            "target_fraction_with_similarity_at_least_0.5": 0.08463174956944586
+          },
+          "nitrile": {
+            "target_count": 3740,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": 0.06042780748663101
+          },
+          "heterocycle": {
+            "target_count": 109460,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.06582313173762105
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85460,
+            "template_count": 9,
+            "target_fraction_with_similarity_at_least_0.5": 0.06864029955534753
+          },
+          "carbonyl_other": {
+            "target_count": 47434,
+            "template_count": 8,
+            "target_fraction_with_similarity_at_least_0.5": 0.12349791288948855
+          },
+          "sulfur": {
+            "target_count": 28234,
+            "template_count": 9,
+            "target_fraction_with_similarity_at_least_0.5": 0.03446199617482468
+          },
+          "halogen": {
+            "target_count": 47467,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.040807297701561086
+          },
+          "P_C_bond": {
+            "target_count": 72927,
+            "template_count": 6,
+            "target_fraction_with_similarity_at_least_0.5": 0.026862478917273436
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 194986,
+            "template_count": 132,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 194996,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 140931,
+            "template_count": 78,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195017,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195017,
+            "template_count": 134,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28234,
+            "template_count": 9,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28911,
+            "template_count": 0,
+            "uncovered": true
+          },
+          "Cl": {
+            "target_count": 17076,
+            "template_count": 1,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6527,
+            "template_count": 0,
+            "uncovered": true
+          },
+          "I": {
+            "target_count": 1098,
+            "template_count": 1,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89313,
+            "template_count": 71,
+            "fraction_with_similarity_at_least_0.5": 0.07751391174856964
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1955,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.058823529411764705
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7666,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.03248108531176624
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.015544041450777202
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15543,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.050955414012738856
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 798,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0037593984962406013
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.018656716417910446
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.04081632653061224
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 533,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.0825515947467167
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14719,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.04484000271757592
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.02287581699346405
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2645,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.004536862003780718
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3689,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.020330712930333422
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 597,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.047619047619047616
+          },
+          "C;H;O;P": {
+            "target_count": 39320,
+            "template_count": 50,
+            "fraction_with_similarity_at_least_0.5": 0.11210579857578841
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1285,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.08560311284046693
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2905,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.07194492254733219
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.029556650246305417
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3739,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06017651778550415
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 411,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.010362694300518135
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10597826086956522
+          },
+          "C;H;O;P;S": {
+            "target_count": 4159,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.05145467660495311
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.011811023622047244
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 488,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 26,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 45,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 4,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      }
+    },
+    "200": {
+      "all_frozen": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.39908758388862003,
+        "median_nearest_tanimoto": 0.3783783783783784,
+        "p10_nearest_tanimoto": 0.2653061224489796,
+        "fraction_at_least_0.3": 0.7951368621547725,
+        "fraction_at_least_0.4": 0.43318177628951493,
+        "fraction_at_least_0.5": 0.19739792940309053,
+        "fraction_at_least_0.6": 0.06773985438235385,
+        "fraction_at_least_0.7": 0.019221119678862912,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 40011,
+        "below_0.5_count": 156753,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.11827956989247312,
+          "0.1": 0.2653061224489796,
+          "0.25": 0.3114754098360656,
+          "0.5": 0.3783783783783784,
+          "0.75": 0.46835443037974683,
+          "0.9": 0.5625,
+          "0.95": 0.625,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 2.0,
+            "0.25": 3.0,
+            "0.5": 4.0,
+            "0.75": 6.0,
+            "0.9": 8.0,
+            "0.95": 10.0,
+            "1": 35.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 4.0,
+            "0.9": 5.0,
+            "0.95": 6.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.03333333333333333,
+            "0.25": 0.05833333333333333,
+            "0.5": 0.11666666666666665,
+            "0.75": 0.18333333333333332,
+            "0.9": 0.2583333333333333,
+            "0.95": 0.3,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 12.0,
+            "0.75": 20.0,
+            "0.9": 30.0,
+            "0.95": 36.0,
+            "1": 80.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.0270498602193481,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86647,
+            "template_count": 89,
+            "target_fraction_with_similarity_at_least_0.5": 0.22665527946726371
+          },
+          "quaternary_ammonium": {
+            "target_count": 1621,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.09130166563849476
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68966,
+            "template_count": 104,
+            "target_fraction_with_similarity_at_least_0.5": 0.33094568338021635
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18680,
+            "template_count": 19,
+            "target_fraction_with_similarity_at_least_0.5": 0.11338329764453961
+          },
+          "amide": {
+            "target_count": 36366,
+            "template_count": 22,
+            "target_fraction_with_similarity_at_least_0.5": 0.10677555958862674
+          },
+          "ester": {
+            "target_count": 19099,
+            "template_count": 15,
+            "target_fraction_with_similarity_at_least_0.5": 0.1294308602544636
+          },
+          "ether": {
+            "target_count": 98827,
+            "template_count": 74,
+            "target_fraction_with_similarity_at_least_0.5": 0.27709026885365334
+          },
+          "nitrile": {
+            "target_count": 3744,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.15705128205128205
+          },
+          "heterocycle": {
+            "target_count": 109594,
+            "template_count": 81,
+            "target_fraction_with_similarity_at_least_0.5": 0.24162819132434257
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85571,
+            "template_count": 45,
+            "target_fraction_with_similarity_at_least_0.5": 0.286779399562936
+          },
+          "carbonyl_other": {
+            "target_count": 47488,
+            "template_count": 24,
+            "target_fraction_with_similarity_at_least_0.5": 0.33642183288409705
+          },
+          "sulfur": {
+            "target_count": 28270,
+            "template_count": 20,
+            "target_fraction_with_similarity_at_least_0.5": 0.14368588609833746
+          },
+          "halogen": {
+            "target_count": 47525,
+            "template_count": 24,
+            "target_fraction_with_similarity_at_least_0.5": 0.18619673855865335
+          },
+          "P_C_bond": {
+            "target_count": 73003,
+            "template_count": 27,
+            "target_fraction_with_similarity_at_least_0.5": 0.09740695587852553
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 195273,
+            "template_count": 198,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 195285,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 141123,
+            "template_count": 126,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195306,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195306,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28270,
+            "template_count": 20,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28943,
+            "template_count": 16,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17099,
+            "template_count": 9,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6541,
+            "template_count": 3,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1099,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89440,
+            "template_count": 95,
+            "fraction_with_similarity_at_least_0.5": 0.22858899821109124
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1959,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19040326697294538
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7677,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.18001823629021754
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 194,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.03608247422680412
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15558,
+            "template_count": 8,
+            "fraction_with_similarity_at_least_0.5": 0.24109782748425249
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 801,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19225967540574282
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19542910447761194
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.08163265306122448
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 534,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.23595505617977527
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14736,
+            "template_count": 10,
+            "fraction_with_similarity_at_least_0.5": 0.15017643865363736
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0784313725490196
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2650,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.10452830188679245
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3694,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19030860855441256
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.22241992882562278
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 600,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19333333333333333
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.14285714285714285
+          },
+          "C;H;O;P": {
+            "target_count": 39402,
+            "template_count": 65,
+            "fraction_with_similarity_at_least_0.5": 0.1704735800213187
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1288,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1389751552795031
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2906,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.11080523055746731
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.029556650246305417
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3741,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.11120021384656509
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 412,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.21601941747572814
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.031088082901554404
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2777777777777778
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.030303030303030304
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.20652173913043478
+          },
+          "C;H;O;P;S": {
+            "target_count": 4162,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.077126381547333
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.013333333333333334
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.015748031496062992
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.01910828025477707
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 489,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.40899795501022496
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 27,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2222222222222222
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 46,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.45652173913043476
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 6,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.6666666666666666
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      },
+      "fixed_unseen_targets": {
+        "targets": 195017,
+        "mean_nearest_tanimoto": 0.3990046860980653,
+        "median_nearest_tanimoto": 0.3783783783783784,
+        "p10_nearest_tanimoto": 0.2653061224489796,
+        "fraction_at_least_0.3": 0.7950999143664399,
+        "fraction_at_least_0.4": 0.4330391709440715,
+        "fraction_at_least_0.5": 0.197157170913305,
+        "fraction_at_least_0.6": 0.06748129650235621,
+        "fraction_at_least_0.7": 0.019126537686458105,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 39959,
+        "below_0.5_count": 156568,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.11827956989247312,
+          "0.1": 0.2653061224489796,
+          "0.25": 0.3114754098360656,
+          "0.5": 0.3783783783783784,
+          "0.75": 0.46835443037974683,
+          "0.9": 0.5625,
+          "0.95": 0.625,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 2.0,
+            "0.25": 3.0,
+            "0.5": 4.0,
+            "0.75": 6.0,
+            "0.9": 8.0,
+            "0.95": 10.0,
+            "1": 23.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 4.0,
+            "0.9": 5.0,
+            "0.95": 6.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.03333333333333333,
+            "0.25": 0.05833333333333333,
+            "0.5": 0.11666666666666665,
+            "0.75": 0.18333333333333332,
+            "0.9": 0.2583333333333333,
+            "0.95": 0.3,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 12.0,
+            "0.75": 20.0,
+            "0.9": 30.0,
+            "0.95": 36.0,
+            "1": 80.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.02687970792289903,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86520,
+            "template_count": 89,
+            "target_fraction_with_similarity_at_least_0.5": 0.22649098474341192
+          },
+          "quaternary_ammonium": {
+            "target_count": 1616,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.08849009900990099
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68856,
+            "template_count": 104,
+            "target_fraction_with_similarity_at_least_0.5": 0.3306175206227489
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18654,
+            "template_count": 19,
+            "target_fraction_with_similarity_at_least_0.5": 0.11316607698080841
+          },
+          "amide": {
+            "target_count": 36321,
+            "template_count": 22,
+            "target_fraction_with_similarity_at_least_0.5": 0.10677018804548333
+          },
+          "ester": {
+            "target_count": 19083,
+            "template_count": 15,
+            "target_fraction_with_similarity_at_least_0.5": 0.12932976995231357
+          },
+          "ether": {
+            "target_count": 98710,
+            "template_count": 74,
+            "target_fraction_with_similarity_at_least_0.5": 0.27695268969709247
+          },
+          "nitrile": {
+            "target_count": 3740,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.1572192513368984
+          },
+          "heterocycle": {
+            "target_count": 109460,
+            "template_count": 81,
+            "target_fraction_with_similarity_at_least_0.5": 0.24155856020464098
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85460,
+            "template_count": 45,
+            "target_fraction_with_similarity_at_least_0.5": 0.2867423355956003
+          },
+          "carbonyl_other": {
+            "target_count": 47434,
+            "template_count": 24,
+            "target_fraction_with_similarity_at_least_0.5": 0.3362356115866256
+          },
+          "sulfur": {
+            "target_count": 28234,
+            "template_count": 20,
+            "target_fraction_with_similarity_at_least_0.5": 0.1436565842601119
+          },
+          "halogen": {
+            "target_count": 47467,
+            "template_count": 24,
+            "target_fraction_with_similarity_at_least_0.5": 0.186276781764173
+          },
+          "P_C_bond": {
+            "target_count": 72927,
+            "template_count": 27,
+            "target_fraction_with_similarity_at_least_0.5": 0.09743990565908374
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 194986,
+            "template_count": 198,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 194996,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 140931,
+            "template_count": 126,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195017,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195017,
+            "template_count": 200,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28234,
+            "template_count": 20,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28911,
+            "template_count": 16,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17076,
+            "template_count": 9,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6527,
+            "template_count": 3,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1098,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89313,
+            "template_count": 95,
+            "fraction_with_similarity_at_least_0.5": 0.22829823206028238
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1955,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19079283887468032
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7666,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.18014609966084008
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.03626943005181347
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15543,
+            "template_count": 8,
+            "fraction_with_similarity_at_least_0.5": 0.24113748954513287
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 798,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19172932330827067
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19542910447761194
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.08163265306122448
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 533,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.23452157598499063
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14719,
+            "template_count": 10,
+            "fraction_with_similarity_at_least_0.5": 0.15001019090970855
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0784313725490196
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2645,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.10472589792060491
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3689,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19056654920032529
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.22241992882562278
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 597,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.19430485762144054
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.14285714285714285
+          },
+          "C;H;O;P": {
+            "target_count": 39320,
+            "template_count": 65,
+            "fraction_with_similarity_at_least_0.5": 0.16996439471007121
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1285,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.13929961089494164
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2905,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.1108433734939759
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.029556650246305417
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3739,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.11125969510564322
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 411,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2141119221411192
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.031088082901554404
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2777777777777778
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.030303030303030304
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.20652173913043478
+          },
+          "C;H;O;P;S": {
+            "target_count": 4159,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.07694157249338783
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.013333333333333334
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.015748031496062992
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.01910828025477707
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 488,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4098360655737705
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 26,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 45,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.4666666666666667
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 4,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      }
+    },
+    "250": {
+      "all_frozen": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.41387551773332665,
+        "median_nearest_tanimoto": 0.39473684210526316,
+        "p10_nearest_tanimoto": 0.275,
+        "fraction_at_least_0.3": 0.8336456637276889,
+        "fraction_at_least_0.4": 0.4881468055256879,
+        "fraction_at_least_0.5": 0.22892793872180067,
+        "fraction_at_least_0.6": 0.08275731416341536,
+        "fraction_at_least_0.7": 0.024530736382906822,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 32490,
+        "below_0.5_count": 150595,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.11827956989247312,
+          "0.1": 0.275,
+          "0.25": 0.325,
+          "0.5": 0.39473684210526316,
+          "0.75": 0.4857142857142857,
+          "0.9": 0.5806451612903226,
+          "0.95": 0.6428571428571429,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 3.0,
+            "0.5": 4.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 8.0,
+            "1": 25.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 5.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.025,
+            "0.25": 0.05,
+            "0.5": 0.1,
+            "0.75": 0.15833333333333333,
+            "0.9": 0.225,
+            "0.95": 0.275,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 11.0,
+            "0.75": 19.0,
+            "0.9": 28.0,
+            "0.95": 35.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.03323502606166733,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86647,
+            "template_count": 106,
+            "target_fraction_with_similarity_at_least_0.5": 0.26092074740037163
+          },
+          "quaternary_ammonium": {
+            "target_count": 1621,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.09747069710055521
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68966,
+            "template_count": 122,
+            "target_fraction_with_similarity_at_least_0.5": 0.3703129078096453
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18680,
+            "template_count": 26,
+            "target_fraction_with_similarity_at_least_0.5": 0.14764453961456103
+          },
+          "amide": {
+            "target_count": 36366,
+            "template_count": 33,
+            "target_fraction_with_similarity_at_least_0.5": 0.1341087829291096
+          },
+          "ester": {
+            "target_count": 19099,
+            "template_count": 19,
+            "target_fraction_with_similarity_at_least_0.5": 0.15707628671658203
+          },
+          "ether": {
+            "target_count": 98827,
+            "template_count": 100,
+            "target_fraction_with_similarity_at_least_0.5": 0.31872868750442696
+          },
+          "nitrile": {
+            "target_count": 3744,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.17414529914529914
+          },
+          "heterocycle": {
+            "target_count": 109594,
+            "template_count": 107,
+            "target_fraction_with_similarity_at_least_0.5": 0.27506067850429766
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85571,
+            "template_count": 66,
+            "target_fraction_with_similarity_at_least_0.5": 0.3226092952051513
+          },
+          "carbonyl_other": {
+            "target_count": 47488,
+            "template_count": 32,
+            "target_fraction_with_similarity_at_least_0.5": 0.370788409703504
+          },
+          "sulfur": {
+            "target_count": 28270,
+            "template_count": 25,
+            "target_fraction_with_similarity_at_least_0.5": 0.1802263883975946
+          },
+          "halogen": {
+            "target_count": 47525,
+            "template_count": 37,
+            "target_fraction_with_similarity_at_least_0.5": 0.22916359810625986
+          },
+          "P_C_bond": {
+            "target_count": 73003,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.12298124734599948
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 195273,
+            "template_count": 248,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 195285,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 141123,
+            "template_count": 161,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195306,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195306,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28270,
+            "template_count": 25,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28943,
+            "template_count": 24,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17099,
+            "template_count": 12,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6541,
+            "template_count": 7,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1099,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89440,
+            "template_count": 117,
+            "fraction_with_similarity_at_least_0.5": 0.25608228980322
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1959,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.23379275140377745
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7677,
+            "template_count": 6,
+            "fraction_with_similarity_at_least_0.5": 0.2037254135730103
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 194,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.03608247422680412
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15558,
+            "template_count": 13,
+            "fraction_with_similarity_at_least_0.5": 0.3008098727342846
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 801,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.20973782771535582
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24486940298507462
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.30612244897959184
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 534,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.299625468164794
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14736,
+            "template_count": 12,
+            "fraction_with_similarity_at_least_0.5": 0.1769815418023887
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10130718954248366
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2650,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.11660377358490566
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3694,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.28451543042772065
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24377224199288255
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 600,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22833333333333333
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19047619047619047
+          },
+          "C;H;O;P": {
+            "target_count": 39402,
+            "template_count": 77,
+            "fraction_with_similarity_at_least_0.5": 0.19788335617481345
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1288,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.20729813664596272
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2906,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.12973158981417757
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3741,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.12456562416466185
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 412,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23058252427184467
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.04145077720207254
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2777777777777778
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.030303030303030304
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.25815217391304346
+          },
+          "C;H;O;P;S": {
+            "target_count": 4162,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.12085535800096107
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.02666666666666667
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05905511811023622
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06794055201698514
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 489,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.40899795501022496
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 27,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2222222222222222
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 46,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.45652173913043476
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 6,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.6666666666666666
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      },
+      "fixed_unseen_targets": {
+        "targets": 195017,
+        "mean_nearest_tanimoto": 0.41380103770668547,
+        "median_nearest_tanimoto": 0.39473684210526316,
+        "p10_nearest_tanimoto": 0.275,
+        "fraction_at_least_0.3": 0.8336196331601861,
+        "fraction_at_least_0.4": 0.4880548875226262,
+        "fraction_at_least_0.5": 0.22870313870072864,
+        "fraction_at_least_0.6": 0.08251588323069271,
+        "fraction_at_least_0.7": 0.024438895070686147,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 32447,
+        "below_0.5_count": 150416,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.11827956989247312,
+          "0.1": 0.275,
+          "0.25": 0.325,
+          "0.5": 0.39473684210526316,
+          "0.75": 0.4857142857142857,
+          "0.9": 0.5806451612903226,
+          "0.95": 0.6428571428571429,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 3.0,
+            "0.5": 4.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 8.0,
+            "1": 23.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 5.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.025,
+            "0.25": 0.05,
+            "0.5": 0.1,
+            "0.75": 0.15833333333333333,
+            "0.9": 0.225,
+            "0.95": 0.275,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 11.0,
+            "0.75": 19.0,
+            "0.9": 28.0,
+            "0.95": 35.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.03307403969910316,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86520,
+            "template_count": 106,
+            "target_fraction_with_similarity_at_least_0.5": 0.2607720758206195
+          },
+          "quaternary_ammonium": {
+            "target_count": 1616,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.09467821782178218
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68856,
+            "template_count": 122,
+            "target_fraction_with_similarity_at_least_0.5": 0.3700040664575346
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18654,
+            "template_count": 26,
+            "target_fraction_with_similarity_at_least_0.5": 0.1474214645652407
+          },
+          "amide": {
+            "target_count": 36321,
+            "template_count": 33,
+            "target_fraction_with_similarity_at_least_0.5": 0.13405467911125796
+          },
+          "ester": {
+            "target_count": 19083,
+            "template_count": 19,
+            "target_fraction_with_similarity_at_least_0.5": 0.15689357019336583
+          },
+          "ether": {
+            "target_count": 98710,
+            "template_count": 100,
+            "target_fraction_with_similarity_at_least_0.5": 0.3185999392158849
+          },
+          "nitrile": {
+            "target_count": 3740,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.17433155080213902
+          },
+          "heterocycle": {
+            "target_count": 109460,
+            "template_count": 107,
+            "target_fraction_with_similarity_at_least_0.5": 0.27501370363603145
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85460,
+            "template_count": 66,
+            "target_fraction_with_similarity_at_least_0.5": 0.32260706763398084
+          },
+          "carbonyl_other": {
+            "target_count": 47434,
+            "template_count": 32,
+            "target_fraction_with_similarity_at_least_0.5": 0.37064131213897206
+          },
+          "sulfur": {
+            "target_count": 28234,
+            "template_count": 25,
+            "target_fraction_with_similarity_at_least_0.5": 0.18024367783523412
+          },
+          "halogen": {
+            "target_count": 47467,
+            "template_count": 37,
+            "target_fraction_with_similarity_at_least_0.5": 0.2292540080476963
+          },
+          "P_C_bond": {
+            "target_count": 72927,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.12302713672576686
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 194986,
+            "template_count": 248,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 194996,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 140931,
+            "template_count": 161,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195017,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195017,
+            "template_count": 250,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28234,
+            "template_count": 25,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28911,
+            "template_count": 24,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17076,
+            "template_count": 12,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6527,
+            "template_count": 7,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1098,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89313,
+            "template_count": 117,
+            "fraction_with_similarity_at_least_0.5": 0.25579702842811236
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1955,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.23427109974424554
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7666,
+            "template_count": 6,
+            "fraction_with_similarity_at_least_0.5": 0.20388729454735194
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.03626943005181347
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15543,
+            "template_count": 13,
+            "fraction_with_similarity_at_least_0.5": 0.3007784854918613
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 798,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.20927318295739347
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24486940298507462
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.30612244897959184
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 533,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.29831144465290804
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14719,
+            "template_count": 12,
+            "fraction_with_similarity_at_least_0.5": 0.17684625314219715
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10130718954248366
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2645,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.11682419659735349
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3689,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.28490105719707237
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.24377224199288255
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 597,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22948073701842547
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19047619047619047
+          },
+          "C;H;O;P": {
+            "target_count": 39320,
+            "template_count": 77,
+            "fraction_with_similarity_at_least_0.5": 0.1974059003051882
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1285,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.2077821011673152
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2905,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.129776247848537
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3739,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.12463225461353303
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 411,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.22871046228710462
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.04145077720207254
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2777777777777778
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.030303030303030304
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.25815217391304346
+          },
+          "C;H;O;P;S": {
+            "target_count": 4159,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.12070209184900216
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.02666666666666667
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05905511811023622
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06794055201698514
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 488,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4098360655737705
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 26,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 45,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.4666666666666667
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 4,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      }
+    },
+    "300": {
+      "all_frozen": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.42357023494555435,
+        "median_nearest_tanimoto": 0.40476190476190477,
+        "p10_nearest_tanimoto": 0.28205128205128205,
+        "fraction_at_least_0.3": 0.8568707566587817,
+        "fraction_at_least_0.4": 0.5235732645182432,
+        "fraction_at_least_0.5": 0.25191750381452693,
+        "fraction_at_least_0.6": 0.09294645325796443,
+        "fraction_at_least_0.7": 0.027792284927242377,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 27954,
+        "below_0.5_count": 146105,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.12727272727272726,
+          "0.1": 0.28205128205128205,
+          "0.25": 0.3333333333333333,
+          "0.5": 0.40476190476190477,
+          "0.75": 0.5,
+          "0.9": 0.5915492957746479,
+          "0.95": 0.6533333333333333,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 4.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 8.0,
+            "1": 25.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 5.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.016666666666666666,
+            "0.25": 0.05,
+            "0.5": 0.08333333333333334,
+            "0.75": 0.15,
+            "0.9": 0.21666666666666665,
+            "0.95": 0.25833333333333336,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 11.0,
+            "0.75": 18.0,
+            "0.9": 27.0,
+            "0.95": 34.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.038442239357725824,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86647,
+            "template_count": 129,
+            "target_fraction_with_similarity_at_least_0.5": 0.2883192724502868
+          },
+          "quaternary_ammonium": {
+            "target_count": 1621,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.10178901912399753
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68966,
+            "template_count": 135,
+            "target_fraction_with_similarity_at_least_0.5": 0.3918597569817011
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18680,
+            "template_count": 29,
+            "target_fraction_with_similarity_at_least_0.5": 0.16440042826552462
+          },
+          "amide": {
+            "target_count": 36366,
+            "template_count": 44,
+            "target_fraction_with_similarity_at_least_0.5": 0.15726227795193312
+          },
+          "ester": {
+            "target_count": 19099,
+            "template_count": 21,
+            "target_fraction_with_similarity_at_least_0.5": 0.18058537096183047
+          },
+          "ether": {
+            "target_count": 98827,
+            "template_count": 121,
+            "target_fraction_with_similarity_at_least_0.5": 0.34427838546146294
+          },
+          "nitrile": {
+            "target_count": 3744,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.1856303418803419
+          },
+          "heterocycle": {
+            "target_count": 109594,
+            "template_count": 132,
+            "target_fraction_with_similarity_at_least_0.5": 0.3005456503093235
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85571,
+            "template_count": 87,
+            "target_fraction_with_similarity_at_least_0.5": 0.3519299762770097
+          },
+          "carbonyl_other": {
+            "target_count": 47488,
+            "template_count": 40,
+            "target_fraction_with_similarity_at_least_0.5": 0.3881191037735849
+          },
+          "sulfur": {
+            "target_count": 28270,
+            "template_count": 31,
+            "target_fraction_with_similarity_at_least_0.5": 0.20350194552529183
+          },
+          "halogen": {
+            "target_count": 47525,
+            "template_count": 48,
+            "target_fraction_with_similarity_at_least_0.5": 0.2557811678064177
+          },
+          "P_C_bond": {
+            "target_count": 73003,
+            "template_count": 59,
+            "target_fraction_with_similarity_at_least_0.5": 0.14454200512307713
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 195273,
+            "template_count": 298,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 195285,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 141123,
+            "template_count": 194,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195306,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195306,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28270,
+            "template_count": 31,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28943,
+            "template_count": 27,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17099,
+            "template_count": 18,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6541,
+            "template_count": 11,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1099,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89440,
+            "template_count": 139,
+            "fraction_with_similarity_at_least_0.5": 0.27750447227191416
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1959,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.2613578356304237
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7677,
+            "template_count": 10,
+            "fraction_with_similarity_at_least_0.5": 0.2560896183404976
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 194,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.041237113402061855
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.11764705882352941
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15558,
+            "template_count": 13,
+            "fraction_with_similarity_at_least_0.5": 0.32060676179457515
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 801,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.24344569288389514
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2891791044776119
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.28
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.30612244897959184
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 534,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14736,
+            "template_count": 15,
+            "fraction_with_similarity_at_least_0.5": 0.20270086862106407
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2650,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.1418867924528302
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3694,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.3075257173795344
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2704626334519573
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 600,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.23666666666666666
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19047619047619047
+          },
+          "C;H;O;P": {
+            "target_count": 39402,
+            "template_count": 91,
+            "fraction_with_similarity_at_least_0.5": 0.22047104207908227
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1288,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22127329192546583
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2906,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.1366139022711631
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3741,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.13418871959369152
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 412,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.30339805825242716
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05181347150259067
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06060606060606061
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2798913043478261
+          },
+          "C;H;O;P;S": {
+            "target_count": 4162,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.13046612205670352
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05333333333333334
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10236220472440945
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12314225053078556
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 489,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4498977505112474
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 27,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 46,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.4782608695652174
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05555555555555555
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 6,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.6666666666666666
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      },
+      "fixed_unseen_targets": {
+        "targets": 195017,
+        "mean_nearest_tanimoto": 0.42350330344599674,
+        "median_nearest_tanimoto": 0.40476190476190477,
+        "p10_nearest_tanimoto": 0.28205128205128205,
+        "fraction_at_least_0.3": 0.8568637605952302,
+        "fraction_at_least_0.4": 0.5235184624930135,
+        "fraction_at_least_0.5": 0.2517062615054072,
+        "fraction_at_least_0.6": 0.0927149940774394,
+        "fraction_at_least_0.7": 0.02770527697585339,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 27914,
+        "below_0.5_count": 145930,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.12727272727272726,
+          "0.1": 0.28205128205128205,
+          "0.25": 0.3333333333333333,
+          "0.5": 0.40476190476190477,
+          "0.75": 0.5,
+          "0.9": 0.5913978494623656,
+          "0.95": 0.6533333333333333,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 4.0,
+            "0.75": 5.0,
+            "0.9": 7.0,
+            "0.95": 8.0,
+            "1": 23.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 5.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.016666666666666666,
+            "0.25": 0.05,
+            "0.5": 0.08333333333333334,
+            "0.75": 0.15,
+            "0.9": 0.21666666666666665,
+            "0.95": 0.25833333333333336,
+            "1": 0.8583333333333334
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 7.0,
+            "0.5": 11.0,
+            "0.75": 18.0,
+            "0.9": 27.0,
+            "0.95": 34.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.038283841921473515,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86520,
+            "template_count": 129,
+            "target_fraction_with_similarity_at_least_0.5": 0.2881761442441054
+          },
+          "quaternary_ammonium": {
+            "target_count": 1616,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.09900990099009901
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68856,
+            "template_count": 135,
+            "target_fraction_with_similarity_at_least_0.5": 0.3915708144533519
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18654,
+            "template_count": 29,
+            "target_fraction_with_similarity_at_least_0.5": 0.1642007076230299
+          },
+          "amide": {
+            "target_count": 36321,
+            "template_count": 44,
+            "target_fraction_with_similarity_at_least_0.5": 0.1572368602186063
+          },
+          "ester": {
+            "target_count": 19083,
+            "template_count": 21,
+            "target_fraction_with_similarity_at_least_0.5": 0.18042236545616516
+          },
+          "ether": {
+            "target_count": 98710,
+            "template_count": 121,
+            "target_fraction_with_similarity_at_least_0.5": 0.3441596596089555
+          },
+          "nitrile": {
+            "target_count": 3740,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": 0.1858288770053476
+          },
+          "heterocycle": {
+            "target_count": 109460,
+            "template_count": 132,
+            "target_fraction_with_similarity_at_least_0.5": 0.30051160241183994
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85460,
+            "template_count": 87,
+            "target_fraction_with_similarity_at_least_0.5": 0.35194242920664637
+          },
+          "carbonyl_other": {
+            "target_count": 47434,
+            "template_count": 40,
+            "target_fraction_with_similarity_at_least_0.5": 0.3879706539612936
+          },
+          "sulfur": {
+            "target_count": 28234,
+            "template_count": 31,
+            "target_fraction_with_similarity_at_least_0.5": 0.2035134943684919
+          },
+          "halogen": {
+            "target_count": 47467,
+            "template_count": 48,
+            "target_fraction_with_similarity_at_least_0.5": 0.2558619672614659
+          },
+          "P_C_bond": {
+            "target_count": 72927,
+            "template_count": 59,
+            "target_fraction_with_similarity_at_least_0.5": 0.1445966514459665
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 194986,
+            "template_count": 298,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 194996,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 140931,
+            "template_count": 194,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195017,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195017,
+            "template_count": 300,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28234,
+            "template_count": 31,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28911,
+            "template_count": 27,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17076,
+            "template_count": 18,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6527,
+            "template_count": 11,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1098,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89313,
+            "template_count": 139,
+            "fraction_with_similarity_at_least_0.5": 0.27722727934343266
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1955,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.2618925831202046
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7666,
+            "template_count": 10,
+            "fraction_with_similarity_at_least_0.5": 0.2561961909731281
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.04145077720207254
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.11764705882352941
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15543,
+            "template_count": 13,
+            "fraction_with_similarity_at_least_0.5": 0.3205944798301486
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 798,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.24310776942355888
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2891791044776119
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.28
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.30612244897959184
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 533,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.3320825515947467
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14719,
+            "template_count": 15,
+            "fraction_with_similarity_at_least_0.5": 0.20259528500577484
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2645,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.14215500945179585
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10606060606060606
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3689,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.30794253185145026
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2704626334519573
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 597,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.23785594639865998
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.42592592592592593
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.19047619047619047
+          },
+          "C;H;O;P": {
+            "target_count": 39320,
+            "template_count": 91,
+            "fraction_with_similarity_at_least_0.5": 0.2200406917599186
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1285,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22178988326848248
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2905,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.13666092943201377
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3739,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.1342604974592137
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 411,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.30170316301703165
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05181347150259067
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06060606060606061
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2798913043478261
+          },
+          "C;H;O;P;S": {
+            "target_count": 4159,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.13031978841067565
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05333333333333334
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.10236220472440945
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12314225053078556
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 488,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.45081967213114754
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 26,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.34615384615384615
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 45,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.4666666666666667
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.05555555555555555
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 4,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      }
+    },
+    "350": {
+      "all_frozen": {
+        "targets": 195306,
+        "mean_nearest_tanimoto": 0.43126785641440213,
+        "median_nearest_tanimoto": 0.41304347826086957,
+        "p10_nearest_tanimoto": 0.28888888888888886,
+        "fraction_at_least_0.3": 0.8751907263473728,
+        "fraction_at_least_0.4": 0.5505309616704044,
+        "fraction_at_least_0.5": 0.27008386839114007,
+        "fraction_at_least_0.6": 0.10203475571667026,
+        "fraction_at_least_0.7": 0.030598138306042823,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 24376,
+        "below_0.5_count": 142557,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.13043478260869565,
+          "0.1": 0.28888888888888886,
+          "0.25": 0.34146341463414637,
+          "0.5": 0.41304347826086957,
+          "0.75": 0.5,
+          "0.9": 0.6,
+          "0.95": 0.6615384615384615,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 3.0,
+            "0.75": 5.0,
+            "0.9": 6.0,
+            "0.95": 7.0,
+            "1": 25.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 4.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.016666666666666666,
+            "0.25": 0.041666666666666664,
+            "0.5": 0.08333333333333333,
+            "0.75": 0.14166666666666666,
+            "0.9": 0.2,
+            "0.95": 0.25,
+            "1": 0.75
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 6.0,
+            "0.5": 11.0,
+            "0.75": 18.0,
+            "0.9": 26.0,
+            "0.95": 33.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.04427923361289464,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86647,
+            "template_count": 155,
+            "target_fraction_with_similarity_at_least_0.5": 0.30811222546654815
+          },
+          "quaternary_ammonium": {
+            "target_count": 1621,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.10425663170882171
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68966,
+            "template_count": 154,
+            "target_fraction_with_similarity_at_least_0.5": 0.4144505988458081
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18680,
+            "template_count": 33,
+            "target_fraction_with_similarity_at_least_0.5": 0.17569593147751605
+          },
+          "amide": {
+            "target_count": 36366,
+            "template_count": 53,
+            "target_fraction_with_similarity_at_least_0.5": 0.17703349282296652
+          },
+          "ester": {
+            "target_count": 19099,
+            "template_count": 25,
+            "target_fraction_with_similarity_at_least_0.5": 0.2028902036755851
+          },
+          "ether": {
+            "target_count": 98827,
+            "template_count": 142,
+            "target_fraction_with_similarity_at_least_0.5": 0.36385805498497376
+          },
+          "nitrile": {
+            "target_count": 3744,
+            "template_count": 4,
+            "target_fraction_with_similarity_at_least_0.5": 0.2107371794871795
+          },
+          "heterocycle": {
+            "target_count": 109594,
+            "template_count": 160,
+            "target_fraction_with_similarity_at_least_0.5": 0.32059236819533915
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85571,
+            "template_count": 113,
+            "target_fraction_with_similarity_at_least_0.5": 0.37614378703065293
+          },
+          "carbonyl_other": {
+            "target_count": 47488,
+            "template_count": 55,
+            "target_fraction_with_similarity_at_least_0.5": 0.4107564016172507
+          },
+          "sulfur": {
+            "target_count": 28270,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.23081004598514326
+          },
+          "halogen": {
+            "target_count": 47525,
+            "template_count": 60,
+            "target_fraction_with_similarity_at_least_0.5": 0.27976854287217257
+          },
+          "P_C_bond": {
+            "target_count": 73003,
+            "template_count": 79,
+            "target_fraction_with_similarity_at_least_0.5": 0.1630206977795433
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 195273,
+            "template_count": 348,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 195285,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 141123,
+            "template_count": 232,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195306,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195306,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28270,
+            "template_count": 41,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28943,
+            "template_count": 32,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17099,
+            "template_count": 24,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6541,
+            "template_count": 14,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1099,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89440,
+            "template_count": 163,
+            "fraction_with_similarity_at_least_0.5": 0.29505813953488375
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1959,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.2827973455844819
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7677,
+            "template_count": 12,
+            "fraction_with_similarity_at_least_0.5": 0.2795362771916113
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 194,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.05154639175257732
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.11764705882352941
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15558,
+            "template_count": 15,
+            "fraction_with_similarity_at_least_0.5": 0.34278184856665384
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 801,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.24469413233458176
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3101679104477612
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.28
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3469387755102041
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 534,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.3445692883895131
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14736,
+            "template_count": 19,
+            "fraction_with_similarity_at_least_0.5": 0.22238056460369163
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12745098039215685
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2650,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.2211320754716981
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.13636363636363635
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3694,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.31645912290200323
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.33807829181494664
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 600,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.2816666666666667
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.48148148148148145
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23809523809523808
+          },
+          "C;H;O;P": {
+            "target_count": 39402,
+            "template_count": 100,
+            "fraction_with_similarity_at_least_0.5": 0.23303385614943403
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1288,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22826086956521738
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2906,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.14487267721954578
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3741,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.14407912322908314
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 412,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.3325242718446602
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06217616580310881
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4444444444444444
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06060606060606061
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2826086956521739
+          },
+          "C;H;O;P;S": {
+            "target_count": 4162,
+            "template_count": 6,
+            "fraction_with_similarity_at_least_0.5": 0.14320038443056224
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06666666666666667
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1220472440944882
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12526539278131635
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 489,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.6298568507157464
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 1.0
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 27,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 46,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.6304347826086957
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.16666666666666666
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 6,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.6666666666666666
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      },
+      "fixed_unseen_targets": {
+        "targets": 195017,
+        "mean_nearest_tanimoto": 0.43120739099278477,
+        "median_nearest_tanimoto": 0.41304347826086957,
+        "p10_nearest_tanimoto": 0.28888888888888886,
+        "fraction_at_least_0.3": 0.8751954957772912,
+        "fraction_at_least_0.4": 0.550505853335863,
+        "fraction_at_least_0.5": 0.26988929170277465,
+        "fraction_at_least_0.6": 0.101811636934216,
+        "fraction_at_least_0.7": 0.030515288410753936,
+        "very_far_threshold": "Morgan Tanimoto < 0.3 (operational diagnostic, not a chemical verdict)",
+        "very_far_count": 24339,
+        "below_0.5_count": 142384,
+        "nearest_tanimoto_quantiles": {
+          "0": 0.13043478260869565,
+          "0.1": 0.28888888888888886,
+          "0.25": 0.34146341463414637,
+          "0.5": 0.41304347826086957,
+          "0.75": 0.5,
+          "0.9": 0.6,
+          "0.95": 0.6612903225806451,
+          "1": 1.0
+        },
+        "formula_distance_quantiles": {
+          "minimum_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 1.0,
+            "0.25": 2.0,
+            "0.5": 3.0,
+            "0.75": 5.0,
+            "0.9": 6.0,
+            "0.95": 7.0,
+            "1": 22.0
+          },
+          "minimum_heavy_element_L1": {
+            "0": 0.0,
+            "0.1": 0.0,
+            "0.25": 1.0,
+            "0.5": 2.0,
+            "0.75": 3.0,
+            "0.9": 4.0,
+            "0.95": 4.0,
+            "1": 14.0
+          },
+          "minimum_scaled_formula_L1": {
+            "0": 0.0,
+            "0.1": 0.016666666666666666,
+            "0.25": 0.041666666666666664,
+            "0.5": 0.08333333333333333,
+            "0.75": 0.14166666666666666,
+            "0.9": 0.2,
+            "0.95": 0.25,
+            "1": 0.75
+          },
+          "structural_nearest_formula_L1_including_H": {
+            "0": 0.0,
+            "0.1": 4.0,
+            "0.25": 6.0,
+            "0.5": 11.0,
+            "0.75": 18.0,
+            "0.9": 26.0,
+            "0.95": 33.0,
+            "1": 79.0
+          }
+        },
+        "same_formula_different_graph_fraction": 0.04412435838926863,
+        "functional_categories": {
+          "amine": {
+            "target_count": 86520,
+            "template_count": 155,
+            "target_fraction_with_similarity_at_least_0.5": 0.3079865926953306
+          },
+          "quaternary_ammonium": {
+            "target_count": 1616,
+            "template_count": 11,
+            "target_fraction_with_similarity_at_least_0.5": 0.10148514851485149
+          },
+          "alcohol_or_phenol": {
+            "target_count": 68856,
+            "template_count": 154,
+            "target_fraction_with_similarity_at_least_0.5": 0.4141686998954339
+          },
+          "carboxyl_or_carboxylate": {
+            "target_count": 18654,
+            "template_count": 33,
+            "target_fraction_with_similarity_at_least_0.5": 0.17545834673528465
+          },
+          "amide": {
+            "target_count": 36321,
+            "template_count": 53,
+            "target_fraction_with_similarity_at_least_0.5": 0.177032570689133
+          },
+          "ester": {
+            "target_count": 19083,
+            "template_count": 25,
+            "target_fraction_with_similarity_at_least_0.5": 0.20274589949169416
+          },
+          "ether": {
+            "target_count": 98710,
+            "template_count": 142,
+            "target_fraction_with_similarity_at_least_0.5": 0.3637524060378888
+          },
+          "nitrile": {
+            "target_count": 3740,
+            "template_count": 4,
+            "target_fraction_with_similarity_at_least_0.5": 0.2109625668449198
+          },
+          "heterocycle": {
+            "target_count": 109460,
+            "template_count": 160,
+            "target_fraction_with_similarity_at_least_0.5": 0.3205737255618491
+          },
+          "aromatic_heterocycle": {
+            "target_count": 85460,
+            "template_count": 113,
+            "target_fraction_with_similarity_at_least_0.5": 0.37617598876667446
+          },
+          "carbonyl_other": {
+            "target_count": 47434,
+            "template_count": 55,
+            "target_fraction_with_similarity_at_least_0.5": 0.4106126407218451
+          },
+          "sulfur": {
+            "target_count": 28234,
+            "template_count": 41,
+            "target_fraction_with_similarity_at_least_0.5": 0.2308564142523199
+          },
+          "halogen": {
+            "target_count": 47467,
+            "template_count": 60,
+            "target_fraction_with_similarity_at_least_0.5": 0.27985758526976634
+          },
+          "P_C_bond": {
+            "target_count": 72927,
+            "template_count": 79,
+            "target_fraction_with_similarity_at_least_0.5": 0.16308088910828636
+          },
+          "P_S_bond": {
+            "target_count": 0,
+            "template_count": 2,
+            "target_fraction_with_similarity_at_least_0.5": null
+          },
+          "P_N_bond": {
+            "target_count": 0,
+            "template_count": 1,
+            "target_fraction_with_similarity_at_least_0.5": null
+          }
+        },
+        "elements": {
+          "C": {
+            "target_count": 194986,
+            "template_count": 348,
+            "uncovered": false
+          },
+          "H": {
+            "target_count": 194996,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "N": {
+            "target_count": 140931,
+            "template_count": 232,
+            "uncovered": false
+          },
+          "O": {
+            "target_count": 195017,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "P": {
+            "target_count": 195017,
+            "template_count": 350,
+            "uncovered": false
+          },
+          "S": {
+            "target_count": 28234,
+            "template_count": 41,
+            "uncovered": false
+          },
+          "F": {
+            "target_count": 28911,
+            "template_count": 32,
+            "uncovered": false
+          },
+          "Cl": {
+            "target_count": 17076,
+            "template_count": 24,
+            "uncovered": false
+          },
+          "Br": {
+            "target_count": 6527,
+            "template_count": 14,
+            "uncovered": false
+          },
+          "I": {
+            "target_count": 1098,
+            "template_count": 2,
+            "uncovered": false
+          }
+        },
+        "element_sets": {
+          "C;H;N;O;P": {
+            "target_count": 89313,
+            "template_count": 163,
+            "fraction_with_similarity_at_least_0.5": 0.2948059073147246
+          },
+          "C;H;N;O;P;Br": {
+            "target_count": 1955,
+            "template_count": 4,
+            "fraction_with_similarity_at_least_0.5": 0.28337595907928387
+          },
+          "C;H;N;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1
+          },
+          "C;H;N;O;P;Cl": {
+            "target_count": 7666,
+            "template_count": 12,
+            "fraction_with_similarity_at_least_0.5": 0.27967649360813984
+          },
+          "C;H;N;O;P;Cl;Br": {
+            "target_count": 193,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.05181347150259067
+          },
+          "C;H;N;O;P;Cl;I": {
+            "target_count": 17,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.11764705882352941
+          },
+          "C;H;N;O;P;F": {
+            "target_count": 15543,
+            "template_count": 15,
+            "fraction_with_similarity_at_least_0.5": 0.34272662935083315
+          },
+          "C;H;N;O;P;F;Br": {
+            "target_count": 798,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.24436090225563908
+          },
+          "C;H;N;O;P;F;Cl": {
+            "target_count": 2144,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3101679104477612
+          },
+          "C;H;N;O;P;F;Cl;Br": {
+            "target_count": 25,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.28
+          },
+          "C;H;N;O;P;F;I": {
+            "target_count": 49,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3469387755102041
+          },
+          "C;H;N;O;P;I": {
+            "target_count": 533,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.3433395872420263
+          },
+          "C;H;N;O;P;S": {
+            "target_count": 14719,
+            "template_count": 19,
+            "fraction_with_similarity_at_least_0.5": 0.22229771044228547
+          },
+          "C;H;N;O;P;S;Br": {
+            "target_count": 306,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12745098039215685
+          },
+          "C;H;N;O;P;S;Cl": {
+            "target_count": 2645,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.2215500945179584
+          },
+          "C;H;N;O;P;S;Cl;Br": {
+            "target_count": 66,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.13636363636363635
+          },
+          "C;H;N;O;P;S;Cl;I": {
+            "target_count": 2,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;N;O;P;S;F": {
+            "target_count": 3689,
+            "template_count": 5,
+            "fraction_with_similarity_at_least_0.5": 0.31688804554079697
+          },
+          "C;H;N;O;P;S;F;Br": {
+            "target_count": 562,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.33807829181494664
+          },
+          "C;H;N;O;P;S;F;Cl": {
+            "target_count": 597,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.2830820770519263
+          },
+          "C;H;N;O;P;S;F;Cl;Br": {
+            "target_count": 54,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.48148148148148145
+          },
+          "C;H;N;O;P;S;F;I": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4
+          },
+          "C;H;N;O;P;S;I": {
+            "target_count": 21,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23809523809523808
+          },
+          "C;H;O;P": {
+            "target_count": 39320,
+            "template_count": 100,
+            "fraction_with_similarity_at_least_0.5": 0.23260427263479144
+          },
+          "C;H;O;P;Br": {
+            "target_count": 1285,
+            "template_count": 3,
+            "fraction_with_similarity_at_least_0.5": 0.22879377431906614
+          },
+          "C;H;O;P;Br;I": {
+            "target_count": 10,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;Cl": {
+            "target_count": 2905,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.14492254733218587
+          },
+          "C;H;O;P;Cl;Br": {
+            "target_count": 203,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.054187192118226604
+          },
+          "C;H;O;P;Cl;I": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;F": {
+            "target_count": 3739,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.14415619149505216
+          },
+          "C;H;O;P;F;Br": {
+            "target_count": 411,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.3309002433090024
+          },
+          "C;H;O;P;F;Br;I": {
+            "target_count": 6,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.3333333333333333
+          },
+          "C;H;O;P;F;Cl": {
+            "target_count": 193,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06217616580310881
+          },
+          "C;H;O;P;F;Cl;Br": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.4444444444444444
+          },
+          "C;H;O;P;F;I": {
+            "target_count": 33,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06060606060606061
+          },
+          "C;H;O;P;I": {
+            "target_count": 368,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.2826086956521739
+          },
+          "C;H;O;P;S": {
+            "target_count": 4159,
+            "template_count": 6,
+            "fraction_with_similarity_at_least_0.5": 0.14306323635489301
+          },
+          "C;H;O;P;S;Br": {
+            "target_count": 75,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.06666666666666667
+          },
+          "C;H;O;P;S;Cl": {
+            "target_count": 254,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1220472440944882
+          },
+          "C;H;O;P;S;Cl;Br": {
+            "target_count": 4,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;Cl;I": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;H;O;P;S;F": {
+            "target_count": 471,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.12526539278131635
+          },
+          "C;H;O;P;S;F;Br": {
+            "target_count": 488,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.6311475409836066
+          },
+          "C;H;O;P;S;F;Br;I": {
+            "target_count": 12,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 1.0
+          },
+          "C;H;O;P;S;F;Cl": {
+            "target_count": 26,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.34615384615384615
+          },
+          "C;H;O;P;S;F;Cl;Br": {
+            "target_count": 45,
+            "template_count": 1,
+            "fraction_with_similarity_at_least_0.5": 0.6222222222222222
+          },
+          "C;H;O;P;S;I": {
+            "target_count": 18,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.16666666666666666
+          },
+          "C;N;O;P": {
+            "target_count": 5,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Br": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;Cl": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;F": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "C;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "H;N;O;P": {
+            "target_count": 13,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.23076923076923078
+          },
+          "H;O;P": {
+            "target_count": 4,
+            "template_count": 2,
+            "fraction_with_similarity_at_least_0.5": 0.5
+          },
+          "H;O;P;S": {
+            "target_count": 9,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.1111111111111111
+          },
+          "H;O;P;S;Cl": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "N;O;P": {
+            "target_count": 1,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          },
+          "O;P;S": {
+            "target_count": 3,
+            "template_count": 0,
+            "fraction_with_similarity_at_least_0.5": 0.0
+          }
+        }
+      }
+    }
+  },
+  "baselines_250": {
+    "diversity_only": {
+      "targets": 195306,
+      "mean_nearest_tanimoto": 0.3470488290604189,
+      "median_nearest_tanimoto": 0.32558139534883723,
+      "p10_nearest_tanimoto": 0.24369747899159663,
+      "fraction_at_least_0.3": 0.6309585983021515,
+      "fraction_at_least_0.4": 0.2407913735369113,
+      "fraction_at_least_0.5": 0.08488730504951204,
+      "fraction_at_least_0.6": 0.024924989503650682,
+      "fraction_at_least_0.7": 0.007286002478162473
+    },
+    "uniform_random_17": {
+      "targets": 195306,
+      "mean_nearest_tanimoto": 0.37490479863456383,
+      "median_nearest_tanimoto": 0.3559322033898305,
+      "p10_nearest_tanimoto": 0.2542372881355932,
+      "fraction_at_least_0.3": 0.7340583494618701,
+      "fraction_at_least_0.4": 0.35443867571912796,
+      "fraction_at_least_0.5": 0.13478848576080613,
+      "fraction_at_least_0.6": 0.038841612648868956,
+      "fraction_at_least_0.7": 0.009769285121808854
+    },
+    "uniform_random_42": {
+      "targets": 195306,
+      "mean_nearest_tanimoto": 0.37524254336247437,
+      "median_nearest_tanimoto": 0.3563218390804598,
+      "p10_nearest_tanimoto": 0.25882352941176473,
+      "fraction_at_least_0.3": 0.74936765895569,
+      "fraction_at_least_0.4": 0.3427493266975925,
+      "fraction_at_least_0.5": 0.13051314347741494,
+      "fraction_at_least_0.6": 0.037914861806600926,
+      "fraction_at_least_0.7": 0.009410873193859892
+    },
+    "uniform_random_101": {
+      "targets": 195306,
+      "mean_nearest_tanimoto": 0.3754487200736884,
+      "median_nearest_tanimoto": 0.35714285714285715,
+      "p10_nearest_tanimoto": 0.2542372881355932,
+      "fraction_at_least_0.3": 0.7403868800753689,
+      "fraction_at_least_0.4": 0.35350168453606134,
+      "fraction_at_least_0.5": 0.13492161019118717,
+      "fraction_at_least_0.6": 0.03910274133923177,
+      "fraction_at_least_0.7": 0.010813799883260115
+    }
+  },
+  "audit": {
+    "status": "passed",
+    "human_review_JSON_CSV_source_agree": true,
+    "all_135_keep_graphs_and_notes_preserved": true,
+    "nested_banks_and_unique_protonation_groups": true,
+    "all_new_exact_pairwise_similarity_at_most_0.85": true,
+    "all_new_mass_at_most_600": true,
+    "new_candidates_not_in_original_324": true,
+    "all_original_input_hashes_unchanged": true,
+    "structure_drawings": 351,
+    "xlsx_sheets": 3,
+    "native_XLSX_validation_present": true,
+    "training_started": false,
+    "exact_single_CH2_homolog_pairs_involving_additions_250": 0,
+    "exact_single_CH2_homolog_pairs_involving_additions_350": 0
+  }
+}

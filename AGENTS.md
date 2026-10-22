@@ -92,3 +92,19 @@ graph and the complete known-headgroup reference. Do not apply a selection or
 train from this assessment without subsequent user direction. The v0.2 review
 can be opened directly in a system browser from its unchanged index.html;
 loopback port 8880 is only a temporary convenience and may stop after a restart.
+
+The 2026-10-22 template proposal integrates the user's review under
+`../头基预测人工审核`: 135 keep, 3 exclude, 2 review; preserve snapshots and notes.
+One approved phosphate-protonation duplicate gives 134 conceptual seed templates.
+Per the user's subsequent correction, choose supplementary templates from the
+complete 195,306 pool regardless of historical splits; preserve the split files.
+Private nested 200/250/300/350 proposals and full-core coverage are in
+`outputs/headgroup_template_proposal_20261022/`. All additions remain proposals
+pending human review; no automatic promotion or training. The 600 Da bound is for
+new candidates, not grounds to delete larger known reference heads.
+Distinguish template feature entry checks (127 approved records pass) from
+Decoder target labels (120 pass the current vocabulary/84-token limit). Long
+glycan heads may be valid fingerprint template inputs despite longer labels.
+Any future training needs an independent fixed-template cache and evaluation
+design; the old split results are not an independent test of this new bank.
+See `docs/results/HEADGROUP_TEMPLATE_PROPOSAL_20261022.md`.

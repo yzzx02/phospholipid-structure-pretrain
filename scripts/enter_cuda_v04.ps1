@@ -11,7 +11,7 @@ $env:PYTHONUTF8 = '1'
 $env:PYTHONUNBUFFERED = '1'
 $locations = @{
     TEMP='cache\tmp'; TMP='cache\tmp'; PIP_CACHE_DIR='cache\pip'
-    TORCH_HOME='cache\torch'; HF_HOME='cache\huggingface'
+    TORCH_HOME='cache\torch'; HF_HOME='cache\huggingface'; MPLCONFIGDIR='cache\matplotlib'
 }
 foreach ($entry in $locations.GetEnumerator()) {
     $folder = Join-Path $workspaceRoot $entry.Value
