@@ -60,15 +60,20 @@
     "formal_main_result_random_seeds_at_least": 3
   },
   "execution_this_revision": {
-    "new_training_launched": false,
+    "new_training_launched": true,
     "new_5000_template_pool_already_built": true,
     "restricted_candidate_scoring_already_implemented": false,
     "preserve_existing_weights_splits_frozen_library_and_stop_latches": true,
     "new_training_authorized": true,
     "runnable_configuration": "configs/template_guided_fp5000.json",
     "CPU_backward_exact_restart_passed": true,
-    "GPU_retry_pending_explicit_user_authorization": true,
-    "active_root": "outputs/template_guided_fp5000_20261022_r1"
+    "GPU_retry_pending_explicit_user_authorization": false,
+    "active_root": "outputs/template_guided_fp5000_20261022_r1",
+    "GPU_retry_authorized_client_date": "2026-10-23",
+    "GPU_batch_benchmark_passed": true,
+    "CUDA_backward_restart_passed": true,
+    "main_batch_size": 32,
+    "active_run": "outputs/template_guided_fp5000_20261022_r1/train_main_k3_seed42"
   },
   "checkpoint_selection": {
     "rule": "minimum_full_validation_token_cross_entropy",

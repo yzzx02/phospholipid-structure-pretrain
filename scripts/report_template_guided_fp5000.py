@@ -1,6 +1,7 @@
 """Publish only aggregate preparation/gate/start status, keeping all graphs private."""
 
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
@@ -55,6 +56,7 @@ def main():
         }
     coverage = read(folder / "template_scale_coverage.json")
     report = {
+        "snapshot_time_Asia_Shanghai": datetime.now(timezone(timedelta(hours=8))).isoformat(),
         "status": "prepared_not_yet_trained",
         "experiment": "fixed5000_K3_seed42",
         "data_manifest_sha256": digest(folder / "manifest.json"),
@@ -102,6 +104,7 @@ def main():
             "gpu_stop_latched": (ROOT / "GPU_STOP.json").exists(),
             "auto_retry": False,
             "timeout_seconds": state["timeout_seconds"],
+            "latest_telemetry": state.get("latest_telemetry"),
         }
         if (run / "events.jsonl").exists():
             rows = [json.loads(line) for line in (run / "events.jsonl").read_text().splitlines()]
@@ -109,6 +112,13 @@ def main():
             report["latest_observed_progress"] = training[-1] if training else None
         if (run / "last.json").exists():
             report["last_checkpoint_step"] = read(run / "last.json")["step"]
+        if (run / "best.json").exists():
+            best = read(run / "best.json")
+            report["best_validation_checkpoint"] = {
+                key: best[key] for key in ("step", "completed_epochs", "best_validation_loss")
+            }
+        if (run / "validation_history.json").exists():
+            report["completed_epoch_validation"] = read(run / "validation_history.json")
         if (run / "training_report.json").exists():
             report["training_completion"] = read(run / "training_report.json")
     epoch = ROOT / "gpu_monitor_epoch_private.json"
@@ -120,6 +130,7 @@ def main():
     if recovery.exists():
         recovery_state = read(recovery)
         report["GPU_retry_authorized"] = recovery_state["authorized"]
+        report["execution_authorization_client_date"] = recovery_state.get("client_date")
         prior = Path(recovery_state["prior_failed_root"]) / "benchmark_batch16_32/host_monitor.json"
         if prior.exists():
             old = read(prior)
@@ -145,6 +156,7 @@ def main():
         "# 固定5,000模板训练：启动与准备记录",
         "",
         f"当前快照状态：`{report['status']}`。本文件是实际执行快照，不表示全部实验完成。",
+        f"快照时间（上海）：{report['snapshot_time_Asia_Shanghai']}。",
         "",
         "选模按[MetGenX原文](https://doi.org/10.1038/s41467-026-72149-6)：完整验证集最小交叉熵；连续5个完整epoch不改善即停止。",
         "分子式/Builder有效性、Similarity@10、官能团恢复及相对最佳输入模板的收益用于随后评价，不参与选checkpoint。",
@@ -190,12 +202,26 @@ def main():
         ]
     if "last_checkpoint_step" in report:
         text += [f"已原子保存并生成SHA的最近checkpoint：step {report['last_checkpoint_step']:,}。"]
+    if "best_validation_checkpoint" in report:
+        best = report["best_validation_checkpoint"]
+        text += [
+            f"已完成{len(report.get('completed_epoch_validation', []))}个完整epoch验证；当前最低验证token CE为{best['best_validation_loss']:.6f}，对应step {best['step']:,}。训练尚在进行，该值不是最终生成效果。"
+        ]
     if "initial_GPU_attempt" in report:
         text += [
             "",
             "首次GPU测速在第一步loss处因新增严格确定性开关不兼容CUDA nll_loss2d退出；未完成反向传播。",
             "修订撤回该额外开关，恢复历史运行选项；原失败记录和停止锁保留。监控无驱动重置/新GPU dump，12份旧权重SHA不变。",
-            "根据项目AGENTS.md，失败GPU作业不得自动重试。人工明确授权前，r1目录只完成CPU检查。",
+            (
+                "2026-10-23用户明确授权后，r1继续GPU检查及主训练；原停止锁完整保留。"
+                if report.get("GPU_retry_authorized")
+                else "根据项目AGENTS.md，失败GPU作业不得自动重试。人工明确授权前，r1目录只完成CPU检查。"
+            ),
+        ]
+    if "gpu_gate" in report:
+        text += [
+            "",
+            "r1真实CUDA保存/重载恢复检查通过；全部学习模块都有有效梯度并发生更新，模型/优化器/logits/RNG通过预先声明的数值一致性检查。",
         ]
     text += [
         "",

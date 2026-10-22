@@ -150,9 +150,13 @@ torch2.9 CUDA nll_loss2d. No driver reset/new dump was detected; 12 old checkpoi
 hashes were unchanged. Preserve this root, its data and GPU_STOP.json.
 The repaired runtime restores historical non-strict FP32 settings. Its independent
 CPU backward/exact-restart gate passed in `outputs/template_guided_fp5000_20261022_r1`,
-whose data junction points to the original verified preparation. Explicit user
-retry authorization is pending and enforced by GPU_RESTART_AUTHORIZATION.json;
-do not start a new GPU attempt until that authorization arrives. Use the matching
+whose data junction points to the original verified preparation. On 2026-10-23
+the user explicitly authorized continuing in r1; the exact reply is retained in
+GPU_RESTART_AUTHORIZATION.json. The supervised batch16/32 benchmark and real
+CUDA backward/restart gates both passed. Batch32 was selected (about 1,080
+targets/s versus 644 for batch16; longest-sequence backward passed). The main
+fixed5000/K3/seed42 training has now been launched in
+`outputs/template_guided_fp5000_20261022_r1/train_main_k3_seed42` under the matching
 `scripts/supervise_template_guided_fp5000.py`. A latched fault forbids automatic
 retries. Preserve every old checkpoint and monitor history. Other template/K
 ablations and final generation evaluation remain distinct subsequent jobs.

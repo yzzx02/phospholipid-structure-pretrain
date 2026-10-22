@@ -79,6 +79,7 @@ probe与正式训练各自输出，正式模型从随机初始化开始，不继
 首次GPU测速因新增严格确定性开关与torch2.9 CUDA nll_loss2d不兼容，在第一步loss处退出。
 无驱动重置或新GPU dump，12份历史checkpoint SHA不变；原目录和GPU_STOP均保留。
 已恢复历史的非严格确定性运行设置，并在`outputs/template_guided_fp5000_20261022_r1`重新CPU验收；
-其data junction只读取原目录已校验的数据。该修订在人工明确同意GPU重试前，不得自动启动GPU。
+其data junction只读取原目录已校验的数据。2026-10-23用户明确授权后，r1的GPU测速和CUDA真实恢复检查均通过，
+主训练已使用batch32启动。任何新的失败仍需停止且不得自动重试。
 
 实际执行状态与聚合数值见 `docs/results/TEMPLATE_GUIDED_FP5000_START_20261022.md`。

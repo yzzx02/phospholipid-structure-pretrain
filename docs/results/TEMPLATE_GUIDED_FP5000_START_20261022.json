@@ -1,5 +1,6 @@
 {
-  "status": "awaiting_explicit_GPU_retry_authorization_after_CPU_repair",
+  "snapshot_time_Asia_Shanghai": "2026-10-23T00:45:44.599910+08:00",
+  "status": "training_running",
   "experiment": "fixed5000_K3_seed42",
   "data_manifest_sha256": "de889a3250f007bf3b22bafcd4fa039692d2bb24f98e1f13173d6eda80485466",
   "frozen_core_count": 195306,
@@ -401,7 +402,119 @@
     "usearch": "2.26.4",
     "omegaconf": "2.4.0"
   },
-  "GPU_retry_authorized": false,
+  "gpu_gate": {
+    "passed": true,
+    "audits": [
+      {
+        "batch_size": 32,
+        "steps": 4,
+        "restart_after_step": 2,
+        "maximum_model_optimizer_logits_difference": 0.0,
+        "absolute_tolerance": 1e-05,
+        "losses": [
+          [
+            4.367650985717773,
+            3.7541627883911133,
+            3.2058305740356445,
+            2.9088048934936523
+          ],
+          [
+            4.367650985717773,
+            3.7541635036468506,
+            3.2058305740356445,
+            2.9088046550750732
+          ]
+        ],
+        "all_module_gradients_finite_nonzero": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "all_modules_updated": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "real_disk_checkpoint_reload": true,
+        "same_next_batches_and_rng": true
+      }
+    ]
+  },
+  "selected_batch_size": 32,
+  "batch_benchmark": [
+    {
+      "batch_size": 16,
+      "warmup_steps": 7,
+      "timed_steps": 64,
+      "targets": 1024,
+      "seconds": 1.5904081000189763,
+      "targets_per_second": 643.8598998507251,
+      "seconds_per_step": 0.024850126562796504,
+      "peak_allocated_MiB": 674.7099609375,
+      "peak_reserved_MiB": 742.0,
+      "maximum_length_batch_backward_passed": true
+    },
+    {
+      "batch_size": 32,
+      "warmup_steps": 7,
+      "timed_steps": 64,
+      "targets": 2048,
+      "seconds": 1.8956874999857973,
+      "targets_per_second": 1080.3468398748971,
+      "seconds_per_step": 0.029620117187278083,
+      "peak_allocated_MiB": 840.86328125,
+      "peak_reserved_MiB": 914.0,
+      "maximum_length_batch_backward_passed": true
+    }
+  ],
+  "supervisor_pid": 26008,
+  "worker_launcher_pid": 21784,
+  "monitor": {
+    "gpu_stop_latched": false,
+    "auto_retry": false,
+    "timeout_seconds": 172800,
+    "latest_telemetry": {
+      "seconds": 293.0470000000205,
+      "gpu": "NVIDIA GeForce RTX 4070 SUPER, 581.08, 42, 2737, 12282, 34, 62.73"
+    }
+  },
+  "latest_observed_progress": {
+    "stage": "train_progress",
+    "step": 6600,
+    "epoch": 2,
+    "batch": 1241,
+    "batches_in_epoch": 5359,
+    "training_CE": 0.4218534231185913,
+    "gradient_norm": 1.115410566329956,
+    "seconds_per_step": 0.0470000000204891,
+    "elapsed_seconds": 294.39100000000326,
+    "peak_allocated_MiB": 850.39990234375,
+    "unix_time": 1792687544.2222884
+  },
+  "last_checkpoint_step": 6000,
+  "best_validation_checkpoint": {
+    "step": 5359,
+    "completed_epochs": 1,
+    "best_validation_loss": 0.41111399202456184
+  },
+  "completed_epoch_validation": [
+    {
+      "validation_token_cross_entropy": 0.41111399202456184,
+      "validation_tokens": 429014,
+      "validation_targets": 9527,
+      "validation_token_accuracy": 0.8555128737057532,
+      "epoch": 1,
+      "step": 5359,
+      "training_token_CE": 0.6400434406573411
+    }
+  ],
+  "unreadable_dump_directories": [
+    "C:\\Windows\\LiveKernelReports\\WATCHDOG"
+  ],
+  "GPU_retry_authorized": true,
+  "execution_authorization_client_date": "2026-10-23",
   "initial_GPU_attempt": {
     "child_exit_code": 1,
     "stop_reason": "child_failed",
