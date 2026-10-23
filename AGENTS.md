@@ -171,3 +171,10 @@ display resets/new dumps and 12 historical checkpoint hashes unchanged;
 WATCHDOG access remains unavailable. Do not extend the epoch cap or restart
 training automatically. Generation/Builder/formula validity, Similarity@10,
 functional-group evaluation and other pool/K/seed experiments remain pending.
+The detailed CPU-only training report, all 50 validation epochs, weight SHA,
+runtime statistics and aggregate PNG/SVG figures are in
+`docs/results/TEMPLATE_GUIDED_FP5000_RESULTS_20261023.{md,json}` and
+`docs/results/figures/template_guided_fp5000_20261023/`. Regenerate with
+`scripts/report_template_guided_fp5000_results.py`; no GPU job is started.
+Teacher-forced token accuracy95.3943% is not a molecular generation accuracy;
+the still-unmeasured generation metrics are explicitly null in the report.

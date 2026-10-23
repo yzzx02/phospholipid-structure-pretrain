@@ -1,7 +1,7 @@
 # 固定5,000模板训练：执行记录
 
 当前快照状态：`training_completed`。本文件是实际执行快照，不表示全部实验完成。
-快照时间（上海）：2026-10-23T09:19:01.928773+08:00。
+快照时间（上海）：2026-10-23T09:28:55.505221+08:00。
 
 选模按[MetGenX原文](https://doi.org/10.1038/s41467-026-72149-6)：完整验证集最小交叉熵；连续5个完整epoch不改善即停止。
 分子式/Builder有效性、Similarity@10、官能团恢复及相对最佳输入模板的收益用于随后评价，不参与选checkpoint。
@@ -44,3 +44,4 @@ r1真实CUDA保存/重载恢复检查通过；全部学习模块都有有效梯�
 监督System4101、WER141/117、可访问dump和NVIDIA遥测；受保护WATCHDOG目录不可读，记录访问限制；出错锁定且不自动重试。
 后续待完成：选定模型后的生成评价、其他池规模/K/种子实验。
 执行契约：[TEMPLATE_GUIDED_FP5000_RUN.md](../experiments/TEMPLATE_GUIDED_FP5000_RUN.md)。
+详细训练结果与曲线：[TEMPLATE_GUIDED_FP5000_RESULTS_20261023.md](TEMPLATE_GUIDED_FP5000_RESULTS_20261023.md)。

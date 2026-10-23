@@ -264,6 +264,7 @@ def main():
             else "后续待完成：按早停规则完成主训练、选定模型后的生成评价、其他池规模/K/种子实验。"
         ),
         "执行契约：[TEMPLATE_GUIDED_FP5000_RUN.md](../experiments/TEMPLATE_GUIDED_FP5000_RUN.md)。",
+        "详细训练结果与曲线：[TEMPLATE_GUIDED_FP5000_RESULTS_20261023.md](TEMPLATE_GUIDED_FP5000_RESULTS_20261023.md)。",
         "",
     ]
     destination.with_suffix(".md").write_text("\n".join(text), encoding="utf-8")
