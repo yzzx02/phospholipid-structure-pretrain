@@ -110,6 +110,11 @@ def main():
             rows = [json.loads(line) for line in (run / "events.jsonl").read_text().splitlines()]
             training = [r for r in rows if r["stage"] == "train_progress"]
             report["latest_observed_progress"] = training[-1] if training else None
+            completed = [r for r in rows if r["stage"] == "training_completed"]
+            if completed:
+                report["completion_time_Asia_Shanghai"] = datetime.fromtimestamp(
+                    completed[-1]["unix_time"], timezone(timedelta(hours=8))
+                ).isoformat()
         if (run / "last.json").exists():
             report["last_checkpoint_step"] = read(run / "last.json")["step"]
         if (run / "best.json").exists():
@@ -121,6 +126,20 @@ def main():
             report["completed_epoch_validation"] = read(run / "validation_history.json")
         if (run / "training_report.json").exists():
             report["training_completion"] = read(run / "training_report.json")
+        if (run / "host_monitor.json").exists():
+            host = read(run / "host_monitor.json")
+            report["final_host_monitor"] = {
+                key: host[key]
+                for key in (
+                    "child_exit_code",
+                    "stop_reason",
+                    "elapsed_seconds",
+                    "display_reset_count",
+                    "new_gpu_dump_count",
+                    "protected_checkpoints_unchanged",
+                    "unreadable_dump_directories",
+                )
+            }
     epoch = ROOT / "gpu_monitor_epoch_private.json"
     if epoch.exists():
         report["unreadable_dump_directories"] = read(epoch)["existing_dumps"][
@@ -153,7 +172,7 @@ def main():
     destination = Path("docs/results/TEMPLATE_GUIDED_FP5000_START_20261022.json")
     write(destination, report)
     text = [
-        "# 固定5,000模板训练：启动与准备记录",
+        "# 固定5,000模板训练：执行记录",
         "",
         f"当前快照状态：`{report['status']}`。本文件是实际执行快照，不表示全部实验完成。",
         f"快照时间（上海）：{report['snapshot_time_Asia_Shanghai']}。",
@@ -194,7 +213,14 @@ def main():
             f"|{r['batch_size']}|{r['targets_per_second']:.1f}|{r['seconds_per_step']:.4f}|{r['peak_allocated_MiB']:.1f}|"
             for r in report["batch_benchmark"]
         ]
-    if report.get("latest_observed_progress"):
+    if "training_completion" in report:
+        done = report["training_completion"]
+        text += [
+            "",
+            f"主训练于{report.get('completion_time_Asia_Shanghai', '见事件日志')}结束；完成{done['completed_epochs']}轮、{done['step']:,}步，用时{done['elapsed_seconds'] / 3600:.2f}小时。",
+            f"停止原因：`{done['stop_reason']}`。本轮达到预设50 epoch上限，未触发连续5轮不改善早停；最佳模型为第{done['best_epoch']}轮。",
+        ]
+    elif report.get("latest_observed_progress"):
         r = report["latest_observed_progress"]
         text += [
             "",
@@ -205,7 +231,12 @@ def main():
     if "best_validation_checkpoint" in report:
         best = report["best_validation_checkpoint"]
         text += [
-            f"已完成{len(report.get('completed_epoch_validation', []))}个完整epoch验证；当前最低验证token CE为{best['best_validation_loss']:.6f}，对应step {best['step']:,}。训练尚在进行，该值不是最终生成效果。"
+            f"已完成{len(report.get('completed_epoch_validation', []))}个完整epoch验证；最低验证token CE为{best['best_validation_loss']:.6f}，对应step {best['step']:,}。生成结构指标待单独评价。"
+        ]
+    if "final_host_monitor" in report:
+        host = report["final_host_monitor"]
+        text += [
+            f"监督器退出码{host['child_exit_code']}；显示驱动重置{host['display_reset_count']}次、新GPU dump {host['new_gpu_dump_count']}个，历史checkpoint SHA保持不变：{host['protected_checkpoints_unchanged']}。"
         ]
     if "initial_GPU_attempt" in report:
         text += [
@@ -227,7 +258,11 @@ def main():
         "",
         "所有数据、权重、逐图参考和预测保存在G盘私有输出；仅代码、配置及聚合报告公开。",
         "监督System4101、WER141/117、可访问dump和NVIDIA遥测；受保护WATCHDOG目录不可读，记录访问限制；出错锁定且不自动重试。",
-        "后续待完成：按早停规则完成主训练、选定模型后的生成评价、其他池规模/K/种子实验。",
+        (
+            "后续待完成：选定模型后的生成评价、其他池规模/K/种子实验。"
+            if "training_completion" in report
+            else "后续待完成：按早停规则完成主训练、选定模型后的生成评价、其他池规模/K/种子实验。"
+        ),
         "执行契约：[TEMPLATE_GUIDED_FP5000_RUN.md](../experiments/TEMPLATE_GUIDED_FP5000_RUN.md)。",
         "",
     ]

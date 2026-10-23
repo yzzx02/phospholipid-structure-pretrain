@@ -73,7 +73,14 @@
     "GPU_batch_benchmark_passed": true,
     "CUDA_backward_restart_passed": true,
     "main_batch_size": 32,
-    "active_run": "outputs/template_guided_fp5000_20261022_r1/train_main_k3_seed42"
+    "active_run": "outputs/template_guided_fp5000_20261022_r1/train_main_k3_seed42",
+    "main_training_completed": true,
+    "completed_epochs": 50,
+    "completed_optimizer_steps": 267950,
+    "stop_reason": "local_max_epochs_cap",
+    "best_validation_epoch": 50,
+    "best_validation_token_CE": 0.13831618112577376,
+    "generation_evaluation_completed": false
   },
   "checkpoint_selection": {
     "rule": "minimum_full_validation_token_cross_entropy",

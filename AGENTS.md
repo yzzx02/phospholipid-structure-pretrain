@@ -160,3 +160,14 @@ fixed5000/K3/seed42 training has now been launched in
 `scripts/supervise_template_guided_fp5000.py`. A latched fault forbids automatic
 retries. Preserve every old checkpoint and monitor history. Other template/K
 ablations and final generation evaluation remain distinct subsequent jobs.
+
+The r1 main run completed normally on 2026-10-23 at 04:05 Shanghai, reaching
+the authorized 50-epoch cap: 267,950 steps, best epoch50 validation token CE
+0.1383161811 on all 9,527 validation cores. Patience5 early stopping was NOT
+triggered, and reaching the local cap is not evidence of convergence. The best
+and last checkpoint are step_267950_epoch_050.pt; its SHA matches the pointer
+and minimum of all 50 validation epochs. Final host monitor exit0, no observed
+display resets/new dumps and 12 historical checkpoint hashes unchanged;
+WATCHDOG access remains unavailable. Do not extend the epoch cap or restart
+training automatically. Generation/Builder/formula validity, Similarity@10,
+functional-group evaluation and other pool/K/seed experiments remain pending.
