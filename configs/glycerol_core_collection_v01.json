@@ -1,0 +1,43 @@
+{
+  "schema": "glycerol-plus-head-collection-v0.1",
+  "root": "outputs/glycerol_core_collection_v01_20261023",
+  "original_library": "data/structure_library_v0.3/polar_library.parquet",
+  "known_library": "outputs/reported_headgroups_v02_20261021",
+  "source_snapshot": "outputs/reported_headgroups_v01_20261020/raw",
+  "mass_basis": "neutral deacylated glycerol-plus-head, chain attachment oxygen capped with H",
+  "mass_limit_glycosyl_or_inositol_Da": 600.0,
+  "mass_limit_other_Da": 400.0,
+  "inositol_in_600_group": true,
+  "user_inositol_answer": "肌醇类也允许到600 Da",
+  "extra_head_chain_min_contiguous_aliphatic_carbons": 6,
+  "halogen_default": "hold for review, include only when separately verified natural",
+  "synthetic_protecting_groups_default": "exclude from proposed training subset, preserve source record",
+  "unknown_natural_origin": "explicit pending status; never infer natural occurrence from PubChem or a lipid name",
+  "template_identity": "neutral H-capped glycerol-plus-head connectivity; stereochemistry ignored; positional connectivity retained",
+  "retain_stereoisomers_as_separate_templates": false,
+  "preserve_original_source_stereochemistry": true,
+  "train_library_status": "proposed future library; active V2 training inputs unchanged",
+  "network_search_limit_per_query": 20000,
+  "network_threads": 2,
+  "full_lipid_names": [
+    "monogalactosyldiacylglycerol", "digalactosyldiacylglycerol", "trigalactosyldiacylglycerol",
+    "monoglucosyldiacylglycerol", "diglucosyldiacylglycerol", "glucuronosyldiacylglycerol",
+    "sulfoquinovosyldiacylglycerol", "3-sulfogalactosyl diacylglycerol",
+    "diacylglyceryltrimethylhomoserine", "DGTS", "DGTA", "DGCC", "MGDG", "DGDG", "SQDG",
+    "mannosyldiacylglycerol", "rhamnosyldiacylglycerol", "galactoglucosyldiacylglycerol",
+    "glucosylgalactosyldiacylglycerol", "monogalactosylmonoacylglycerol",
+    "digalactosylmonoacylglycerol", "glucuronosylmonoacylglycerol"
+  ],
+  "natural_sugar_building_blocks": [
+    "D-glucose", "D-galactose", "D-mannose", "D-xylose", "L-arabinose", "D-ribose",
+    "L-rhamnose", "L-fucose", "D-quinovose", "D-glucuronic acid", "D-galacturonic acid",
+    "N-acetyl-D-glucosamine", "N-acetyl-D-galactosamine", "D-glucosamine", "D-galactosamine",
+    "sulfoquinovose", "maltose", "cellobiose", "lactose", "melibiose", "gentiobiose",
+    "maltotriose", "raffinose", "sucrose", "trehalose"
+  ],
+  "entrez_queries": {
+    "glycosyl_glycerolipids": "(galactosyl OR glucosyl OR glycosyl OR glucuronosyl OR mannosyl OR rhamnosyl) AND (diacylglycerol OR monoacylglycerol OR glyceryl)",
+    "betaine_glycerolipids": "(trimethylhomoserine OR DGTS OR DGTA OR DGCC OR carboxyhydroxymethylcholine)",
+    "sulfur_glyceroglycolipids": "(sulfoquinovosyl OR sulfogalactosyl) AND (glycerol OR glyceryl OR diacyl)"
+  }
+}

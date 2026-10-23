@@ -1,0 +1,411 @@
+{
+  "unique_connectivity_core_graphs": 352,
+  "separate_stereochemical_template_ids": false,
+  "source_records": 25340,
+  "source_records_by_database": {
+    "LIPID_MAPS:accepted_sources": 9116,
+    "PubChem_linkage_rule:accepted_sources": 20,
+    "PubChem:accepted_sources": 15783,
+    "LSG:accepted_sources": 52,
+    "MS-DIAL:accepted_sources": 46,
+    "existing_known_v02:accepted_sources": 323
+  },
+  "source_records_not_extracted_or_out_of_scope": 9396,
+  "source_failure_reason_counts": {
+    "bare_glycerol_no_polar_head_out_of_scope": 629,
+    "invalid_SMILES": 90,
+    "isotope_label_excluded": 92,
+    "no_supported_chain_bearing_glycerol_boundary": 7048,
+    "multiple_lipid_glycerol_anchors": 1459,
+    "source_connectivity_or_formula_roundtrip_failed": 3,
+    "multiple_components_pending": 1,
+    "Pre-condition Violation\n\tbad bond stereo\n\tViolation occurred on line 362 in file Code\\GraphMol\\Canon.cpp\n\tFailed Expression: dblBond->getStereo() > Bond::STEREOANY\n\tRDKIT: 2026.03.3\n\tBOOST: 1_85\n": 4,
+    "no_explicit_cyclic_free_anomeric_OH_no_guessed_cyclization": 5,
+    "sockets_not_on_same_terminal_and_central_glycerol_sites": 24,
+    "chain_socket_not_glycerol_O": 4,
+    "unsupported_chain_socket": 36,
+    "radical_excluded": 1
+  },
+  "selection_status_counts": {
+    "结构检查通过": 130,
+    "待判断": 6,
+    "排除候选": 216
+  },
+  "evidence_category_counts": {
+    "natural_reported_core": 22,
+    "database_whole_lipid_natural_unverified": 48,
+    "natural_linkage_rule_candidate": 4,
+    "source_definition_or_reference_natural_unverified": 276,
+    "reported_synthetic_core": 2
+  },
+  "natural_core_graphs": 22,
+  "cores_with_observed_database_acyl_lipids": 62,
+  "nonphosphorus_core_graphs": 25,
+  "nonphosphorus_structure_passed": 21,
+  "rule_extension_graphs": 9,
+  "core_mass_limits_Da": {
+    "sugar_or_inositol": 600,
+    "other": 400
+  },
+  "search_coverage": [
+    {
+      "kind": "full_lipid",
+      "query": "monogalactosyldiacylglycerol",
+      "count": 1
+    },
+    {
+      "kind": "full_lipid",
+      "query": "digalactosyldiacylglycerol",
+      "count": 1
+    },
+    {
+      "kind": "full_lipid",
+      "query": "trigalactosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "monoglucosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "diglucosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "glucuronosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "sulfoquinovosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "3-sulfogalactosyl diacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "diacylglyceryltrimethylhomoserine",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "DGTS",
+      "count": 2
+    },
+    {
+      "kind": "full_lipid",
+      "query": "DGTA",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "DGCC",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "MGDG",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "DGDG",
+      "count": 1
+    },
+    {
+      "kind": "full_lipid",
+      "query": "SQDG",
+      "count": 1
+    },
+    {
+      "kind": "full_lipid",
+      "query": "mannosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "rhamnosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "galactoglucosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "glucosylgalactosyldiacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "monogalactosylmonoacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "digalactosylmonoacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "full_lipid",
+      "query": "glucuronosylmonoacylglycerol",
+      "count": 0
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-glucose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-galactose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-mannose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-xylose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "L-arabinose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-ribose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "L-rhamnose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "L-fucose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-quinovose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-glucuronic acid",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-galacturonic acid",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "N-acetyl-D-glucosamine",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "N-acetyl-D-galactosamine",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-glucosamine",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "D-galactosamine",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "sulfoquinovose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "maltose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "cellobiose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "lactose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "melibiose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "gentiobiose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "maltotriose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "raffinose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "sucrose",
+      "count": 1
+    },
+    {
+      "kind": "sugar_parent",
+      "query": "trehalose",
+      "count": 1
+    },
+    {
+      "kind": "text",
+      "query": "(galactosyl OR glucosyl OR glycosyl OR glucuronosyl OR mannosyl OR rhamnosyl) AND (diacylglycerol OR monoacylglycerol OR glyceryl)",
+      "key": "glycosyl_glycerolipids",
+      "reported_count": 5,
+      "downloaded_count": 5,
+      "truncated": false
+    },
+    {
+      "kind": "text",
+      "query": "(trimethylhomoserine OR DGTS OR DGTA OR DGCC OR carboxyhydroxymethylcholine)",
+      "key": "betaine_glycerolipids",
+      "reported_count": 15777,
+      "downloaded_count": 15777,
+      "truncated": false
+    },
+    {
+      "kind": "text",
+      "query": "(sulfoquinovosyl OR sulfogalactosyl) AND (glycerol OR glyceryl OR diacyl)",
+      "key": "sulfur_glyceroglycolipids",
+      "reported_count": 6,
+      "downloaded_count": 6,
+      "truncated": false
+    }
+  ],
+  "LMSD_GP_GL_records_examined": 18423,
+  "PubChem_CIDs_examined": 15820,
+  "natural_evidence_scope": "core connectivity only; database source acyl composition is not thereby verified as naturally occurring",
+  "whole_frozen_library_rewritten": false,
+  "active_training_inputs_changed": false,
+  "collection_complete_for_all_PubChem": false,
+  "frozen_library_sidecar": {
+    "original_records": 195306,
+    "original_parquet_sha256": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+    "original_parquet_unchanged": true,
+    "status_counts": {
+      "evaluated": 195306
+    },
+    "original_structure_origin_counts": {
+      "pubchem_multi_attachment_split": 41925,
+      "pubchem_baseline": 103397,
+      "generated_phosphate_analog": 49983,
+      "generated_keto_inositol": 1
+    },
+    "filter_reason_counts_overlap": {
+      "core_mass_above_limit": 111737,
+      "halogen_hold_for_natural_evidence": 47525,
+      "extra_head_long_alkyl_or_acyl_chain": 14927,
+      "synthetic_protecting_group_suspected": 9387
+    },
+    "strict_structural_policy_pass": 66252,
+    "matched_natural_core_graphs_records": 11,
+    "matched_database_whole_lipid_core_records": 23,
+    "P_first_status_counts": {
+      "O_equals_marked_P_first": 195306
+    },
+    "core_mass_quantiles_Da": {
+      "0": 168.08499999999998,
+      "0.25": 365.2750000000001,
+      "0.5": 456.37600000000015,
+      "0.75": 568.2580000000003,
+      "0.95": 645.4920000000002,
+      "0.99": 669.317,
+      "1": 690.077
+    },
+    "no_filter_applied_to_training": true,
+    "stereo_not_separately_numbered": true
+  },
+  "numbered_position_ambiguity_core_count": 1,
+  "no_extra_stereochemical_ids": true,
+  "source_stereo_information_preserved_only_for_traceability": true,
+  "manual_keep_graphs_after_connectivity_merge": 134,
+  "prior_manual_exclude_graphs_preserved": 3,
+  "prior_manual_pending_graphs_preserved": 2,
+  "source_structure_QA": {
+    "whole_lipid_records_connectivity_and_formula_roundtrip": 24899,
+    "stereo_roundtrip_also_exact_but_not_template_selector": 24038,
+    "database_formula_equals_source_graph": 24881,
+    "database_formula_differs_source_graph": 18
+  },
+  "formula_mismatch_note": "Source graph round-trip and database declared formula are distinct checks; mismatches remain explicit and are not repaired. Natural occurrence is never asserted per source acyl species.",
+  "exclusion_reason_counts_overlap": {
+    "source_numbered_inositol_positions_share_stereo_free_graph_pending": 1,
+    "core_mass_above_limit": 210,
+    "extra_head_long_alkyl_or_acyl_chain": 187,
+    "halogen_hold_for_natural_evidence": 2,
+    "non_neutral_core_charge_pending": 3,
+    "prior_manual_review_pending": 2,
+    "unsupported_element": 1,
+    "prior_manual_exclude_or_merged_decision_conflict": 3
+  },
+  "passed_legacy_reviewed_keep_core_graphs": 101,
+  "protected_V2_source_contract": {
+    "checked_files": 73,
+    "changed_files": []
+  },
+  "training_observation": {
+    "E2_last_logged_progress": "2026-10-23 14:21:57 Asia/Shanghai; step36300 epoch7",
+    "training_and_supervisor_processes_present_when_checked": false,
+    "stale_state_file_still_says_running": true,
+    "new_System_4101_or_reboot_events_seen_in_bounded_query": false,
+    "cause_determined": false,
+    "automatically_restarted": false,
+    "note": "Process absence is not a successful completion. Collection ran only on CPU. Protected WATCHDOG dump access remains unavailable."
+  },
+  "report_created_utc": "2026-10-23T07:36:48.965748+00:00",
+  "private_artifacts_directory": "outputs\\glycerol_core_collection_v01_20261023",
+  "html_QA": {
+    "graphs": 352,
+    "initial_visible": 136,
+    "all_filter": true,
+    "search": true,
+    "decision_edit": true,
+    "csv_BOM_and_real_newlines": true,
+    "backup_and_undo": true,
+    "all_graph_images_exist": true
+  },
+  "workbook_QA": {
+    "core_rows": 352,
+    "source_audit_rows": 490,
+    "editable_decision_recalculates": true,
+    "temporary_decision_restored": true,
+    "error_scan": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}"
+  },
+  "storage_bytes_owned_excluding_node_modules_junction": 50667767
+}

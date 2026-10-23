@@ -213,3 +213,34 @@ entries plus protected weight SHA checks remained unchanged. Compact retention
 is active in the V2 root. Read `state.json`/run events for current status; never
 launch a duplicate queue. `scripts/report_template_guided_v2.py` exports only
 aggregate status and figures without changing frozen training sources or inputs.
+
+The user's 2026-10-23 next-library task is CPU-only and independent in
+`outputs/glycerol_core_collection_v01_20261023`. It expands to glycerol+head
+cores, including nonphosphorus glyceroglycolipids and betaine lipids. Keep one
+ID per connectivity graph; do not enumerate or separately number stereoisomers.
+Original source stereo stays in provenance. Preserve named attachment positions;
+stereo-free inositol graph symmetry can merge numbered positions, which remain
+explicitly pending rather than silently becoming one position-resolved template.
+Mass is neutral H-capped deacylated glycerol+head: sugar OR inositol <=600 Da,
+other <=400 Da. Exclude extra lipid chains/anchors from default proposals;
+hold unverified halogens and nonneutral structures, retain all source graphs.
+Display O=P from the explicitly observed attachment-associated P only; never
+select the first P in canonical SMILES or rewrite P=S as P=O. Natural core
+literature, chain-bearing database structures, source rules and rule extensions
+are separate evidence. A natural core does not verify every acyl composition.
+The original195306 library receives only a derived sidecar. Never change active
+V2 sources, labels, data splits, tokenizer, bank or weights for this future scope.
+Private structure tables, galleries and Excel remain on G; publish source and
+aggregate reports only. No automatic new template-bank selection or training.
+
+The first future-core collection now contains352 connectivity graphs:130 pass,
+216 excluded proposals and6 pending (including a source-numbered inositol
+position ambiguity). Source records and all prior decisions remain private.
+The complete195306-row sidecar passes66252 under this proposed400/600 Da,
+extra-chain/halogen/protecting-group policy; no filter was applied to training.
+The original library SHA and all73 V2 source/config hashes were unchanged.
+See `docs/results/GLYCEROL_CORE_COLLECTION_V01_20261023.md`.
+At the collection check, E2's training/supervisor PIDs were absent and the last
+progress was2026-10-23 14:21:57, step36300/epoch7; its running state file is stale.
+No automatic GPU restart was performed. Inspect the current process/monitor and
+checkpoint state before claiming the queue is running or proposing continuation.
