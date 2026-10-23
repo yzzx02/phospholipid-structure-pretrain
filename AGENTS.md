@@ -178,3 +178,27 @@ runtime statistics and aggregate PNG/SVG figures are in
 `scripts/report_template_guided_fp5000_results.py`; no GPU job is started.
 Teacher-forced token accuracy95.3943% is not a molecular generation accuracy;
 the still-unmeasured generation metrics are explicitly null in the report.
+
+The user supplied a formal V2.0 plan on 2026-10-23. It authorizes independent
+random-initialized E1/E2/E3 optimization experiments in
+`outputs/template_guided_v2_20261023`, with frozen190553 eligible cores,
+TRAIN171478/validation9527/test9548, bank5000/K3/batch32 and current architecture.
+The new resource cap is80 epochs/428720 optimizer updates; select only minimum
+complete-validation Token CE, patience5 complete epochs. E1 constant1e-4;
+E2 warmup4000 to1e-4 then cosine1e-5; E3 warmup4000 to3e-4 then cosine1e-5.
+This supersedes the old50-epoch cap only for the independent V2 experiment.
+Preserve ALL exploratory files/weights/logs/code and all old fault latches.
+New V2 data use separate exact-retrieval caches and TRAIN-only formula statistics;
+source inputs, labels, bank identity, Builder and frozen architecture remain unchanged.
+Independent A/B/C audit and CPU/CUDA full-state resume gates must pass before D.
+Use only `scripts/supervise_template_guided_v2.py` for V2 CUDA, no automatic retry.
+New retention keeps best plus latest2 full checkpoints, at most3 distinct files/run,
+only prunes registered V2 obsolete checkpoints after atomic save/hash/CPU reload.
+Immutable input hardlinks must never be overwritten. Stream evaluation and retain
+all failures/empty targets in compressed raw records and metric denominators.
+Private structures, raw predictions, IDs and weights remain on G. Public source,
+aggregate JSON/Markdown and distribution figures may be pushed to GitHub.
+Formula-only and extra seeds are conditional later stages after template stability
+and generation assessment; never use an empty template mask as Formula-only.
+No real-MS/MS or known-headgroup adaptation. See
+`docs/experiments/TEMPLATE_GUIDED_FORMAL_V2.md` and `configs/template_guided_v2.json`.
