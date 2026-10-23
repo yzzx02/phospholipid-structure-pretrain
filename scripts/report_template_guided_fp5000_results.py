@@ -132,6 +132,14 @@ def figures(history, coverage, telemetry):
     fig.savefig(FIG / "gpu_telemetry.png", dpi=180)
     fig.savefig(FIG / "gpu_telemetry.svg")
     plt.close(fig)
+    # Matplotlib emits trailing path-data spaces; keep generated text diffs clean.
+    for path in FIG.glob("*.svg"):
+        path.write_text(
+            "\n".join(line.rstrip() for line in path.read_text(encoding="utf-8").splitlines())
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
 
 
 def main():
