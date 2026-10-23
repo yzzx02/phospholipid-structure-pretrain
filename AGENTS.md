@@ -202,3 +202,14 @@ Formula-only and extra seeds are conditional later stages after template stabili
 and generation assessment; never use an empty template mask as Formula-only.
 No real-MS/MS or known-headgroup adaptation. See
 `docs/experiments/TEMPLATE_GUIDED_FORMAL_V2.md` and `configs/template_guided_v2.json`.
+
+V2 A/B/C,72 related tests, independent real-model CPU and CUDA backward/resume
+gates have now passed. The serial supervised queue has started E1 from fresh
+random initialization; E2/E3 and fixed generation evaluation are queued. The
+first complete9527-core validation is CE0.4089735984 (epoch1); this is an early
+training observation, not final performance. The CUDA gate observed no driver
+fault/new dump, and all320 historical exploratory/probe checkpoint inventory
+entries plus protected weight SHA checks remained unchanged. Compact retention
+is active in the V2 root. Read `state.json`/run events for current status; never
+launch a duplicate queue. `scripts/report_template_guided_v2.py` exports only
+aggregate status and figures without changing frozen training sources or inputs.

@@ -1,4 +1,5 @@
 {
+  "generated_utc": "2026-10-23T03:18:48.833364+00:00",
   "schema": "formal_v2_aggregate_status",
   "original_core_count": 195306,
   "eligible_core_count": 190553,
@@ -243,6 +244,23 @@
       }
     }
   },
+  "old_HNSW_score_audit": {
+    "0": {
+      "N": 190553,
+      "different_top1_identity": 5881,
+      "strictly_lower_old_score_gt1e6": 332,
+      "different_identity_with_tied_score": 5549,
+      "maximum_exact_score_gain": 0.29992317585718065
+    },
+    "1": {
+      "N": 190553,
+      "different_top1_identity": 5794,
+      "strictly_lower_old_score_gt1e6": 503,
+      "different_identity_with_tied_score": 5291,
+      "maximum_exact_score_gain": 0.4231200843681524
+    }
+  },
+  "private_fingerprint_disagreement_examples": 10,
   "reference_mask_counts": {
     "0": {
       "3": 190553
@@ -4183,25 +4201,121 @@
       }
     ]
   },
-  "cuda_gate": null,
+  "cuda_gate": {
+    "passed": true,
+    "device": "cuda",
+    "checks": [
+      {
+        "experiment": "E1",
+        "steps": 4,
+        "restart_after_step": 2,
+        "batch_size": 32,
+        "real_disk_reload": true,
+        "maximum_model_optimizer_scheduler_logits_difference": 0.0,
+        "tolerance": 1e-05,
+        "actual_LRs": [
+          [
+            0.0001,
+            0.0001,
+            0.0001,
+            0.0001
+          ],
+          [
+            0.0001,
+            0.0001,
+            0.0001,
+            0.0001
+          ]
+        ],
+        "same_next_batch_rng_and_patience": true,
+        "longest_label_backward_passed": true,
+        "longest_batch_CE": 4.384042739868164
+      },
+      {
+        "experiment": "E2",
+        "steps": 4,
+        "restart_after_step": 2,
+        "batch_size": 32,
+        "real_disk_reload": true,
+        "maximum_model_optimizer_scheduler_logits_difference": 0.0,
+        "tolerance": 1e-05,
+        "actual_LRs": [
+          [
+            2.5000000000000002e-08,
+            5.0000000000000004e-08,
+            7.500000000000001e-08,
+            1.0000000000000001e-07
+          ],
+          [
+            2.5000000000000002e-08,
+            5.0000000000000004e-08,
+            7.500000000000001e-08,
+            1.0000000000000001e-07
+          ]
+        ],
+        "same_next_batch_rng_and_patience": true,
+        "longest_label_backward_passed": true,
+        "longest_batch_CE": 4.384042739868164
+      },
+      {
+        "experiment": "E3",
+        "steps": 4,
+        "restart_after_step": 2,
+        "batch_size": 32,
+        "real_disk_reload": true,
+        "maximum_model_optimizer_scheduler_logits_difference": 0.0,
+        "tolerance": 1e-05,
+        "actual_LRs": [
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ],
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ]
+        ],
+        "same_next_batch_rng_and_patience": true,
+        "longest_label_backward_passed": true,
+        "longest_batch_CE": 4.384042263031006
+      }
+    ]
+  },
   "phase": {
-    "schema": "formal_v2_state",
-    "phase_A": "preparing",
-    "phase_B": "pending",
-    "phase_C": "pending",
-    "phase_D": "not_started",
-    "phase_E": "pending",
-    "phase_F": "pending",
-    "previous_50epochs_role": "exploratory preserved",
-    "retention": "best plus latest2 full checkpoints per NEW run"
+    "stage": "E1_seed42",
+    "status": "running",
+    "automatic_retry": false
+  },
+  "latest_training_progress": {
+    "stage": "train_progress",
+    "step": 12700,
+    "epoch": 3,
+    "batch": 1982,
+    "training_CE": 0.3595615029335022,
+    "LR": 0.0001,
+    "training_token_accuracy": 0.8779128672745694,
+    "gradient_norm": 0.8594418168067932,
+    "seconds_per_step": 0.01600000000325963,
+    "peak_allocated_MiB": 829.10302734375,
+    "elapsed_seconds": 299.9070000000065,
+    "unix_time": 1792725527.016954
   },
   "training": {
     "E1": null,
     "E2": null,
     "E3": null
   },
-  "new_owned_GiB": 0.16465985588729382,
+  "new_owned_GiB": 0.5333070158958435,
   "retention": "newV2 best+latest2, max3full/run; old exploratory assets ALL preserved",
+  "active_retained_weight_counts": {
+    "E1": 2,
+    "E2": 0,
+    "E3": 0
+  },
   "generation": {
     "validation_pilot": null,
     "validation_full": null,

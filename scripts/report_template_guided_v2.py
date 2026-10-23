@@ -1,6 +1,7 @@
 """Read-only V2 status report; export aggregate statistics and figures only."""
 
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 
 from structure_pretrain.formal_v2.common import ROOT, read, write
@@ -19,6 +20,27 @@ def main():
     cpu = read(ROOT / "cpu_gate.json") if (ROOT / "cpu_gate.json").exists() else None
     cuda = read(ROOT / "cuda_gate.json") if (ROOT / "cuda_gate.json").exists() else None
     phase = read(ROOT / "state.json")
+    progress = None
+    if phase.get("stage"):
+        events = ROOT / phase["stage"] / "events.jsonl"
+        if events.exists():
+            import json
+
+            with events.open("rb") as stream:
+                stream.seek(max(0, events.stat().st_size - 65536))
+                for line in reversed(stream.read().splitlines()):
+                    try:
+                        value = json.loads(line)
+                    except ValueError:
+                        continue
+                    if value.get("stage") in ("train_progress", "validation_completed"):
+                        progress = value
+                        break
+    hnsw = (
+        read(audit / "old_HNSW_exact_score_comparison.json")
+        if (audit / "old_HNSW_exact_score_comparison.json").exists()
+        else None
+    )
     reports = {
         exp: read(ROOT / f"{exp}_seed42/training_report.json")
         if (ROOT / f"{exp}_seed42/training_report.json").exists()
@@ -39,6 +61,7 @@ def main():
         }
 
     result = {
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
         "schema": "formal_v2_aggregate_status",
         "original_core_count": a1["frozen_cores"],
         "eligible_core_count": a1["eligible"],
@@ -55,6 +78,8 @@ def main():
             )
         },
         "dual_fingerprint": a2,
+        "old_HNSW_score_audit": hnsw,
+        "private_fingerprint_disagreement_examples": 10,
         "reference_mask_counts": a3["mask_count_by_occupancy"],
         "retrieval_oracle": {
             key: {
@@ -81,9 +106,16 @@ def main():
         "cpu_gate": gate_summary(cpu),
         "cuda_gate": gate_summary(cuda),
         "phase": phase,
+        "latest_training_progress": progress,
         "training": reports,
         "new_owned_GiB": owned_bytes(ROOT) / 2**30,
         "retention": "newV2 best+latest2, max3full/run; old exploratory assets ALL preserved",
+        "active_retained_weight_counts": {
+            exp: len(read(ROOT / f"{exp}_seed42/checkpoint_retention.json")["retained"])
+            if (ROOT / f"{exp}_seed42/checkpoint_retention.json").exists()
+            else 0
+            for exp in ("E1", "E2", "E3")
+        },
         "generation": {
             name: read(ROOT / f"eval_{name}/evaluation_report.json")["modes"]
             if (ROOT / f"eval_{name}/evaluation_report.json").exists()
@@ -118,10 +150,30 @@ def main():
                 f"{100 * v['at_least_04']:.2f}%|{100 * v['at_least_06']:.2f}%|"
             )
     status = {exp: "已完成" if reports[exp] else "未完成" for exp in reports}
+    current = (
+        "暂无训练进度"
+        if progress is None
+        else (
+            f"step={progress.get('step')}，epoch={progress.get('epoch')}；"
+            "为运行中快照，不能当作最终结果。"
+        )
+    )
+    hnsw_note = (
+        ""
+        if hnsw is None
+        else (
+            f"旧HNSW分数严格低于精确最优：双链{hnsw['0']['strictly_lower_old_score_gt1e6']}"
+            f"（{100 * hnsw['0']['strictly_lower_old_score_gt1e6'] / 190553:.3f}%），"
+            f"单链{hnsw['1']['strictly_lower_old_score_gt1e6']}"
+            f"（{100 * hnsw['1']['strictly_lower_old_score_gt1e6'] / 190553:.3f}%）；"
+            "其余大部分身份差异来自同分候选。10个双指纹结构差异实例留私有目录。"
+        )
+    )
     body = f"""# 模板引导正式 V2.0：审计与执行状态（2026-10-23）
 
 当前状态：`{phase.get("stage", phase.get("A", "preflight"))}`。本文件是实际状态快照；
 未完成的训练和生成指标在JSON中为null，不把预备审计当作正式模型结果。
+{current}
 
 用户V2.0计划已落地，旧50轮实验归为探索性实验，其全部文件保留。
 新正式实验独立随机初始化，不继承旧模型。全部数据和输出留G盘。
@@ -140,6 +192,7 @@ Polar片段与chainless输入分别计算，后者包含甘油与101/102链位�
 {chr(10).join(rows)}
 
 最后一列是身份差异数，含并列身份处理的影响，**不是HNSW严格错误率**。
+{hnsw_note}
 新V2缓存统一采用精确结果；原缓存、标签和5,000模板身份保留。
 所有190,553目标在0.2阈值下均有3个合法参考，不静默丢弃难样本。
 
