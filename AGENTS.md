@@ -380,3 +380,28 @@ stale. This data curation did not restart the GPU evaluation or modify protected
 generation code. No new-pool training was started. See
 `docs/results/GLYCEROL_CORE_UNIFIED_V04_20261026.{md,json}` and the new manifest,
 schema/report and cache cleanup receipts before continuing.
+
+The user's subsequent2026-10-26 instruction now explicitly authorizes NEW-library
+formal training with about8000 templates and a new target split, including all
+8000 bank entries as prediction labels. This supersedes the earlier data-only
+restriction for this independent experiment. Use
+`configs/glycerol_core_templates8000_v1.json` and
+`outputs/glycerol_core_templates8000_v1_20261026`; preserve all historical roots,
+stop locks, weights and73 frozen V2 sources. Labels include glycerol and distinct
+chain ports101/102, with neutral H-capped whole-core formulas, both P and nonP.
+Train a freshly initialized output layer/model; do not pretend compatibility
+with old Polar labels. Max label length96 covers all189864 main graphs; retain
+approved mass/risk exceptions. Split by stereo-free neutral capped equivalence
+before TRAIN-only bank selection. Keep all8000 bank entries as TRAIN targets,
+excluding self/equivalent input templates for every prediction. Report their
+leave-one-out reconstruction separately from held-out validation/test.
+New CPU/CUDA backward, actual full-state disk recovery, longest-label and nonP
+gates must pass under the new matching supervisor before formal training.
+Reuse the prior best E3 optimization schedule: batch32/K3, warmup4000 to3e-4,
+cosine to1e-5, FP32/Math/TF32off,80-epoch cap, minimum complete-validation Token
+CE selection and patience5. The old stop lock is not cleared or retried.
+New retention is best plus latest2, at most3 full checkpoints/run and8GiB owned
+output cap. Predeclared validation512/bank-target512/test512 generation is
+bounded, streams raw candidates, catches RDKit exceptions and retains failed
+targets in denominators. No automatic extra bank/K/seed ablations, MS/MS, CL
+or PGCN. See `docs/experiments/GLYCEROL_CORE_TEMPLATES8000_V1.md`.
