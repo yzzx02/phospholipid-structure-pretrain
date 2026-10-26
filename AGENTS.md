@@ -343,3 +343,40 @@ no new-pool training was started. See
 labelled small visual sample, not the complete graph count; full data are in the
 combined Parquet and provenance mapping. Do not silently change mass/element/
 terminal-position rules or include the standby set in subsequent training.
+
+The user's latest2026-10-26 admission decision supersedes the v0.3 exclusions for
+37609 mass-only standby graphs and7458 risk-only graphs (4990 protecting-group
+only,2358 acyl-phosphate only,110 both). Preserve all original atoms and flags;
+these are accepted potential candidates, not newly verified natural lipids.
+The authoritative unified snapshot is now
+`outputs/glycerol_core_unified_v04_20261026/main_core_library_v04.parquet`:
+189864 main cores,164370 P and25494 nonP. The exact25494 nonP ID set is frozen;
+do not automatically enumerate or search more. The remaining5491 mass-plus-other
+graphs stay in standby, and31132 others remain excluded/review; all three tables
+share the same glycerol-plus-head schema and disjoint HT IDs (226487 total).
+Every target_smiles includes the fixed glycerol with chain roles101/102.
+Direct-P heads start at the actual glycerol-connected P; others at the head-side
+glycerol carbon. Legacy Polar fragments are separately named and are not the
+new whole-core labels. Ordinary500/sugar-or-inositol600 remain nominal bounds;
+only the explicitly restored37609 IDs are approved mass exceptions. Do not
+silently reapply old v0.3 hard filters to remove these accepted main records.
+All226487 root/port/graph checks and45067 new H-inclusive reassemblies passed,
+with prior unchanged proofs reused.48 related tests pass. Original195306,
+v0.3 and8351 snapshots and all73 frozen V2 source/config hashes remain unchanged.
+
+User-authorized hashed cleanup removed567 rebuildable cache files,3.047GB,
+including the cached Torch installer and pip downloads, project pyc/test/lint
+caches and superseded CPU intermediate files. The installed2.9.1+cu128 environment
+is intact; the installer version/SHA and recovery constraints are in the new
+cache cleanup receipt. Earlier storage-audit notes about retaining that cached
+wheel are historical; its latest authorized deletion is not missing runtime or
+lost checkpoint data. Keep all original recovery/transfer trees, checkpoints,
+predictions, source records, manual reviews and stop/monitor evidence.
+
+E1/E2/E3 training finished normally. The subsequent validation pilot stopped on
+an unhandled RDKit KekulizeException in generated-candidate metrics, with the
+supervisor failed and GPU_STOP.json retained; state.json's running value is
+stale. This data curation did not restart the GPU evaluation or modify protected
+generation code. No new-pool training was started. See
+`docs/results/GLYCEROL_CORE_UNIFIED_V04_20261026.{md,json}` and the new manifest,
+schema/report and cache cleanup receipts before continuing.

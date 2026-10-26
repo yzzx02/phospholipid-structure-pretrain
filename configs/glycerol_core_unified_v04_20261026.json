@@ -1,0 +1,18 @@
+{
+  "root": "outputs/glycerol_core_unified_v04_20261026",
+  "prior_root": "outputs/glycerol_core_collection_v03_20261026",
+  "original_library": "data/structure_library_v0.3/polar_library.parquet",
+  "fixed_nonP_count": 25494,
+  "admit_mass_only_standby_count": 37609,
+  "admit_risk_only_count": 7458,
+  "risk_flags_allowed_as_annotations": ["synthetic_protecting_group_suspected", "reactive_acyl_phosphate_mixed_anhydride"],
+  "nominal_mass_limits_Da": {"ordinary": 500, "sugar_or_inositol": 600},
+  "mass_exception": "only the explicitly accepted 37609 mass-only standby graphs; not a global mass-limit change",
+  "identity": "one stereo-free anchored connectivity graph per stable HT target_id",
+  "target_smiles_scope": "full glycerol plus head, two external chain roles101/102; never add glycerol to an existing full core twice",
+  "allowed_elements": ["C", "H", "N", "O", "P", "S", "F", "Cl", "Br", "I"],
+  "head_attachment": "terminal sn1/sn3; stereo-free terminal equivalence; no sn2 additions",
+  "nonP_expansion_frozen": true,
+  "current_V2_inputs_changed": false,
+  "new_pool_training_started": false
+}

@@ -1,0 +1,146 @@
+{
+  "client_time": "2026-10-26T16:03:29.201675+08:00",
+  "main_count": 189864,
+  "main_P_count": 164370,
+  "main_nonP_count": 25494,
+  "readmission_counts": {
+    "user_accepted_mass_only_exception": 37609,
+    "user_accepted_risk_annotations": 7458
+  },
+  "remaining_standby": 5491,
+  "remaining_excluded_or_review": 31132,
+  "all_status_count": 226487,
+  "all_core_scope": "glycerol_plus_head",
+  "nonP_ID_set_frozen_exactly": true,
+  "no_new_enumeration_or_database_search": true,
+  "all_target_smiles_include_fixed_glycerol": true,
+  "labels_and_H_formula_proof_counts": {
+    "main": 189864,
+    "all_root_port_graph_checks": 226487,
+    "newly_admitted_explicit_assembly_checks": 45067,
+    "standby": 5491,
+    "excluded_or_review": 31132
+  },
+  "risk_annotations_preserved": true,
+  "nominal_mass_limits_unchanged_except_explicit_admitted_IDs": true,
+  "input_SHA256_unchanged": {
+    "configs\\glycerol_core_unified_v04_20261026.json": "2faf870eba7a710d8edeff4133ec801c1fcbb4d2d460cdcb4d1a54f610058a1e",
+    "data\\structure_library_v0.3\\polar_library.parquet": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+    "outputs\\glycerol_core_collection_v03_20261026\\combined_candidate_cores_v03.parquet": "c4eafcdf2555a72a3e61a6d4fff23688c3b45e6906adf27ae22547fa91476c87",
+    "outputs\\glycerol_core_collection_v03_20261026\\phosphate_scope_reaudit.parquet": "0286ff75f005456c9bed3d132d311947493307ddfec6dc96d3d867205fbad77b",
+    "outputs\\glycerol_core_collection_v03_20261026\\standby_43100_mass_shift.parquet": "9fbdcdddb4224258201871b295adccd9a11db2b09ef9801b22bf5dd67ee7467b",
+    "outputs\\glycerol_core_collection_v03_20261026\\observed_source_mapping.jsonl.gz": "ac331bfd5b9a2e85c2d3c3ccff740754459281f5f74e909d386816b7ba7a41d8",
+    "outputs\\headgroup_training_targets_v02_20261026\\training_targets.parquet": "0ac88ea43be556b99b1f79c280e9bcbab7f4f15c5d2c0fe151a78b476c833815"
+  },
+  "protected_V2_source_files_unchanged": 73,
+  "source_references": {
+    "original_P_records": "data\\structure_library_v0.3\\polar_library.parquet",
+    "prior_reference_and_rule_records": "outputs\\headgroup_training_targets_v02_20261026\\training_targets.parquet",
+    "PubChem_source_edges": "outputs\\glycerol_core_collection_v03_20261026\\observed_source_mapping.jsonl.gz",
+    "PubChem_source_records": "outputs\\glycerol_core_collection_v03_20261026\\raw\\nonP_properties"
+  },
+  "files": {
+    "main_core_library_v04": {
+      "path": "outputs\\glycerol_core_unified_v04_20261026\\main_core_library_v04.parquet",
+      "rows": 189864,
+      "sha256": "7d6d57425ef5ce25a96686858b91a94405b263b0234391dea7dd0ee8c961d3b9",
+      "bytes": 21582104
+    },
+    "standby_core_library_v04": {
+      "path": "outputs\\glycerol_core_unified_v04_20261026\\standby_core_library_v04.parquet",
+      "rows": 5491,
+      "sha256": "10fa6678755643bac5c1dcc3de7b446736be1bc49601a48942101ca1b967dce8",
+      "bytes": 734038
+    },
+    "excluded_core_library_v04": {
+      "path": "outputs\\glycerol_core_unified_v04_20261026\\excluded_core_library_v04.parquet",
+      "rows": 31132,
+      "sha256": "73c663bf66e3622d0f04568464955d4f9aa6fc2bc83c0d8c52190b33e5f96a99",
+      "bytes": 4230329
+    }
+  },
+  "current_V2_inputs_changed": false,
+  "new_library_training_started": false,
+  "default_future_training_candidates": "outputs\\glycerol_core_unified_v04_20261026\\main_core_library_v04.parquet",
+  "all_Parquet_schemas_identical": true,
+  "schema": "target_id: string\ncore_scope: string\nselection_status: string\nadmission_basis: string\nfixed_glycerol_backbone_present: bool\nhead_attachment_position: string\nchain_attachment_roles: string\ncontains_P: bool\nP_count: int64\nrooted_at_attachment_P: bool\ntarget_smiles: string\nglycerol_first_smiles: string\ncapped_core_smiles: string\nlegacy_Polar_fragment_smiles: string\nanchored_graph_key: string\ncore_formula: string\ncore_average_mass_Da: double\nnominal_mass_limit_Da: double\nexceeds_nominal_mass_limit: bool\nuser_mass_exception: bool\nsugar_ring_count: int64\ninositol_ring_count: int64\nscreening_flags: list<element: string>\n  child 0, element: string\nrisk_flags: list<element: string>\n  child 0, element: string\nsource_origins: list<element: string>\n  child 0, element: string\ndisplay_name: string\nname_status: string\naliases: list<element: string>\n  child 0, element: string\nsource_urls: list<element: string>\n  child 0, element: string\nbackground_polar_ids: list<element: string>\n  child 0, element: string\nPubChem_source_CIDs_sample: list<element: int64>\n  child 0, element: int64\nprior_expansion_target_id: string\nevidence_basis: string\nobserved_substructure_evidence: bool\nsource_uncut_core_observed: bool\nassembly_H_formula_verified: bool\nassembly_proof_basis: string\nsource_stereochemistry_preserved_in_originals: bool\nstereo_ignored_for_target_identity: bool\nused_in_current_V2_training: bool",
+  "final_identity_and_status_QA": true,
+  "all_statuses_disjoint": true,
+  "original_P_in_main": 158683,
+  "original_P_remaining_standby": 5491,
+  "original_P_remaining_excluded_or_review": 31132,
+  "admission_group_counts": {
+    "user_accepted_mass_only_exception": 37609,
+    "v03_retained": 144797,
+    "user_accepted_risk_annotations": 7458,
+    "mass_plus_other_flags_not_reinstated": 5491,
+    "remaining_scope_exclusion": 31132
+  },
+  "related_tests_passed": 48,
+  "cache_cleanup": {
+    "deleted_files": 567,
+    "logical_bytes_removed": 3047326858,
+    "disk_free_before": 1518268583936,
+    "disk_free_after": 1521317044224,
+    "installed_torch_version": "2.9.1+cu128",
+    "preserved": [
+      "original195306_library",
+      "all_checkpoints_and_predictions",
+      "transfer_and_restored_trees",
+      "current_V2_inputs_and_monitor_stop_locks",
+      "complete_nonP_source_records_and_provenance",
+      "all_manual_review_data"
+    ]
+  },
+  "current_model_training_reports": {
+    "E1": {
+      "status": "completed",
+      "experiment": "E1",
+      "stop_reason": "patience5_complete_validation_epochs",
+      "completed_epochs": 56,
+      "steps": 300104,
+      "best_epoch": 51,
+      "best_validation_token_CE": 0.13612422440793684,
+      "bad_epochs": 5,
+      "elapsed_seconds": 10229.469000000012,
+      "cap_is_not_convergence": false,
+      "test_used_for_selection": false,
+      "peak_allocated_MiB": 829.10302734375
+    },
+    "E2": {
+      "status": "completed",
+      "experiment": "E2",
+      "stop_reason": "patience5_complete_validation_epochs",
+      "completed_epochs": 64,
+      "steps": 342976,
+      "best_epoch": 59,
+      "best_validation_token_CE": 0.1294714501229587,
+      "bad_epochs": 5,
+      "elapsed_seconds": 12135.670999999973,
+      "cap_is_not_convergence": false,
+      "test_used_for_selection": false,
+      "peak_allocated_MiB": 829.625
+    },
+    "E3": {
+      "status": "completed",
+      "experiment": "E3",
+      "stop_reason": "patience5_complete_validation_epochs",
+      "completed_epochs": 64,
+      "steps": 342976,
+      "best_epoch": 59,
+      "best_validation_token_CE": 0.12368985641566978,
+      "bad_epochs": 5,
+      "elapsed_seconds": 8897.688000000024,
+      "cap_is_not_convergence": false,
+      "test_used_for_selection": false,
+      "peak_allocated_MiB": 829.10302734375
+    }
+  },
+  "generation_evaluation_status": {
+    "run": "eval_validation_pilot_resume_20261026",
+    "status": "failed",
+    "reason": "unhandled RDKit KekulizeException in generated-candidate metrics",
+    "stop_lock_preserved": true,
+    "GPU_retry_started_by_this_curation": false
+  }
+}
