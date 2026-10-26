@@ -1,0 +1,82 @@
+{
+  "client_time": "2026-10-26T12:08:08.014244+08:00",
+  "active_V2": {
+    "train": 171478,
+    "validation": 9527,
+    "test": 9548,
+    "total_eligible": 190553,
+    "contains_nonP": false,
+    "inputs_changed": false
+  },
+  "frozen_expansion": {
+    "total": 8351,
+    "with_P": 6181,
+    "without_P": 2170,
+    "user_acceptance": "current candidate scope; not individual natural-evidence verification"
+  },
+  "old_background": {
+    "original_rows": 195306,
+    "unchanged": true,
+    "unique_normalized_anchored_graphs": 195306,
+    "duplicate_rows_after_stereo_free_protonation_normalization": 0,
+    "pass_rows": 91335,
+    "pass_unique_graphs": 91335,
+    "exclude_or_hold_rows": 103971,
+    "disjoint_partition": {
+      "outside_new_scope": 77656,
+      "pass": 91335,
+      "held_for_evidence_or_chemical_review_only": 26315
+    },
+    "overlapping_reasons": {
+      "core_mass_above_500_600_policy": 68050,
+      "reactive_acyl_phosphate_mixed_anhydride": 3203,
+      "halogen_hold_for_natural_evidence": 47525,
+      "extra_head_long_alkyl_or_acyl_chain": 14927,
+      "synthetic_protecting_group_suspected": 9387,
+      "extra_fatty_N_acyl_PE_PS_head": 1866,
+      "extra_glycerol_lipid_anchor_including_short_acyl": 235
+    }
+  },
+  "union_before_new_scope_filter": 203163,
+  "new_overlaps_all_old_unique": 494,
+  "new_overlaps_kept_old_unique": 494,
+  "new_unique_beyond_kept_old": 7857,
+  "combined_future_pool": {
+    "total": 99192,
+    "with_P": 97022,
+    "without_P": 2170,
+    "split": "unassigned",
+    "training_started": false,
+    "not_fatty_chain_combinations_or_template_pool_size": true
+  },
+  "combined_SMILES_QA": {
+    "with_P": 97022,
+    "full_assembly_H_formula_pass": 99192,
+    "rooted_roundtrip_pass": 99192,
+    "without_P": 2170
+  },
+  "SMILES_limits": "graph/valence/attachment/roundtrip/formula checks; not proof of natural occurrence, stability or every upstream source assignment",
+  "old_formal_SMILES_checks": {
+    "formal_structure_pass": 195306,
+    "complete_assembly_H_formula_pass": 195306,
+    "P_first_graph_and_marker_pass": 195306,
+    "independent_core_mass_pass": 195306,
+    "future_500_600_policy_pass": 91335
+  },
+  "mass_policy_Da": {
+    "ordinary_P_and_nonP": 500,
+    "sugar_or_inositol": 600
+  },
+  "frozen_input_SHA256": {
+    "data\\structure_library_v0.3\\polar_library.parquet": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+    "outputs\\headgroup_training_targets_v02_20261026\\background_195306_audit_P_first.parquet": "da8aee0b5b1e95f71a363b8813bbd77060c79996e46b4b461586c3527ce1c163",
+    "outputs\\headgroup_training_targets_v02_20261026\\training_targets.parquet": "0ac88ea43be556b99b1f79c280e9bcbab7f4f15c5d2c0fe151a78b476c833815",
+    "outputs\\headgroup_training_targets_v02_20261026\\training_targets.csv": "a016cd6af3c0b7af05dffe0d6c1edfbbe85dc09ff1d43fe36387d6d9486b6d63",
+    "outputs\\headgroup_training_targets_v02_20261026\\target_summary.json": "6851a56271ed351af4117555aa588c62adca4a6c4ba1b1de92ee57f46bbde467",
+    "configs\\headgroup_training_targets_v02_20261026.json": "2ee9eff2c7f1aff4d9c8de6850949f0ef80e3a4894383bec40a9e345cefd3be9",
+    "outputs\\template_guided_v2_20261023\\data\\manifest.json": "4db3c61675f0b7acee2c2d543f52d271c079eedf2ba2413ac2c8f909a8745a2f"
+  },
+  "combined_parquet_SHA256": "c5ac8a18706325b7193abaca17a77b281d5f324ffe51f6c7d76574242acd1985",
+  "protected_current_training_source_files_unchanged": 73,
+  "storage_bytes": 6948553
+}

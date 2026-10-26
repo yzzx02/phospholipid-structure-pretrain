@@ -275,3 +275,21 @@ The new library has NOT been inserted into the resumed Polar training, and
 new whole-core labels/tokenizer/splits have not been frozen for a new run.
 See `docs/results/HEADGROUP_TRAINING_TARGETS_V02_20261026.md`. Complete CSV,
 Parquet, compressed derivations, offline SVG review and Excel stay on G.
+
+The user has accepted fixing the current8351-candidate scope. The full combined
+future pool is now frozen separately in
+`outputs/glycerol_core_training_pool_v02_20261026`:99192 anchored stereo-free
+cores,97022 with P and2170 without P. This is91335 old-scope-pass graphs plus8351
+expansion graphs minus494 exact attachment-aware duplicates. All99192 serialized
+graphs pass rooted/Polar roundtrip and neutral full-assembly H formula checks.
+Of original195306 records,77656 exceed the new mass/extra-chain/anchor scope and
+26315 additional records are held only for chemical/evidence review;103971 total
+do not enter the new default pool. Original records and hashes remain intact.
+Before filtering the raw deduplicated union is203163. Current V2 still uses
+TRAIN171478/validation9527/test9548, all P; do not confuse this with the new pool,
+which has no new splits/tokenizer/length contract and has not started training.
+Freeze hashes and source-ID mapping are private. Do not enlarge the accepted
+8351-candidate expansion automatically. See
+`docs/results/TRAINING_POOL_COUNTS_V02_20261026.md` and reproducible CPU script
+`scripts/freeze_combined_core_pool_v02.py`. Syntax/assembly validity does not
+prove natural occurrence, stability or every upstream attachment assignment.
