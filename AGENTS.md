@@ -405,3 +405,18 @@ output cap. Predeclared validation512/bank-target512/test512 generation is
 bounded, streams raw candidates, catches RDKit exceptions and retains failed
 targets in denominators. No automatic extra bank/K/seed ablations, MS/MS, CL
 or PGCN. See `docs/experiments/GLYCEROL_CORE_TEMPLATES8000_V1.md`.
+
+New grouped split preparation,31 tests, CPU exact restart and CUDA real-state
+restart gates have passed. Longest94-token and TRAIN nonP backward batches
+passed; batch32 measured1541 targets/s vs908 for16 in the bounded gate.
+The supervised queue is now running `train_main_k3_seed42` from fresh random
+initialization. TRAIN170872/validation9493/test9499, bank6244 P+1756 nonP;
+the complete first validation CE is0.3086855581 on9493 targets. All8000 bank
+entries occur exactly once per training epoch, with self/equivalent inputs
+masked. This is early training, not generated-molecule accuracy. Inspect actual
+processes and events before any status claim; never launch a duplicate queue.
+The new root retains all new gates and old-stop-lock/73-source preservation
+proofs. WATCHDOG remains unreadable; accessible dumps/events/telemetry are
+monitored. The startup aggregate report is
+`docs/results/GLYCEROL_CORE_TEMPLATES8000_V1_20261026.{md,json}`; regenerate with
+`scripts/report_core_templates8000.py` without modifying frozen active sources.

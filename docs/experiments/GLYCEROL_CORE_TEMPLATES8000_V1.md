@@ -17,6 +17,10 @@ The decoder positional length is96, covering every label (observed maximum94).
 
 Split90/5/5 by neutral stereo-free capped connectivity groups before selecting
 any templates. Equivalent role, stereo and protonation forms stay together.
+The frozen counts are TRAIN170872 / validation9493 / test9499. The bank has
+6244 P and1756 nonP structures; it mixes traceable reference, database
+substructure and rule-derived candidates, without implying all are reported
+natural lipids or have spectra.
 All8,000 bank entries are selected exclusively from TRAIN and remain TRAIN
 prediction labels. Mask the target itself and every equivalent bank entry at
 retrieval time, including when predicting a bank member. A bank-member
@@ -58,6 +62,9 @@ invalid RDKit candidate, empty result or missing EOS contributes failure and
 remains in the denominator. In particular, kekulization errors must not abort
 the cohort. Record validity, formula coverage, exact@1/5/10, Similarity@10,
 functional-group recovery and improvement over the best input template.
+Functional-group F1 is measured on the neutral whole core, including the fixed
+glycerol; variable-head fingerprint similarity excludes the invariant glycerol
+centers. Report these distinct measurement scopes when interpreting recovery.
 No test-based optimization selection, extra optimizer search, MS/MS, CL or
 PGCN is introduced by this experiment. Other bank sizes/K/seeds remain later
 experiments using these frozen new splits.
