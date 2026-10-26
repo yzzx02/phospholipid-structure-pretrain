@@ -1,0 +1,23 @@
+{
+  "root": "outputs/headgroup_training_targets_v02_20261026",
+  "base_catalog": "outputs/glycerol_core_collection_v01_20261023/core_catalog_private.json",
+  "background": "data/structure_library_v0.3/polar_library.parquet",
+  "background_sidecar": "outputs/glycerol_core_collection_v01_20261023/frozen_195306_future_core_annotations.parquet",
+  "amino_acid_atlas": "raw/amino_acid_atlas_v2/40_amino_acid_scaffolds_pg_ester_v2.csv",
+  "mass_basis": "neutral deacylated glycerol plus head, fatty-chain sockets capped with H",
+  "phosphorus_core_mass_limit_Da": 500,
+  "nonphosphorus_core_mass_limit_Da": 500,
+  "final_user_mass_policy": "2026-10-26: ordinary cores 500 Da with or without P; sugar and previously approved inositol 600 Da; frozen",
+  "sugar_or_inositol_core_mass_limit_Da": 600,
+  "inositol_600_exception_preserved": true,
+  "identity": "one stereo-free graph with explicit glycerol chain-site roles; one target ID only",
+  "scope": "all recorded lipid head families including nonphosphorus glycerolipids, not only six classical GP classes",
+  "single_local_edit_per_expansion": true,
+  "aminoacylation": "source alpha-carboxyl only, one residue on a free head alcohol, never phosphate OH",
+  "no_extra_long_fatty_chain": true,
+  "short_O_acyl_substitutions": ["acetyl", "propionyl"],
+  "halogens": "hold for separate natural evidence; no halogen introduction",
+  "reactive_acyl_phosphate": "retain source and audit, do not include in default target proposal",
+  "new_training_launched_with_this_library": false,
+  "background_files_and_active_V2_inputs_immutable": true
+}

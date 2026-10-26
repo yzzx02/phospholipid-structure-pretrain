@@ -244,3 +244,34 @@ At the collection check, E2's training/supervisor PIDs were absent and the last
 progress was2026-10-23 14:21:57, step36300/epoch7; its running state file is stale.
 No automatic GPU restart was performed. Inspect the current process/monitor and
 checkpoint state before claiming the queue is running or proposing continuation.
+
+On2026-10-26 the user explicitly authorized restarting/continuing the interrupted
+V2 queue. CPU loading verified the registered E2 step35000 checkpoint, full
+optimizer/scheduler/RNG/cursor state and all73 frozen source/config hashes.
+No new fault/dump or root stop latch was seen. The one-shot continuation is
+`scripts/resume_template_guided_v2_20261026.py`, through the unchanged V2
+supervisor, in `E2_seed42_resume_20261026`; then original E3 and evaluation.
+The old E2 run/checkpoints and all earlier latches stay intact. E1 had already
+completed normally at epoch56/patience5 and is reused. Read current state/events;
+the historical process-absence note above does not describe this resumed run.
+
+The user's FINAL2026-10-26 future-library mass rule supersedes the old400 Da
+proposal: ordinary glycerol+head cores500 Da regardless of P; sugar and the
+previously explicitly approved inositol exception600 Da. Do not change it
+silently. Original195306 background and current V2 inputs remain untouched.
+Independent proposed targets are in `outputs/headgroup_training_targets_v02_20261026`:
+8351 anchored stereo-free graphs, comprising132 reference heads,19 additions
+from the user's40-structure amino-acid atlas and8200 one-edit rule variants.
+The initial8779 screening was refined to reject short-acyl BMP/CL/Acyl-PG
+anchors and fatty NAPE/NAPS as well; preserve alpha-aminoacyl ester/peptide
+exceptions. Keep all source records. Do not count background,5000 template
+pool or external fatty-chain combinations in the8351 proposed target total.
+P-direct heads serialize from the actually glycerol-connected P; otherwise
+from the head-bearing glycerol carbon. Keep source stereo only as provenance.
+All proposed targets have H-inclusive reference-chain assembly verification;
+the background received only an independent audit/P-first sidecar, not edits.
+New variants are candidates, not automatically reported natural molecules.
+The new library has NOT been inserted into the resumed Polar training, and
+new whole-core labels/tokenizer/splits have not been frozen for a new run.
+See `docs/results/HEADGROUP_TRAINING_TARGETS_V02_20261026.md`. Complete CSV,
+Parquet, compressed derivations, offline SVG review and Excel stay on G.
