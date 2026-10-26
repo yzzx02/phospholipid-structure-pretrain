@@ -1,0 +1,113 @@
+{
+  "source_query_count": 833819,
+  "P_source_CIDs_removed_from_new_branch": 353646,
+  "nonP_source_CIDs_processed": 480173,
+  "source_counts": {
+    "source_records": 480173,
+    "accepted_source_CIDs": 165816,
+    "accepted_source_core_edges": 202801
+  },
+  "previous_nonP_cores": 2170,
+  "new_unique_nonP_cores": 23324,
+  "final_nonP_cores": 25494,
+  "final_P_cores": 119303,
+  "final_core_count": 144797,
+  "nonP_graphs_with_observed_database_substructure": 23373,
+  "nonP_graphs_observed_without_fatty_chains": 20624,
+  "nonP_graphs_observed_as_uncut_whole_cores": 10275,
+  "nonP_graphs_observed_without_nonfatty_site_cuts": 13016,
+  "substructure_cut_mode": "other glycerol O substituents may be explicitly cut; entire head preserved",
+  "processing_config_SHA256": "d235f464243f46139c73d199c887ffd3697670d6d9abfef9d370f9b11b1a5343",
+  "new_branch_P_or_sn2_cores_included": 0,
+  "rejection_counts_are_events_and_can_overlap": {
+    "no_single_nonfatty_head_with_two_usable_glycerol_sites": 267210,
+    "sn2_head_attachment_excluded": 48675,
+    "extra_glycerol_lipid_anchor_including_short_acyl": 14709,
+    "synthetic_protecting_group_suspected": 9784,
+    "head_heavy_atom_mass_alone_above_600": 6456,
+    "non_neutral_core_charge_pending": 2517,
+    "extra_head_long_alkyl_or_acyl_chain": 30512,
+    "core_mass_above_500_600_policy": 25069,
+    "ValueError:isotope_label_excluded": 971,
+    "peroxide_requires_review": 3019,
+    "ValueError:radical_excluded": 598,
+    "ValueError:invalid_SMILES": 40,
+    "non_single_glycerol_O_link_pending": 6,
+    "no_usable_glycerol_source_component": 10827,
+    "unsupported_element": 6530,
+    "AtomValenceException:Explicit valence for atom # 30 Si, 5, is greater than permitted": 1,
+    "AtomValenceException:Explicit valence for atom # 5 Si, 5, is greater than permitted": 3,
+    "AtomValenceException:Explicit valence for atom # 4 Si, 6, is greater than permitted": 1,
+    "AtomValenceException:Explicit valence for atom # 13 Si, 6, is greater than permitted": 1,
+    "AtomValenceException:Explicit valence for atom # 6 Si, 5, is greater than permitted": 3,
+    "AtomValenceException:Explicit valence for atom # 4 Si, 5, is greater than permitted": 1,
+    "core_validation:ValueError:radical_excluded": 2,
+    "AtomValenceException:Explicit valence for atom # 5 Si, 6, is greater than permitted": 1
+  },
+  "old_reaudit": {
+    "counts": {
+      "mass_within_Polar_but_over_after_glycerol": 43100,
+      "independent_full_core_mass_matches_prior": 195306,
+      "mass_exceeds": 68050,
+      "records": 195306,
+      "legacy_chain_flag_was_ring_path_not_acyclic_chain": 6298
+    },
+    "new_disjoint_partition": {
+      "outside_new_scope": 74232,
+      "pass": 113616,
+      "chemical_or_protecting_group_hold_only": 7458
+    },
+    "new_overlapping_reasons": {
+      "core_mass_above_500_600_policy": 68050,
+      "reactive_acyl_phosphate_mixed_anhydride": 3203,
+      "extra_head_long_alkyl_or_acyl_chain": 8629,
+      "synthetic_protecting_group_suspected": 9387,
+      "extra_fatty_N_acyl_PE_PS_head": 1866,
+      "extra_glycerol_lipid_anchor_including_short_acyl": 235
+    },
+    "readmitted": {
+      "halogen_rule": 18954,
+      "ring_rule": 3036,
+      "halogen_and_ring_rule": 291
+    },
+    "newly_readmitted_total": 22281,
+    "maximum_independent_mass_error_Da": 7.958078640513122e-13,
+    "original_SHA256_unchanged": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+    "previous_scope_excluded": 77656,
+    "mass_43100_saved_separately_not_added": true,
+    "halogen_rule_uses_existing_ten_element_vocabulary": true,
+    "chain_rule_correction": "only acyclic carbon paths; carbocyclic paths were false positives"
+  },
+  "protected_input_SHA256_unchanged": {
+    "outputs\\glycerol_core_training_pool_v02_20261026\\combined_candidate_cores.parquet": "c5ac8a18706325b7193abaca17a77b281d5f324ffe51f6c7d76574242acd1985",
+    "data/structure_library_v0.3/polar_library.parquet": "2948f729ae7cda9103d83ae220fe3673d2100d90e1fcb2290ad51fe7f12a8815",
+    "outputs/headgroup_training_targets_v02_20261026/training_targets.parquet": "0ac88ea43be556b99b1f79c280e9bcbab7f4f15c5d2c0fe151a78b476c833815"
+  },
+  "combined_parquet_SHA256": "c4eafcdf2555a72a3e61a6d4fff23688c3b45e6906adf27ae22547fa91476c87",
+  "full_assembly_proof_count": 144797,
+  "original_library_modified": false,
+  "current_V2_inputs_changed": false,
+  "new_pool_training_started": false,
+  "complete_only_for_declared_acyclic_glycerol_scaffold_query": true,
+  "does_not_claim_all_possible_glycerol_lipid_chemistry_exhausted": true,
+  "element_restriction_scope": "retained_target_core",
+  "target_element_source_recheck_applied": true,
+  "target_element_source_recheck_count": 36365,
+  "recheck_additional_core_count": 157,
+  "standby_and_main_disjoint": true,
+  "distinct_total_including_standby": 187897,
+  "client_time": "2026-10-26T13:22:24.427966+08:00",
+  "protected_training_source_files_unchanged": 73,
+  "role_position_P_count_and_identity_recheck": true,
+  "newly_collected_nonP_with_halogen": 4575,
+  "total_with_halogen": 23820,
+  "delivery_QA": {
+    "retained_core_count": 144797,
+    "all_target_elements_within_fixed_vocabulary": true,
+    "source_edges": 202801,
+    "unique_accepted_source_CIDs": 165816,
+    "all_source_edges_have_valid_target_and_CID": true,
+    "obsolete_source_level_gates_removed": true,
+    "standby_separate_and_disjoint": true
+  }
+}

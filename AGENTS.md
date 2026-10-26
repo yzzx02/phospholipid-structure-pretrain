@@ -293,3 +293,53 @@ Freeze hashes and source-ID mapping are private. Do not enlarge the accepted
 `docs/results/TRAINING_POOL_COUNTS_V02_20261026.md` and reproducible CPU script
 `scripts/freeze_combined_core_pool_v02.py`. Syntax/assembly validity does not
 prove natural occurrence, stability or every upstream attachment assignment.
+
+The user's subsequent v0.3 direction expands only database-backed glycerol/head
+substructures, not additional one-edit enumeration. Keep the old8351 and195306
+snapshots. Allow the existing C/H/N/O/P/S/F/Cl/Br/I vocabulary, with no halogen
+atom-count cap; the limit is on target elements, not clipped source groups or
+counterions. The new PubChem branch excludes P sources and retains terminal
+sn1/sn3 head attachment only; central sn2 candidates remain in exclusion data.
+Without stereo, use terminal-role identity, retaining original source naming.
+The declared acyclic glycerol3O search retrieved833819 CIDs, of which353646 P
+sources were removed; all480173 nonP property records are cached on G in
+`outputs/glycerol_core_collection_v03_20261026/raw/nonP_properties`.
+Other glycerol O substituents may be explicitly cut to obtain observed terminal
+head substructures, even when they are not fatty chains. Preserve the entire
+chosen head graph, source cut types/atom indices and graph/H formula roundtrip.
+Distinguish these fragments from whole observed deacylated cores and natural
+lipids. Never erase a head's actual fatty chain to make it pass. Crosslinks stay
+pending. Connected glycerol-bearing source components may be used, preserving
+the parent multicomponent record and exact component used for the source proof.
+All195306 old core masses were independently recomputed:68050 exceed the current
+500/600 bounds;43100 of these had Polar alone within the corresponding bound.
+The user explicitly requests keeping those43100 in a separate standby table,
+not adding them to the main pool. Old ring paths were wrongly counted as long
+fatty chains in6298 flags; use acyclic carbon paths instead. Allowing halogens
+and correcting this recovers22281 old cores (18954 halogen-only,3036 ring-only,
+291 both), giving113616 old pass /74232 scope-excluded /7458 other holds.
+The new final pool must include the target-only element/source-component recheck
+before publication; `supplement_target_elements_v03.py` verifies and merges that
+transitional pass idempotently. Current V2 training remains unchanged; read its
+state rather than starting another queue. No new-library training is authorized
+by this data collection. All complete structures/provenance/caches stay on G;
+publish processing code, aggregate counts and reports only.
+
+The v0.3 collection and target-element/component recheck are complete. Main
+candidate pool:144797 unique role graphs,119303 P and25494 nonP (23324 net new
+nonP over the prior2170). Separate43100 standby graphs are disjoint, giving
+187897 distinct main-plus-standby graphs; standby is not in the training pool.
+All480173 source records were processed. The full202801 provenance edges refer
+to165816 admitted source CIDs and valid target IDs. Of the nonP graph set,23373
+have this PubChem-substructure evidence,10275 have an uncut whole-core source,
+and13016 have an observation without clipping other nonfatty glycerol groups.
+Other candidates remain explicit source-substructure derivations, not reported
+natural lipid structures. All retained graphs have root/assembly/H formula proof;
+43 related tests pass. Original library,8351 snapshot and all73 protected V2
+source/config hashes are unchanged. V2 has progressed to E3 in its original queue;
+no new-pool training was started. See
+`docs/results/GLYCEROL_SUBSTRUCTURE_V03_20261026.{md,json}` and private root
+`outputs/glycerol_core_collection_v03_20261026`. The offline index is a clearly
+labelled small visual sample, not the complete graph count; full data are in the
+combined Parquet and provenance mapping. Do not silently change mass/element/
+terminal-position rules or include the standby set in subsequent training.
