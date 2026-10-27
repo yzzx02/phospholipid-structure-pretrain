@@ -1,9 +1,8 @@
 # 全部9,499测试目标：分子式约束解码与Formula-only对照
 
-更新时间：2026-10-27T11:29:46.403647+08:00；当前阶段：`template_full_raw`，状态：`running`。
+更新时间：2026-10-27T15:09:13.956292+08:00；当前阶段：`full_test_and_formula_control_completed`，状态：`completed`。
 
-监督器及子进程存活核验：True。
-当前队列已完成 352/9,499 个目标；未完成队列不填最终指标。
+监督器及子进程存活核验：False。
 此前512结果只有分子式条件输入与后验过滤，没有逐token约束。这里将原始、元素约束、元素＋语法约束严格分开。
 固定第43轮最佳模板模型（SHA见JSON）、全部9,499测试目标（含P8,225 / 非P1,274）、Beam20、最大长度96。
 约束在原log_softmax之后屏蔽不允许的token，不对可行集合重新归一化；不强行EOS、不修复/改写分子图或分子式。
@@ -17,24 +16,57 @@ Formula-only独立随机初始化，使用完全相同TRAIN/validation/test、�
 
 | 模型 | 解码 | 评价目标数 | 原始Exact@1/5/10 | 原始Similarity@10 | 后验过滤Exact@10 | 核心有效/固定Beam预算 | 式正确/固定Beam预算 | 至少一合格式候选 |
 |---|---|---:|---|---:|---:|---:|---:|---:|
-| template | raw | 未完成 | — | — | — | — | — | — |
-| template | elements | 未完成 | — | — | — | — | — | — |
+| template | raw | 9,499 | 32.18%/57.83%/66.04% | 0.8662 | 70.50% | 91.11% | 40.71% | 96.99% |
+| template | elements | 9,499 | 38.66%/65.43%/70.84% | 0.8672 | 71.20% | 63.52% | 58.43% | 98.74% |
 | template | elements_grammar | 9,499 | 38.81%/65.56%/70.90% | 0.8684 | 71.21% | 67.09% | 60.85% | 98.82% |
-| formula_only | raw | 未完成 | — | — | — | — | — | — |
-| formula_only | elements | 未完成 | — | — | — | — | — | — |
-| formula_only | elements_grammar | 未完成 | — | — | — | — | — | — |
+| formula_only | raw | 9,499 | 3.95%/14.94%/22.61% | 0.5744 | 25.47% | 95.72% | 63.10% | 98.40% |
+| formula_only | elements | 9,499 | 5.38%/18.27%/25.50% | 0.5790 | 25.68% | 80.91% | 77.22% | 99.58% |
+| formula_only | elements_grammar | 9,499 | 5.39%/18.31%/25.55% | 0.5798 | 25.70% | 82.87% | 78.64% | 99.61% |
 
 所有失败目标均在分母；固定Beam预算的比例以9,499×20为分母，空槽记失败。同时JSON另报实际输出候选分母、RDKit解析率及式正确@1/5/10。
 所有模式均另外保留后验过滤结果；含P/非P的全部指标分别在JSON报告。
 
-Formula-only最终训练与对照指标尚未完成，JSON对应位置为null，不能提前判断模板是否提升。
+Formula-only已完成52轮/277,680步，最佳第47轮，验证CE=0.1713664982。
 
 | 模型/解码 | 组别 | 原始Exact@10 | 过滤Exact@10 | 过滤Similarity@10 | 过滤相对共同模板基线平均收益 | 正收益目标比例 |
 |---|---|---:|---:|---:|---:|---:|
+| template/raw | P (n=8,225) | 67.43% | 72.06% | 0.8633 | 0.3894 | 92.10% |
+| template/raw | nonP (n=1,274) | 57.06% | 60.44% | 0.7873 | 0.3883 | 88.15% |
+| template/elements | P (n=8,225) | 72.46% | 72.84% | 0.8767 | 0.4028 | 93.60% |
+| template/elements | nonP (n=1,274) | 60.36% | 60.60% | 0.7892 | 0.3902 | 88.30% |
 | template/elements_grammar | P (n=8,225) | 72.52% | 72.85% | 0.8774 | 0.4035 | 93.69% |
 | template/elements_grammar | nonP (n=1,274) | 60.44% | 60.60% | 0.7893 | 0.3903 | 88.30% |
+| formula_only/raw | P (n=8,225) | 21.96% | 24.91% | 0.5727 | 0.0989 | 57.29% |
+| formula_only/raw | nonP (n=1,274) | 26.84% | 29.04% | 0.5589 | 0.1599 | 60.99% |
+| formula_only/elements | P (n=8,225) | 24.97% | 25.16% | 0.5813 | 0.1074 | 58.22% |
+| formula_only/elements | nonP (n=1,274) | 28.89% | 29.04% | 0.5609 | 0.1619 | 61.30% |
+| formula_only/elements_grammar | P (n=8,225) | 25.03% | 25.18% | 0.5817 | 0.1078 | 58.22% |
+| formula_only/elements_grammar | nonP (n=1,274) | 28.89% | 29.04% | 0.5609 | 0.1619 | 61.30% |
 
-Formula-only的完整约束评价尚未完成，暂不能判断模板增益。
+配对比较（模板模型−Formula-only；同一测试目标）：
+
+| 解码/输出 | 组别 | Exact@10差值 | 目标配对95%CI | Similarity@10差值 |
+|---|---|---:|---|---:|
+| raw/raw | all | 43.43% | [42.35%, 44.63%] | 0.2917 |
+| raw/posterior_filtered | all | 45.04% | [43.95%, 46.24%] | 0.2822 |
+| raw/raw | P | 45.47% | [44.20%, 46.77%] | 0.2997 |
+| raw/posterior_filtered | P | 47.15% | [45.90%, 48.43%] | 0.2905 |
+| raw/raw | nonP | 30.22% | [27.39%, 32.97%] | 0.2401 |
+| raw/posterior_filtered | nonP | 31.40% | [28.59%, 34.17%] | 0.2284 |
+| elements/raw | all | 45.34% | [44.28%, 46.58%] | 0.2882 |
+| elements/posterior_filtered | all | 45.52% | [44.46%, 46.73%] | 0.2864 |
+| elements/raw | P | 47.49% | [46.21%, 48.73%] | 0.2968 |
+| elements/posterior_filtered | P | 47.68% | [46.41%, 48.94%] | 0.2954 |
+| elements/raw | nonP | 31.48% | [28.66%, 34.26%] | 0.2329 |
+| elements/posterior_filtered | nonP | 31.55% | [28.74%, 34.36%] | 0.2284 |
+| elements_grammar/raw | all | 45.35% | [44.31%, 46.57%] | 0.2886 |
+| elements_grammar/posterior_filtered | all | 45.51% | [44.45%, 46.73%] | 0.2867 |
+| elements_grammar/raw | P | 47.49% | [46.23%, 48.72%] | 0.2972 |
+| elements_grammar/posterior_filtered | P | 47.67% | [46.41%, 48.94%] | 0.2957 |
+| elements_grammar/raw | nonP | 31.55% | [28.75%, 34.35%] | 0.2330 |
+| elements_grammar/posterior_filtered | nonP | 31.55% | [28.74%, 34.36%] | 0.2284 |
+
+在本次固定数据/seed及oracle结构检索条件下，模板提高了主要指标Exact@10，且公式分组配对区间下界大于0；不外推为真实MS/MS性能。
 
 
 Formula-only的收益也使用同一固定最佳结构模板作为共同评估基线；该基线只在解码完成后用于评分，不输入Formula-only。
