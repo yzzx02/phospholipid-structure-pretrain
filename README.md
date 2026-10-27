@@ -1,11 +1,21 @@
 # Phospholipid structure pretraining
 
-**当前研究目标（2026-10-22）：** 模板结构与分子式条件下的磷脂头基生成，结构条件训练本身作为第一版最终训练。
+**两轮训练最终结果（2026-10-27发布）：**
+[旧Polar固定5,000模板 E1/E2/E3](docs/results/TEMPLATE_GUIDED_V2_FINAL_20261027.md)
+均已完成，E3最佳完整验证Token CE为0.1236898564；旧生成评价因RDKit候选异常中止，完整生成指标未取得。
+[新甘油＋头基固定8,000模板](docs/results/GLYCEROL_CORE_TEMPLATES8000_FINAL_20261027.md)
+已完成48轮，最佳43轮验证Token CE为0.0959413714；固定测试512的原始/后验过滤Top10 exact为64.26%/69.92%。
+8,000模板均保留为TRAIN预测标签并屏蔽自身/等价参考。
+两轮标签与划分不同，不能直接用CE比较优劣；仍是目标结构检索模板的条件生成实验，不是MS/MS鉴定准确率。
+[总览与发布核验](docs/results/TRAINING_ROUNDS_FINAL_20261027.md)含聚合JSON、逐轮指标、PNG/SVG曲线及最佳权重SHA256。
+完整结构、权重和逐条预测继续留G盘。
+
+**研究目标设计记录（2026-10-22）：** 模板结构与分子式条件下的磷脂头基生成，结构条件训练本身作为第一版最终训练。
 沿用当前模型参数，正式训练模板池以5,000为主，保留500/2,000/5,000/10,000/20,000的规模实验及评价；
 此前200–350模板为人工种子与小池诊断。后续实际模板来自MS-DIAL、LipidGate等有谱图、结构明确的来源，
 提供已知候选库受限排序与Free生成两种应用方式，不要求谱图监督微调。
 见[当前执行定义](docs/experiments/TEMPLATE_GUIDED_PHOSPHOLIPID_GENERATION_V1.md)和
-[设计记录](configs/template_guided_generation_v1_plan.json)。这些新实验尚未执行；下方结果是历史实验。
+[设计记录](configs/template_guided_generation_v1_plan.json)。本段保留当时设计；实际完成状态以上方2026-10-27最终报告为准。
 
 **已报道及数据库来源 Polar 参考库 v0.1：** 已收集182个不同位点化图，
 24个已核实头基文献、158个保留为数据库/规则来源未核实；63个通过现有Builder，30个存在于冻结库。

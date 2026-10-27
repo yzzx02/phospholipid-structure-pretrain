@@ -420,3 +420,21 @@ proofs. WATCHDOG remains unreadable; accessible dumps/events/telemetry are
 monitored. The startup aggregate report is
 `docs/results/GLYCEROL_CORE_TEMPLATES8000_V1_20261026.{md,json}`; regenerate with
 `scripts/report_core_templates8000.py` without modifying frozen active sources.
+
+On2026-10-27 the user requests publishing BOTH completed training rounds.
+The new8,000-template run and all three fixed512 generation jobs completed
+normally on2026-10-26. Training stopped at48 epochs/256320 steps by patience5;
+best epoch43/step229620, full-validation CE0.09594137142809196, weight SHA256
+f8d7f646f6bfda7459296f5025adc78a9695b8b8bff4c34e8ae80c6d779e17c2.
+Test512 raw/filtered exact@10 are0.642578125/0.69921875. This remains an oracle
+structure-conditioned subset evaluation, not full9499-test or real-MS/MS accuracy.
+Bank-target512 is TRAIN-label leave-one-out reconstruction, not independent test.
+Do not restart a queue based on earlier running notes. Old E1/E2/E3 training
+reports are complete (56/64/64 epochs); E3 has best CE0.12368985641566978.
+Its old generation remains incomplete with its RDKit stop lock preserved;
+do not invent completed generation metrics or rerun it for a publication task.
+CPU-only publication and raw-aggregate replay use
+`scripts/publish_training_rounds_20261027.py`, outside both frozen runtime
+contracts. Final aggregate reports/JSON/PNG/SVG are under `docs/results/`,
+indexed by `TRAINING_ROUNDS_FINAL_20261027.md`. Keep all structures, IDs, weights,
+raw predictions and source caches on G; only aggregates/curves/code go to GitHub.

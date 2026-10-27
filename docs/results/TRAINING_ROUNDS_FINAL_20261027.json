@@ -1,0 +1,30 @@
+{
+  "schema": "two_training_rounds_publication",
+  "published_Asia_Shanghai": "2026-10-27T09:41:56.844232+08:00",
+  "old_report": "TEMPLATE_GUIDED_V2_FINAL_20261027",
+  "new_report": "GLYCEROL_CORE_TEMPLATES8000_FINAL_20261027",
+  "old_73_frozen_source_hashes_unchanged": true,
+  "new_training_source_contract_unchanged": true,
+  "old_GPU_stop_lock_preserved": true,
+  "best_weight_hashes_verified": 4,
+  "generation_raw_targets_replayed": 1536,
+  "generation_raw_candidates_replayed": 30720,
+  "private_structures_weights_and_predictions_uploaded": false,
+  "GPU_jobs_started_by_publication": 0,
+  "CPU_publication_script_sha256": "51daa840e033b00bedc59ba6ef8b4893ae4b246632d3ad091a724465fdf1c68b",
+  "not_a_controlled_cross_round_loss_comparison": true,
+  "figure_sha256": {
+    "new_core_generation.png": "b9944a87f08207964e5cfaa63bf5b8cb26248b41ab607e4dd10f9b8af5d00958",
+    "new_core_generation.svg": "e352a109ea37883bddc15778d5381a5f6a4f0f494fd2bc44ee4d3ebfe017a7f5",
+    "new_core_training.png": "d3a1420d8b4de1f9de6400596dd96fbfe3eb6c9054ea6896c2358e581186c6c6",
+    "new_core_training.svg": "7caf1d975a2026e3839c5e41e7abf572bd29e149ea875dc24984c2643e758f6e",
+    "old_polar_training.png": "88c610446a9874406ad920abb0e30081f7bd5030cf87f96ddab395ab942458c3",
+    "old_polar_training.svg": "16e0a9560533cd05730bea9828847bdef56159eb2ca2d155da8702c8f1d839ab"
+  },
+  "result_sha256": {
+    "TEMPLATE_GUIDED_V2_FINAL_20261027.json": "d05b2e2748a60fdedf21e25337c1abf285a6f5224deafba0bfb038b71c75a612",
+    "TEMPLATE_GUIDED_V2_FINAL_20261027.md": "970bee4827a04b066cfba3d505b9fdbfd95cc5a8efe71802589705616a483e4d",
+    "GLYCEROL_CORE_TEMPLATES8000_FINAL_20261027.json": "0fc8a475f5b5f1ac08ab4416e894260300002490db0ccd7389ecdc3b4e341dfd",
+    "GLYCEROL_CORE_TEMPLATES8000_FINAL_20261027.md": "3fec328812db34cbe44dabeb6495c86834a6d405f415644118170e5cc75fa2d1"
+  }
+}
