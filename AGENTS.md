@@ -438,3 +438,44 @@ CPU-only publication and raw-aggregate replay use
 contracts. Final aggregate reports/JSON/PNG/SVG are under `docs/results/`,
 indexed by `TRAINING_ROUNDS_FINAL_20261027.md`. Keep all structures, IDs, weights,
 raw predictions and source caches on G; only aggregates/curves/code go to GitHub.
+
+The user's latest2026-10-27 request authorizes full9499 test generation at the
+frozen epoch43 checkpoint and a capacity-matched independent Formula-only
+training/control. The user explicitly prioritizes fixing missing online formula
+decoding: previous512 results were raw+posterior filters, not online constraints.
+Use `configs/core_formula_comparison_20261027.json`, independent root
+`outputs/core_formula_comparison_20261027`, and `core_ablation` modules/scripts.
+Historical73-source and8000-model contracts and all old stop locks stay intact.
+Whole-core online heavy-atom/port budgets and conservative SMILES grammar support
+P and nonP, with final H-inclusive RDKit/assembly checks. Do not force EOS,
+renormalize feasible probabilities, repair graphs or change formulas. All9499
+gold labels/482902 prefixes pass reachability with zero legal targets pruned;
+47 tests and a real CPU full-state restart gate have passed. Matching supervised
+CUDA gate is required before the serial full-test/control queue.
+Formula-only receives only target formulas, with no reference fingerprint,
+reference formula/delta/rank/mask or graph-derived query feature. Same parameter
+names/shapes/count/seeded initialization, labels/splits, batch32,80-epoch/427200
+cap/E3 schedule/patience5; TRAIN target-formula statistics only. Raw/elements/
+elements+grammar each use Beam20/length96 on the same9499 (8225P+1274nonP), with
+posterior filters separate and missing targets/beam slots retained in denominators.
+Epoch43 template weights are fixed. Formula-only checkpoint selection uses all
+9493 validation targets only. Gains use a common structural baseline in metrics
+after decoding; it is not passed to Formula-only. No real-MS/MS performance claim.
+Use only `scripts/supervise_core_ablation.py`; no automatic retry of a latched job.
+See `docs/experiments/CORE_FORMULA_COMPARISON_20261027.md` and aggregate
+`docs/results/CORE_FORMULA_COMPARISON_20261027.{md,json}` for current status.
+
+The new supervised CUDA backward/full-state restart and real epoch43 decoding
+gates have now passed. Both models have16479940 trainable parameters; identical
+seeded parameter tensors/shapes and no Formula-only reference-array access were
+tested. CUDA model/optimizer/scheduler/RNG restart max difference0, longest94
+and TRAIN nonP backward passed. Batched/serial BOS logits differ at most4.77e-6;
+all40 beams from the first2 probe targets match in identity, Top1 agreement1.0,
+shared logprob max difference1.27e-5. Raw/elements/grammar actual CUDA decoding
+probes passed, no observed driver reset/new dump, WATCHDOG remains unreadable.
+The serial queue is authorized to begin in this independent root with template
+full elements+grammar first, then raw/elements, Formula-only training and matched
+full-test modes. Never duplicate a started queue or mutate its numerical source
+contract. The CPU-only reporter is intentionally excluded from that frozen
+contract so presentation/paired-analysis corrections can be made without
+changing training or generation. Read current PIDs/events/state for actual stage.
