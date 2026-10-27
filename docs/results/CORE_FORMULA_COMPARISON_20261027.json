@@ -1,0 +1,418 @@
+{
+  "generated_Asia_Shanghai": "2026-10-27T11:29:46.403647+08:00",
+  "state": {
+    "status": "running",
+    "stage": "template_full_raw",
+    "queue_pid": 22604,
+    "updated_utc": "2026-10-27T03:28:42.884709+00:00"
+  },
+  "current_progress": {
+    "live_supervised_child_verified": true,
+    "latest_record": {
+      "stage": "full_test_batch_completed",
+      "completed": 352,
+      "total": 9499,
+      "elapsed_seconds": 52.20400000002701,
+      "unix_time": 1793071783.9243698
+    },
+    "latest_telemetry": {
+      "seconds": 50.20300000003772,
+      "gpu": "NVIDIA GeForce RTX 4070 SUPER, 581.08, 55, 6646, 12282, 89, 73.67"
+    }
+  },
+  "configuration": {
+    "schema": "whole_core_formula_comparison_v1",
+    "root": "outputs/core_formula_comparison_20261027",
+    "frozen_template_root": "outputs/glycerol_core_templates8000_v1_20261026",
+    "template_checkpoint": "outputs/glycerol_core_templates8000_v1_20261026/train_main_k3_seed42/checkpoint/step_229620_epoch_043.pt",
+    "template_checkpoint_sha256": "f8d7f646f6bfda7459296f5025adc78a9695b8b8bff4c34e8ae80c6d779e17c2",
+    "test_targets": 9499,
+    "P_test_targets": 8225,
+    "nonP_test_targets": 1274,
+    "seed": 42,
+    "batch_size": 32,
+    "K": 3,
+    "max_epochs": 80,
+    "steps_per_epoch": 5340,
+    "max_optimizer_steps": 427200,
+    "early_stopping_patience_epochs": 5,
+    "checkpoint_selection": "minimum_full_validation_token_CE",
+    "schedule": {
+      "kind": "warmup_cosine",
+      "peak_lr": 0.0003,
+      "warmup_steps": 4000,
+      "minimum_lr": 1e-05
+    },
+    "weight_decay": 0.01,
+    "gradient_clip": 1.0,
+    "periodic_checkpoint_steps": 5000,
+    "cpu_threads": 4,
+    "fp32": true,
+    "attention": "math",
+    "tf32": false,
+    "max_label_tokens": 96,
+    "beam_size": 20,
+    "decoding_modes": [
+      "raw",
+      "elements",
+      "elements_grammar"
+    ],
+    "decode_batch_size": 16,
+    "decode_score": "original log probabilities, no constraint renormalization; mean log probability ranking",
+    "formula_only_inputs": "target neutral H-capped core formula only; no reference fingerprint, formula, delta, rank or mask",
+    "formula_only_capacity": "same trainable tensors and shapes; deterministic formula expansion feeds existing 2048-to256 branch; three formula-only tokens",
+    "formula_only_statistics": "TRAIN target formulas only, no retrieval-pair statistics",
+    "training_budget_comparison": "same optimizer schedule, batch, seed, max updates and patience; actual early-stop updates reported",
+    "gain_baseline": "same fixed best nonself structural template, used only after generation for Formula-only scoring",
+    "retention": {
+      "max_full_checkpoints": 3,
+      "hard_limit_GiB": 8
+    },
+    "timeout_seconds": 172800,
+    "MSMS": false,
+    "test_used_for_model_selection": false
+  },
+  "evaluations": {
+    "template": {
+      "raw": null,
+      "elements": null,
+      "elements_grammar": {
+        "targets": 9499,
+        "all_targets_in_denominator": true,
+        "raw": {
+          "exact_at_1": 0.38814612064427834,
+          "exact_at_5": 0.6556479629434677,
+          "exact_at_10": 0.7090220023160333,
+          "Similarity_at_10": 0.8684181778518388,
+          "functional_group_F1_at_10": 0.9846275124651177,
+          "gain_over_best_input_template": 0.40457568499023094,
+          "beats_best_input_template": 0.9362038109274661,
+          "candidate_count": 16.716707021791766,
+          "valid_candidates": 13.417517633435098,
+          "formula_correct_candidates": 12.170754816296451,
+          "formula_correct_structure_wrong_candidates": 11.2227602905569,
+          "candidate_chemical_valid_fraction": 0.8026411909919895,
+          "formula_correct_but_wrong_structure_fraction": 0.9221088141164259,
+          "formula_correct_at_1": 0.9443099273607748,
+          "formula_correct_at_5": 0.983366670175808,
+          "formula_correct_at_10": 0.9879987367091273
+        },
+        "posterior_filtered": {
+          "exact_at_1": 0.3937256553321402,
+          "exact_at_5": 0.6616485945889041,
+          "exact_at_10": 0.7120749552584482,
+          "Similarity_at_10": 0.8655502703304495,
+          "functional_group_F1_at_10": 0.9771999495027616,
+          "gain_over_best_input_template": 0.4017077774688415,
+          "beats_best_input_template": 0.9296768080850616,
+          "distinct_legal_formula_candidates": 10.993157174439414,
+          "no_qualified_candidate": 0.011790714812085483
+        },
+        "budget": {
+          "beam_slots": 189980,
+          "actual_candidates": 158792,
+          "unfilled_slots": 31188,
+          "core_valid_fraction_of_Beam20_budget": 0.6708758816717549,
+          "full_H_formula_correct_fraction_of_Beam20_budget": 0.6085377408148226,
+          "full_H_formula_correct_fraction_of_emitted_candidates": 0.7280593480779888,
+          "targets_with_formula_correct_candidate": 0.9882092851879145,
+          "RDKit_parse_valid_fraction_of_Beam20_budget": 0.7185335298452469
+        },
+        "status": "completed",
+        "model_kind": "template",
+        "decode_mode": "elements_grammar",
+        "checkpoint_sha256": "f8d7f646f6bfda7459296f5025adc78a9695b8b8bff4c34e8ae80c6d779e17c2",
+        "beam_size": 20,
+        "decode_batch_size": 16,
+        "max_length": 96,
+        "test_cohort": "all_9499_frozen_test_targets",
+        "test_used_for_selection": false,
+        "elapsed_seconds": 1435.594000000041,
+        "peak_allocated_MiB": 681.041015625,
+        "original_probabilities_not_renormalized": true,
+        "online_heavy_atom_constraints": true,
+        "online_SMILES_grammar": true,
+        "full_H_formula_verified_finally": true,
+        "formula_only_no_reference_inputs": false,
+        "gain_baseline": "same frozen best nonself structural template; evaluation only for Formula-only",
+        "template_retrieval_is_target_structure_oracle": true,
+        "core_valid_definition": "EOS, RDKit, correct rooted glycerol and port roles, scope, neutral reference-chain assembly",
+        "unfilled_slots_count_as_failures_in_budget_rates": true,
+        "P": {
+          "targets": 8225,
+          "all_targets_in_denominator": true,
+          "raw": {
+            "exact_at_1": 0.39951367781155017,
+            "exact_at_5": 0.6719756838905775,
+            "exact_at_10": 0.7252279635258359,
+            "Similarity_at_10": 0.8795030353211617,
+            "functional_group_F1_at_10": 0.9871722955710083,
+            "gain_over_best_input_template": 0.40561551170554777,
+            "beats_best_input_template": 0.9428571428571428,
+            "candidate_count": 17.03197568389058,
+            "valid_candidates": 14.182978723404256,
+            "formula_correct_candidates": 12.80790273556231,
+            "formula_correct_structure_wrong_candidates": 11.821155015197569,
+            "candidate_chemical_valid_fraction": 0.8327265718691108,
+            "formula_correct_but_wrong_structure_fraction": 0.9229579002325692,
+            "formula_correct_at_1": 0.9491793313069908,
+            "formula_correct_at_5": 0.9865045592705167,
+            "formula_correct_at_10": 0.9913677811550152
+          },
+          "posterior_filtered": {
+            "exact_at_1": 0.40486322188449847,
+            "exact_at_5": 0.6786626139817629,
+            "exact_at_10": 0.7285106382978723,
+            "Similarity_at_10": 0.877365812399562,
+            "functional_group_F1_at_10": 0.980911899769579,
+            "gain_over_best_input_template": 0.40347828878394804,
+            "beats_best_input_template": 0.9368996960486322,
+            "distinct_legal_formula_candidates": 11.492036474164134,
+            "no_qualified_candidate": 0.008389057750759878
+          },
+          "budget": {
+            "beam_slots": 164500,
+            "actual_candidates": 140088,
+            "unfilled_slots": 24412,
+            "core_valid_fraction_of_Beam20_budget": 0.7091489361702128,
+            "full_H_formula_correct_fraction_of_Beam20_budget": 0.6403951367781155,
+            "full_H_formula_correct_fraction_of_emitted_candidates": 0.7519916052766832,
+            "targets_with_formula_correct_candidate": 0.9916109422492401,
+            "RDKit_parse_valid_fraction_of_Beam20_budget": 0.7481033434650456
+          }
+        },
+        "nonP": {
+          "targets": 1274,
+          "all_targets_in_denominator": true,
+          "raw": {
+            "exact_at_1": 0.31475667189952905,
+            "exact_at_5": 0.5502354788069074,
+            "exact_at_10": 0.6043956043956044,
+            "Similarity_at_10": 0.7968538507834086,
+            "functional_group_F1_at_10": 0.9681982808748901,
+            "gain_over_best_input_template": 0.3978625180094766,
+            "beats_best_input_template": 0.8932496075353218,
+            "candidate_count": 14.68131868131868,
+            "valid_candidates": 8.475667189952905,
+            "formula_correct_candidates": 8.057299843014128,
+            "formula_correct_structure_wrong_candidates": 7.359497645211931,
+            "candidate_chemical_valid_fraction": 0.5773096663815227,
+            "formula_correct_but_wrong_structure_fraction": 0.9133950316609839,
+            "formula_correct_at_1": 0.9128728414442701,
+            "formula_correct_at_5": 0.9631083202511774,
+            "formula_correct_at_10": 0.966248037676609
+          },
+          "posterior_filtered": {
+            "exact_at_1": 0.3218210361067504,
+            "exact_at_5": 0.5518053375196232,
+            "exact_at_10": 0.6059654631083202,
+            "Similarity_at_10": 0.7892686113677729,
+            "functional_group_F1_at_10": 0.9532354354175391,
+            "gain_over_best_input_template": 0.3902772785938408,
+            "beats_best_input_template": 0.8830455259026687,
+            "distinct_legal_formula_candidates": 7.772370486656201,
+            "no_qualified_candidate": 0.033751962323390894
+          },
+          "budget": {
+            "beam_slots": 25480,
+            "actual_candidates": 18704,
+            "unfilled_slots": 6776,
+            "core_valid_fraction_of_Beam20_budget": 0.42378335949764523,
+            "full_H_formula_correct_fraction_of_Beam20_budget": 0.4028649921507064,
+            "full_H_formula_correct_fraction_of_emitted_candidates": 0.5488130881094953,
+            "targets_with_formula_correct_candidate": 0.966248037676609,
+            "RDKit_parse_valid_fraction_of_Beam20_budget": 0.527629513343799
+          }
+        }
+      }
+    },
+    "formula_only": {
+      "raw": null,
+      "elements": null,
+      "elements_grammar": null
+    }
+  },
+  "formula_only_training": null,
+  "formula_only_full_validation_history": null,
+  "formula_only_best_checkpoint": null,
+  "paired_template_vs_formula": {},
+  "primary_comparison": "elements_grammar, posterior_filtered Exact@10 on all9499",
+  "paired_CI_scope": "paired target-formula-cluster bootstrap, one fixed training seed; not training-seed variability",
+  "template_inputs_are_structure_oracle": true,
+  "no_independent_real_MSMS_claim": true,
+  "raw_predictions_and_weights_remain_private_on_G": true,
+  "template_epoch43_weight_sha256": "f8d7f646f6bfda7459296f5025adc78a9695b8b8bff4c34e8ae80c6d779e17c2",
+  "parameter_counts": {
+    "template": 16479940,
+    "formula_only": null
+  },
+  "predeclared_primary_conclusion": "Formula-only的完整约束评价尚未完成，暂不能判断模板增益。",
+  "cpu_gate": {
+    "passed": true,
+    "checks": [
+      {
+        "experiment": "formula_only",
+        "batch_speed": [
+          {
+            "batch_size": 32,
+            "targets_per_second": 85.49900496228528
+          }
+        ],
+        "longest_label_tokens": 94,
+        "nonP_batch_backward_passed": true,
+        "nonP_batch_CE": 4.328216552734375,
+        "peak_allocated_MiB": null,
+        "steps": 4,
+        "restart_after_step": 2,
+        "batch_size": 32,
+        "real_disk_reload": true,
+        "maximum_model_optimizer_scheduler_logits_difference": 0.0,
+        "tolerance": 0.0,
+        "losses": [
+          [
+            4.382021903991699,
+            4.334176540374756,
+            4.333429336547852,
+            4.354207515716553
+          ],
+          [
+            4.382021903991699,
+            4.334176540374756,
+            4.333429336547852,
+            4.354207515716553
+          ]
+        ],
+        "actual_LRs": [
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ],
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ]
+        ],
+        "same_next_batch_rng_and_patience": true,
+        "all_modules_updated": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "longest_label_backward_passed": true,
+        "longest_batch_CE": 4.4169745445251465
+      }
+    ],
+    "inference_checks": {
+      "passed": true,
+      "test_target_labels": 9499,
+      "legal_prefixes_checked": 482902,
+      "test_labels_pruned": 0,
+      "H_formula_checked_by_final_RDKit_not_character_count": true,
+      "P_and_nonP_supported": true,
+      "both_ports_exactly_once": true
+    }
+  },
+  "cuda_gate": {
+    "passed": true,
+    "checks": [
+      {
+        "experiment": "formula_only",
+        "batch_speed": [
+          {
+            "batch_size": 16,
+            "targets_per_second": 895.6989245515315
+          },
+          {
+            "batch_size": 32,
+            "targets_per_second": 1791.397849103063
+          }
+        ],
+        "longest_label_tokens": 94,
+        "nonP_batch_backward_passed": true,
+        "nonP_batch_CE": 4.345946311950684,
+        "peak_allocated_MiB": 758.04443359375,
+        "steps": 4,
+        "restart_after_step": 2,
+        "batch_size": 32,
+        "real_disk_reload": true,
+        "maximum_model_optimizer_scheduler_logits_difference": 0.0,
+        "tolerance": 1e-05,
+        "losses": [
+          [
+            4.3835225105285645,
+            4.326766490936279,
+            4.331523418426514,
+            4.349064826965332
+          ],
+          [
+            4.383522987365723,
+            4.326766490936279,
+            4.331523418426514,
+            4.349064826965332
+          ]
+        ],
+        "actual_LRs": [
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ],
+          [
+            7.5e-08,
+            1.5e-07,
+            2.25e-07,
+            3e-07
+          ]
+        ],
+        "same_next_batch_rng_and_patience": true,
+        "all_modules_updated": {
+          "structure_encoder": true,
+          "projector": true,
+          "template_set": true,
+          "polar_decoder": true
+        },
+        "longest_label_backward_passed": true,
+        "longest_batch_CE": 4.420828342437744
+      }
+    ],
+    "inference_checks": {
+      "passed": true,
+      "real_epoch43_checkpoint_sha256": "f8d7f646f6bfda7459296f5025adc78a9695b8b8bff4c34e8ae80c6d779e17c2",
+      "BOS_logits_batch_vs_sequential_max_difference": 4.76837158203125e-06,
+      "original_probabilities_not_renormalized": true,
+      "modes": {
+        "raw": {
+          "targets": 16,
+          "candidate_count": 320,
+          "EOS_candidates": 320,
+          "seconds": 1.3439999999827705,
+          "peak_allocated_MiB": 630.517578125,
+          "reference_shared_candidates": 40,
+          "reference_shared_max_logprob_difference": 1.2682750821113586e-05,
+          "reference_top1_sequence_agreement": 1.0
+        },
+        "elements": {
+          "targets": 16,
+          "candidate_count": 320,
+          "EOS_candidates": 317,
+          "seconds": 1.4839999999967404,
+          "peak_allocated_MiB": 637.216796875
+        },
+        "elements_grammar": {
+          "targets": 16,
+          "candidate_count": 271,
+          "EOS_candidates": 238,
+          "seconds": 1.7809999999590218,
+          "peak_allocated_MiB": 639.78271484375
+        }
+      },
+      "note": "FP32 batched GEMM may change near-tied beams; both models use identical batched rules"
+    }
+  }
+}

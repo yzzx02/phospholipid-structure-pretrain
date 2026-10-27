@@ -479,3 +479,16 @@ full-test modes. Never duplicate a started queue or mutate its numerical source
 contract. The CPU-only reporter is intentionally excluded from that frozen
 contract so presentation/paired-analysis corrections can be made without
 changing training or generation. Read current PIDs/events/state for actual stage.
+
+The queue is now launched in the independent control root; read its live stage
+instead of treating these startup notes as completion. The CPU reporter can
+update progress while numerical files remain frozen. After all six full-test
+cohorts and Formula-only training finish, it automatically invokes the separate
+`scripts/publish_formula_comparison_results.py` one-shot publisher. This only
+stages the two allowed aggregate Markdown/JSON files, refuses other staged work,
+verifies all stream/checkpoint/source hashes and full9499/P/nonP counts, and
+checks the pushed remote SHA. `PUBLICATION_DONE.json` is the success receipt;
+`PUBLICATION_PENDING.json` means numerical results are retained but upload needs
+attention. No GPU auto-retry is permitted. Primary inference compares constrained
+posterior Exact@10 with paired target-formula-cluster intervals, fixed seed42;
+do not interpret it as real-MS/MS evidence or across-training-seed stability.

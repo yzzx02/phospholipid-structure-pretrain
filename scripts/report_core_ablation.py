@@ -4,6 +4,9 @@
 
 import gzip
 import json
+import os
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -11,7 +14,7 @@ from zoneinfo import ZoneInfo
 import numpy as np
 from scipy.stats import binomtest
 
-from structure_pretrain.core_ablation.common import ROOT, configuration, read
+from structure_pretrain.core_ablation.common import ROOT, TEMPLATE_ROOT, configuration, read
 
 DEST = Path("docs/results/CORE_FORMULA_COMPARISON_20261027")
 
@@ -20,6 +23,8 @@ def paired_test(left, right):
     if not left.exists() or not right.exists():
         return None
 
+    formulas = np.load(TEMPLATE_ROOT / "data/formulas.npy", mmap_mode="r")
+
     def load(path):
         with gzip.open(path, "rt", encoding="utf-8") as stream:
             return {
@@ -27,6 +32,7 @@ def paired_test(left, right):
                     "P": r["contains_P"],
                     "raw": r["raw"],
                     "posterior_filtered": r["posterior_filtered"],
+                    "formula_group": tuple(int(x) for x in formulas[r["row_index"]]),
                 }
                 for r in (json.loads(line) for line in stream)
             }
@@ -36,7 +42,13 @@ def paired_test(left, right):
     result = {}
     for name, condition in (("all", None), ("P", True), ("nonP", False)):
         keys = [k for k in a if condition is None or a[k]["P"] == condition]
-        part = {"targets": len(keys)}
+        for k in keys:
+            assert a[k]["formula_group"] == b[k]["formula_group"]
+        groups, inverse = np.unique(
+            np.asarray([a[k]["formula_group"] for k in keys]), axis=0, return_inverse=True
+        )
+        sizes = np.bincount(inverse)
+        part = {"targets": len(keys), "formula_condition_groups": len(groups)}
         for mode in ("raw", "posterior_filtered"):
             values = np.asarray(
                 [
@@ -54,18 +66,21 @@ def paired_test(left, right):
             loss = int(np.sum((values[:, 0] == 0) & (values[:, 1] == 1)))
             rng = np.random.default_rng(20261027)
             delta = values[:, [0, 2]] - values[:, [1, 3]]
-            # Paired target bootstrap. These intervals concern targets in this
-            # fixed split/seed, not uncertainty across independently trained seeds.
+            # The Formula-only output is identical for a repeated formula. Resample
+            # formula clusters together rather than pretending these are independent
+            # condition queries. Keep the target-weighted point estimate.
+            sums = np.column_stack([np.bincount(inverse, weights=delta[:, j]) for j in (0, 1)])
             samples = []
             for _ in range(1024):
-                chosen = rng.integers(0, len(keys), size=len(keys))
-                samples.append(delta[chosen].mean(0))
+                chosen = rng.integers(0, len(groups), size=len(groups))
+                samples.append(sums[chosen].sum(0) / sizes[chosen].sum())
             intervals = np.quantile(samples, [0.025, 0.975], axis=0)
             part[mode] = {
                 "template_minus_formula_exact10": float(delta[:, 0].mean()),
                 "template_minus_formula_Similarity10": float(delta[:, 1].mean()),
                 "exact10_paired_95CI": intervals[:, 0].tolist(),
                 "Similarity10_paired_95CI": intervals[:, 1].tolist(),
+                "bootstrap_unit": "target-formula cluster; target-weighted paired difference",
                 "template_only_exact10_hits": win,
                 "formula_only_exact10_hits": loss,
                 "McNemar_exact_two_sided_p": float(binomtest(win, win + loss).pvalue)
@@ -76,9 +91,60 @@ def paired_test(left, right):
     return result
 
 
+def live_progress(state):
+    name = state.get("stage", "")
+    path = ROOT / name / "events.jsonl"
+    latest = None
+    if path.exists():
+        with path.open("rb") as stream:
+            stream.seek(max(0, path.stat().st_size - 65536))
+            for line in reversed(stream.read().splitlines()):
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if row.get("stage") in (
+                    "full_test_batch_completed",
+                    "train_progress",
+                    "validation_completed",
+                ):
+                    latest = row
+                    break
+    status_path = ROOT / (name + ".supervisor.json")
+    supervisor = read(status_path) if status_path.exists() else {}
+    # Use the same ordinary Windows process-liveness check as the published
+    # launch reporter; importing that module does not run its main().
+    from report_core_templates8000 import alive
+
+    active = (
+        supervisor.get("status") == "running"
+        and alive(supervisor.get("child_pid"))
+        and alive(supervisor.get("supervisor_pid"))
+    )
+    return {
+        "live_supervised_child_verified": bool(active),
+        "latest_record": latest,
+        "latest_telemetry": supervisor.get("latest_telemetry"),
+    }
+
+
+def atomic_text(path, text):
+    tmp = path.with_suffix(path.suffix + f".{os.getpid()}.tmp")
+    tmp.write_text(text, encoding="utf-8", newline="\n")
+    tmp.replace(path)
+
+
 def main():
     c = configuration()
     state = read(ROOT / "state.json") if (ROOT / "state.json").exists() else {"status": "preparing"}
+    if state["status"] == "completed" and (ROOT / "PUBLICATION_DONE.json").exists():
+        print(
+            {
+                "status": "completed_and_published",
+                "publication": read(ROOT / "PUBLICATION_DONE.json"),
+            }
+        )
+        return
     reports = {}
     for model in ("template", "formula_only"):
         reports[model] = {}
@@ -92,8 +158,8 @@ def main():
     best_path = ROOT / "formula_only_train_seed42/best.json"
     best = read(best_path) if best_path.exists() else None
     paired = {}
-    if all(reports[m][d] is not None for m in reports for d in c["decoding_modes"]):
-        for mode in c["decoding_modes"]:
+    for mode in c["decoding_modes"]:
+        if reports["template"][mode] is not None and reports["formula_only"][mode] is not None:
             paired[mode] = paired_test(
                 ROOT / f"template_full_{mode}/raw_candidates_private.jsonl.gz",
                 ROOT / f"formula_only_full_{mode}/raw_candidates_private.jsonl.gz",
@@ -101,6 +167,7 @@ def main():
     result = {
         "generated_Asia_Shanghai": datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(),
         "state": state,
+        "current_progress": live_progress(state),
         "configuration": c,
         "evaluations": reports,
         "formula_only_training": training,
@@ -110,12 +177,39 @@ def main():
         else None,
         "paired_template_vs_formula": paired,
         "primary_comparison": "elements_grammar, posterior_filtered Exact@10 on all9499",
-        "paired_CI_scope": "paired target bootstrap, one fixed training seed; not training-seed variability",
+        "paired_CI_scope": "paired target-formula-cluster bootstrap, one fixed training seed; not training-seed variability",
         "template_inputs_are_structure_oracle": True,
         "no_independent_real_MSMS_claim": True,
         "raw_predictions_and_weights_remain_private_on_G": True,
         "template_epoch43_weight_sha256": c["template_checkpoint_sha256"],
     }
+    control_run = ROOT / "formula_only_train_seed42/run_contract.json"
+    baseline_run = TEMPLATE_ROOT / "train_main_k3_seed42/run_contract.json"
+    result["parameter_counts"] = {
+        "template": read(baseline_run)["parameter_count"],
+        "formula_only": read(control_run)["parameter_count"] if control_run.exists() else None,
+    }
+    if result["parameter_counts"]["formula_only"] is not None:
+        assert (
+            result["parameter_counts"]["template"]
+            == result["parameter_counts"]["formula_only"]
+            == 16479940
+        )
+    conclusion = "Formula-only的完整约束评价尚未完成，暂不能判断模板增益。"
+    if "elements_grammar" in paired:
+        primary = paired["elements_grammar"]["all"]["posterior_filtered"]
+        delta = primary["template_minus_formula_exact10"]
+        lo, hi = primary["exact10_paired_95CI"]
+        if delta > 0 and lo > 0:
+            conclusion = (
+                "在本次固定数据/seed及oracle结构检索条件下，模板提高了主要指标Exact@10，"
+                "且公式分组配对区间下界大于0；不外推为真实MS/MS性能。"
+            )
+        elif delta < 0 and hi < 0:
+            conclusion = "本次主要指标不支持模板提升：Formula-only的Exact@10更高，且配对区间不含0。"
+        else:
+            conclusion = "本次主要指标的公式分组配对区间包含0，未获得明确的模板Exact@10提升证据。"
+    result["predeclared_primary_conclusion"] = conclusion
     # Include actual numerical/gradient/recovery/grammar proofs without structures.
     for gate_name in ("cpu_gate", "cuda_gate"):
         p = ROOT / (gate_name + ".json")
@@ -145,6 +239,19 @@ def main():
         "| 模型 | 解码 | 评价目标数 | 原始Exact@1/5/10 | 原始Similarity@10 | 后验过滤Exact@10 | 核心有效/固定Beam预算 | 式正确/固定Beam预算 | 至少一合格式候选 |",
         "|---|---|---:|---|---:|---:|---:|---:|---:|",
     ]
+    progress = result["current_progress"]
+    row = progress["latest_record"]
+    lines.insert(4, f"监督器及子进程存活核验：{progress['live_supervised_child_verified']}。")
+    if row:
+        if row["stage"] == "full_test_batch_completed":
+            lines.insert(
+                5,
+                f"当前队列已完成 {row['completed']:,}/{row['total']:,} 个目标；未完成队列不填最终指标。",
+            )
+        elif row["stage"] == "train_progress":
+            lines.insert(
+                5, f"Formula-only当前第{row['epoch']}轮、step {row['step']:,}；尚非最终结果。"
+            )
 
     def pct(x):
         return f"{100 * x:.2f}%"
@@ -202,20 +309,19 @@ def main():
                     lines.append(
                         f"| {mode}/{output} | {group} | {pct(r['template_minus_formula_exact10'])} | [{pct(lo)}, {pct(hi)}] | {r['template_minus_formula_Similarity10']:.4f} |"
                     )
+    lines += ["", conclusion, ""]
     lines += [
         "",
         "Formula-only的收益也使用同一固定最佳结构模板作为共同评估基线；该基线只在解码完成后用于评分，不输入Formula-only。",
         "结构模板模型使用目标图检索参考，因此本对照检验的是oracle结构条件带来的增益，不等于真实MS/MS检索提升。",
-        "配对置信区间只反映本划分、单一训练seed下目标的差异，不代表独立训练seed之间的方差。原始/约束/后验过滤不混合，TRAIN模板目标不混入测试。",
+        "配对置信区间按目标分子式分组重采样，保留相同公式查询的相关性；仅反映本划分/训练seed，不代表独立训练seed间方差。原始/约束/后验过滤不混合，TRAIN模板目标不混入测试。",
         "GPU作业由独立Windows监督器监控System4101/WER141/117、可读dump和NVIDIA遥测；WATCHDOG权限限制继续保留。",
         "完整结构、全部逐目标候选和权重仅在G盘；GitHub只发布聚合报告、配置与代码。",
         "",
     ]
     DEST.parent.mkdir(exist_ok=True)
-    DEST.with_suffix(".json").write_text(
-        json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n"
-    )
-    DEST.with_suffix(".md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    atomic_text(DEST.with_suffix(".json"), json.dumps(result, ensure_ascii=False, indent=2))
+    atomic_text(DEST.with_suffix(".md"), "\n".join(lines))
     print(
         json.dumps(
             {
@@ -229,6 +335,16 @@ def main():
         ),
         flush=True,
     )
+    if state["status"] == "completed":
+        # Publication was authorized for completed experiments. The separate CPU
+        # publisher checks the full saved outputs and an empty Git index; it never
+        # stages private outputs or starts/retries any GPU job.
+        result = subprocess.run([sys.executable, "scripts/publish_formula_comparison_results.py"])
+        if result.returncode:
+            print(
+                "Final numerical results are complete; GitHub publication remains pending",
+                flush=True,
+            )
 
 
 if __name__ == "__main__":

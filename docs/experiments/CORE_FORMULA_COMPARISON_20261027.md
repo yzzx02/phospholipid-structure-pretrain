@@ -76,7 +76,8 @@ owned-output cap, no logits/attention/all-pairs matrix.
 
 The primary paired comparison is elements+grammar, posterior-filtered Exact@10.
 Additional raw/elements and similarity/P/nonP results remain separate. Report
-paired intervals/McNemar, and distinguish target uncertainty at seed42 from
+paired intervals/McNemar; bootstrap whole target-formula groups so repeated
+Formula-only queries are not treated as independent inputs. Distinguish target uncertainty at seed42 from
 independent-training-seed variability. Template retrieval still uses the known
 target structure; benefits concern oracle structural conditioning, not proven
 real-MS/MS identification. No MS/MS, CL, PGCN or extra training seeds.
@@ -85,3 +86,14 @@ Dot-source `scripts/enter_cuda_v04.ps1`, then prepare data, save the real test
 receipt, run `gate_core_ablation.py --device cpu`, supervised `--job cuda_gate`,
 and finally `run_core_ablation.py` in a hidden background process with G logs.
 Never launch a duplicate queue based on a stale status file; verify actual PIDs.
+
+After all six full cohorts and Formula-only training finish, the CPU reporter
+emits the predeclared primary comparison and calls the one-shot
+`publish_formula_comparison_results.py`. This verifies9499/8225/1274 counts,
+all saved raw-stream hashes, best-validation/checkpoint SHA, both source
+contracts, exact parameter equality and private-field exclusion. It stages only
+the two aggregate Markdown/JSON files, and only with an empty pre-existing Git
+index on the expected main/origin. Network failure or other staged work leaves
+`PUBLICATION_PENDING.json` on G with numerical results preserved. Successful
+remote SHA verification produces `PUBLICATION_DONE.json`. It never starts or
+retries a GPU job. Reports stay null while comparison data are incomplete.
