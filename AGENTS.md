@@ -492,3 +492,16 @@ checks the pushed remote SHA. `PUBLICATION_DONE.json` is the success receipt;
 attention. No GPU auto-retry is permitted. Primary inference compares constrained
 posterior Exact@10 with paired target-formula-cluster intervals, fixed seed42;
 do not interpret it as real-MS/MS evidence or across-training-seed stability.
+
+The user confirmed the intended constraint definition: retain the current atom
+vocabulary, constrain heavy elements online, and verify H finally in RDKit; no
+new H token or template-model retraining. The first full template
+elements+grammar evaluation has now completed all9499 targets normally:
+raw/unfiltered exact@10=0.7090220023160333, posterior exact@10=0.7120749552584482,
+strict formula target coverage0.9882092851879145, posterior Similarity@10
+0.8655502703304495 and mean gain0.4017077774688415. P filtered exact@10
+0.7285106382978723 (8225); nonP0.6059654631083202 (1274).
+Its completed host monitor exit0/no observed display reset/new dump, original
+weights unchanged. Remaining full raw/elements jobs and Formula-only are still
+in the serial queue; do not claim its template-benefit conclusion is complete.
+Use live events/state for current progress, not this historical completion note.
