@@ -505,3 +505,29 @@ Its completed host monitor exit0/no observed display reset/new dump, original
 weights unchanged. Remaining full raw/elements jobs and Formula-only are still
 in the serial queue; do not claim its template-benefit conclusion is complete.
 Use live events/state for current progress, not this historical completion note.
+
+On2026-10-28 the Formula-only/full-test control queue is complete and published
+at d9e160627f526f578ff2c1cd29c95e162a000d60; read its publication receipt rather
+than restarting any completed job. The user's new authorization is an independent
+LR-schedule comparison on the second-round whole glycerol-core model. Preserve
+original E3 (48 epochs, best43) and continue its real epoch48 state only in the
+new `outputs/core_lr_schedule_study_20261028/E3_seed42` namespace. E1 constant,
+E2 cosine without warmup and E4 warmup10000+cosine start from one immutable
+seed42 tensor/RNG snapshot. No old weights initialize those three new runs.
+The latest clarification supersedes fixed48/fixed50: minimum50 measured epochs
+for common1-50 plots, then patience5, maximum80, with no patience reset at50.
+Best checkpoint is minimum full-validation CE across all observed epochs;
+cosine horizon stays80 epochs/427200 updates, peak3e-4/minimum1e-5. Original
+E3's historical minimum and weights remain separately identified even if its
+independent continuation improves. Do not pad epoch49-50 or change old sources.
+Same TRAIN170872/validation9493, bank8000, seed42/Batch32/AdamW/K3/FP32/Math.
+No test target generation or test-based tuning in this LR study. All four best
+models use the same full9493 validation cohort, elements+grammar Beam32/len96,
+final H-inclusive RDKit/assembly checks, raw and posterior metrics separately.
+Use only the new LR supervisor/serial queue after matching CPU/CUDA full-state
+restart gates. No duplicate queue, GPU auto-retry or old-lock cleanup. Each new
+run retains best+latest2, all private data/weights/candidates/caches on G.
+Reporter and aggregate publisher are excluded from the numerical source freeze;
+automated final publication is aggregate Markdown/JSON/PNG/SVG only. Read live
+PIDs/state/events and publication receipts before claiming running/completion.
+See `docs/experiments/CORE_LR_SCHEDULE_STUDY_20261028.md` for exact policy.
